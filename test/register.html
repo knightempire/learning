@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+</head>
+<body>
+    <h1>Registration</h1>
+    <input type="text" id="name" placeholder="Name">
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="register()">Register</button>
+    <p id="registrationMessage"></p>
+    <script>
+        async function register() {
+            const name = document.getElementById('name').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+    
+            console.log('API resgister  requested '); // Log that the API is called
+    
+            const response = await fetch('http://localhost:3000/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, username, password })
+            });
+    
+            const data = await response.json();
+    
+            console.log(data); // Log the API response
+    
+            if (response.ok) {
+                console.log(data.message)
+                document.getElementById('registrationMessage').textContent = data.message;
+                window.location.href = './login.html';
+            } else {
+                console.log(data.error)
+                document.getElementById('registrationMessage').textContent = data.error;
+            }
+        }
+    </script>
+    
+</body>
+</html>
