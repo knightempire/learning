@@ -9,13 +9,13 @@ const client = twilio(accountSid, authToken);
 
 // Middleware for OTP generation
 async function generateOtpMiddleware(req, res, next) {
-    const countryCode = req.body.countryCode;
+
     const phoneNumber = req.body.phoneNumber;
 
     try {
         await client.verify.v2.services(serviceID)
             .verifications.create({
-                to: `+${countryCode}${phoneNumber}`,
+                to: `+${91}${phoneNumber}`,
                 channel: 'sms',
             });
 
@@ -28,14 +28,14 @@ async function generateOtpMiddleware(req, res, next) {
 
 // Middleware for OTP verification
 async function verifyOtpMiddleware(req, res, next) {
-    const countryCode = req.body.countryCode;
+  
     const phoneNumber = req.body.phoneNumber;
     const otp = req.body.otp;
 
     try {
         const verificationCheck = await client.verify.v2.services(serviceID)
             .verificationChecks.create({
-                to: `+${countryCode}${phoneNumber}`,
+                to: `+${91}${phoneNumber}`,
                 code: otp
             });
 

@@ -7,6 +7,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 // const authMiddleware = require('./authmiddleware');
 const { generateOtpMiddleware, verifyOtpMiddleware } = require('./middleWare/otpgeneration');
+const generateResponse = require('./middleWare/chat');
 
 const app = express();
 const port = 3000;
@@ -51,7 +52,7 @@ app.use(session({
 }));
 
 
-
+//function to create token
 const createtoken = (req, res, rows) => {
     const token = jwt.sign({ email: rows[0].email }, JWT_SECRET, {
         expiresIn: JWT_EXPIRY,
@@ -68,7 +69,7 @@ const createtoken = (req, res, rows) => {
 }
 
 
-
+//function to verify token
 const authenticateToken = (req, res, next) => {
     try {
         // Check if Authorization header exists
@@ -109,17 +110,17 @@ app.post('/api/verify-otp', verifyOtpMiddleware);
 
 
 
-
+//Route for register
 app.post('/api/register', async (req, res) => {
-    const { name, username, password, role } = req.body;
+    const { name, username, password, phoneNumber, role } = req.body;
 
     try {
+       
+
         // Check if the username is already taken
-        console.log("api register is connected")
         const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
 
         if (existingUser.length > 0) {
-            console.log("username already exists")
             return res.status(400).json({ error: 'Username already exists' });
         }
 
@@ -130,16 +131,24 @@ app.post('/api/register', async (req, res) => {
         const userRole = role || 'student';
 
         // Insert the new user into the database
-        await pool.execute('INSERT INTO users (name, username, password, role) VALUES (?, ?, ?, ?)', [name, username, hashedPassword, userRole]);
-        console.log("api registered successfully")
-        res.status(201).json({ message: 'User registered successfully' });
-
+        const [result] = await pool.execute('INSERT INTO users (name, username, password, phoneNumber, role) VALUES (?, ?, ?, ?, ?)', [name, username, hashedPassword, phoneNumber, userRole]);
+        
+        // Check if insertion was successful
+        if (result.affectedRows === 1) {
+            return res.status(201).json({ message: 'User registered successfully' });
+        } else {
+            throw new Error('Failed to register user');
+        }
     } catch (error) {
         console.error('Error during registration:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
+
+
+
+//Route for login
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -173,6 +182,18 @@ app.post('/api/login', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
+
+//Route for chat
+app.post('/message', async (req, res) => {
+    const userInput = req.body.message;
+
+    // Generate response using middleware
+    const response = await generateResponse(userInput);
+    res.json({ botResponse: response });
+});
+
 
 
 
