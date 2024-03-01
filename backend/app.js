@@ -196,6 +196,45 @@ app.post('/message', async (req, res) => {
 
 
 
+// Route for updating user data (username or password)
+app.put('/api/users/:phoneNumber', async (req, res) => {
+    const { phoneNumber } = req.params;
+    const { option, newData } = req.body;
+
+    try {
+        // Check if the option is valid
+        if (option !== 'username' && option !== 'password') {
+            return res.status(400).json({ error: 'Invalid option' });
+        }
+
+        // Create a connection pool
+        const pool = await mysql.createPool(dbConfig);
+        const connection = await pool.getConnection();
+
+        if (option === 'username') {
+            // Check if the new username is already taken
+            const [existingUser] = await connection.query('SELECT * FROM users WHERE username = ?', [newData]);
+            if (existingUser.length > 0) {
+                return res.status(400).json({ error: 'Username already exists' });
+            }
+
+            // Update username
+            const [result] = await connection.query('UPDATE users SET username = ? WHERE phoneNumber = ?', [newData, phoneNumber]);
+            res.json({ message: 'Username updated successfully' });
+        } else if (option === 'password') {
+            // Update password
+            const hashedPassword = await bcrypt.hash(newData, 10);
+            const [result] = await connection.query('UPDATE users SET password = ? WHERE phoneNumber = ?', [hashedPassword, phoneNumber]);
+            res.json({ message: 'Password updated successfully' });
+        }
+
+        connection.release();
+    } catch (error) {
+        console.error('Error updating user data:', error);
+        res.status(500).json({ error: 'Failed to update user data' });
+    }
+});
+
 
 
 app.listen(port, () => {

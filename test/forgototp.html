@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Example</title>
+    <style>
+        /* Style for the OTP verification form */
+        #verifyOtpForm {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>OTP Example</h1>
+
+    <!-- Form for OTP Generation -->
+    <form id="generateOtpForm">
+        <label for="phoneNumber">Phone Number:</label>
+        <input type="text" id="phoneNumber" name="phoneNumber" required>
+
+        <button type="button" onclick="generateOtp()">Generate OTP</button>
+    </form>
+
+    <!-- Form for OTP Verification -->
+    <form id="verifyOtpForm">
+        <label for="otp">Enter OTP:</label>
+        <input type="text" id="otp" name="otp" required>
+
+        <button type="button" onclick="verifyOtp()">Verify OTP</button>
+    </form>
+
+    <script>
+        const apiUrl = 'http://localhost:3000/api';
+
+        async function generateOtp() {
+            const phoneNumber = document.getElementById('phoneNumber').value;
+
+            try {
+                const response = await fetch(`${apiUrl}/generate-otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({  phoneNumber }),
+                });
+
+                const result = await response.json();
+                alert(result.message);
+
+                // Display the OTP verification form upon successful OTP generation
+                document.getElementById('verifyOtpForm').style.display = 'block';
+            } catch (error) {
+                console.error(error);
+                alert('Error generating OTP. Check console for details.');
+            }
+        }
+
+        async function verifyOtp() {
+            const verifyPhoneNumber = document.getElementById('phoneNumber').value; // Same phone number used for verification
+            const otp = document.getElementById('otp').value;
+
+            try {
+                const response = await fetch(`${apiUrl}/verify-otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ phoneNumber: verifyPhoneNumber, otp }),
+                });
+
+                const result = await response.json();
+                alert(result.message);
+                
+                if (response.ok) {
+                    // Retrieve the option parameter from the URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const option = urlParams.get('option');
+                    
+                    // Redirect to reset.html page with phone number and reset option as URL parameters
+                    window.location.href = `./reset.html?phoneNumber=${encodeURIComponent(verifyPhoneNumber)}&option=${option}`;
+                } else {
+                    console.log('OTP verification failed');
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert('Error verifying OTP. Check console for details.');
+            }
+        }
+    </script>
+</body>
+</html>

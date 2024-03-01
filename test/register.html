@@ -26,7 +26,11 @@
         // Function to prefill phone number input field
         function prefillPhoneNumber() {
             const phoneNumber = getUrlParameter('phoneNumber');
-            document.getElementById('phoneNumber').value = phoneNumber;
+            if (!phoneNumber) {
+                window.location.href = './otp.html'; // Redirect to otp.html if phone number is empty
+            } else {
+                document.getElementById('phoneNumber').value = phoneNumber;
+            }
         }
 
         // Call the prefillPhoneNumber function when the page loads
@@ -38,7 +42,7 @@
             const password = document.getElementById('password').value;
             // Get the phone number from the input field
             const phoneNumber = document.getElementById('phoneNumber').value;
-    
+
             // Log the phone number before making the API call
             console.log('Phone number:', phoneNumber);
 

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password or Username</title>
+</head>
+<body>
+    <h1>Forgot Password or Username</h1>
+    <p>Please select what you want to reset:</p>
+    <input type="radio" id="resetUsername" name="resetOption" value="username">
+    <label for="resetUsername">Reset Username</label><br>
+    <input type="radio" id="resetPassword" name="resetOption" value="password">
+    <label for="resetPassword">Reset Password</label><br><br>
+    <button onclick="submitForgot()">Submit</button>
+
+    <script>
+        function submitForgot() {
+            const resetOption = document.querySelector('input[name="resetOption"]:checked').value;
+            const forgotData = resetOption === 'username' ? 'username' : 'password';
+            // Redirect to forgototp.html with the selected option
+            window.location.href = `./forgototp.html?option=${forgotData}`;
+        }
+    </script>
+</body>
+</html>

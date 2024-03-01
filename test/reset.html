@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password or Username</title>
+</head>
+<body>
+    <h1>Reset Password or Username</h1>
+    
+    <!-- JavaScript code to retrieve URL parameters -->
+    <script>
+        // Function to get URL parameter by name
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+    </script>
+
+    <script>
+        // Retrieve phone number and reset option from URL
+        const phoneNumber = getUrlParameter('phoneNumber');
+        const option = getUrlParameter('option');
+
+        // Display phone number
+        document.write(`<p>Phone number: ${phoneNumber}</p>`);
+
+        // Display appropriate form based on the reset option
+        if (option === 'username') {
+            document.write(`
+                <form id="resetUsernameForm">
+                    <label for="newUsername">New Username:</label>
+                    <input type="text" id="newUsername" name="newUsername" required>
+                    <br>
+                    <label for="confirmUsername">Confirm Username:</label>
+                    <input type="text" id="confirmUsername" name="confirmUsername" required>
+                    <br>
+                    <button type="button" onclick="resetUsername()">Reset Username</button>
+                </form>
+            `);
+        } else if (option === 'password') {
+            document.write(`
+                <form id="resetPasswordForm">
+                    <label for="newPassword">New Password:</label>
+                    <input type="password" id="newPassword" name="newPassword" required>
+                    <br>
+                    <label for="confirmPassword">Confirm Password:</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <br>
+                    <button type="button" onclick="resetPassword()">Reset Password</button>
+                </form>
+            `);
+        } else {
+            document.write(`<p>Invalid reset option: ${option}</p>`);
+        }
+
+        // Function to reset username
+        async function resetUsername() {
+            const newUsername = document.getElementById('newUsername').value;
+            const confirmUsername = document.getElementById('confirmUsername').value;
+
+            if (newUsername !== confirmUsername) {
+                alert('New username and confirmed username do not match');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/users/${phoneNumber}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ option: 'username', newData: newUsername })
+                });
+
+                const data = await response.json();
+                alert(data.message);
+            } catch (error) {
+                console.error('Error resetting username:', error);
+                alert('Failed to reset username. Please try again.');
+            }
+        }
+
+        // Function to reset password
+        async function resetPassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                alert('New password and confirmed password do not match');
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/users/${phoneNumber}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ option: 'password', newData: newPassword })
+                });
+
+                const data = await response.json();
+                alert(data.message);
+                     // Redirect to login page after successful password reset
+            window.location.href = 'login.html';
+            
+            } catch (error) {
+                console.error('Error resetting password:', error);
+                alert('Failed to reset password. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>
