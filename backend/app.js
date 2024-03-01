@@ -6,42 +6,58 @@ const jwt = require('jsonwebtoken');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 // const authMiddleware = require('./authmiddleware');
-
-const dbConfig = {
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "learning",
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
-};
+const { generateOtpMiddleware, verifyOtpMiddleware } = require('./middleWare/otpgeneration');
 
 const app = express();
 const port = 3000;
+
+app.use(cors());
+app.use(express.json());
+app.use(cookieParser());
+
+
+const {
+    DB_HOST,
+    DB_USER,
+    DB_PASSWORD,
+    DB_DATABASE,
+    DB_WAIT_FOR_CONNECTIONS,
+    DB_CONNECTION_LIMIT,
+    DB_QUEUE_LIMIT,
+    SESSION_SECRET,
+    JWT_SECRET,
+    JWT_EXPIRY,
+} = process.env;
+
+const dbConfig = {
+    host: DB_HOST,
+    user: DB_USER,
+    password: DB_PASSWORD,
+    database: DB_DATABASE,
+    waitForConnections: DB_WAIT_FOR_CONNECTIONS === 'true', // Convert string to boolean
+    connectionLimit: parseInt(DB_CONNECTION_LIMIT, 10),
+    queueLimit: parseInt(DB_QUEUE_LIMIT, 10),
+};
+
 
 // Create a MySQL pool
 const pool = mysql.createPool(dbConfig);
 
 // Session middleware configuration
 app.use(session({
-    secret: 'learn@1234', // You should change this to a more secure key
+    secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
 }));
 
-// Use the cors middleware
-app.use(cors());
 
-app.use(express.json());
-app.use(cookieParser());
 
 const createtoken = (req, res, rows) => {
-    const token = jwt.sign({ email: rows[0].email }, "learn@1234", {
-        expiresIn: '30m', // Token expiry time
+    const token = jwt.sign({ email: rows[0].email }, JWT_SECRET, {
+        expiresIn: JWT_EXPIRY,
     });
     app.use(session({
-        secret: 'learn@1234', // You should change this to a more secure key
+        secret: SESSION_SECRET, 
         resave: false,
         saveUninitialized: true,
     }));
@@ -50,6 +66,8 @@ const createtoken = (req, res, rows) => {
     req.session.jwtToken = token;
     return token;
 }
+
+
 
 const authenticateToken = (req, res, next) => {
     try {
@@ -78,6 +96,19 @@ const authenticateToken = (req, res, next) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
+
+
+
+
+// Route for OTP generation
+app.post('/api/generate-otp', generateOtpMiddleware);
+
+// Route for OTP verification
+app.post('/api/verify-otp', verifyOtpMiddleware);
+
+
+
 
 app.post('/api/register', async (req, res) => {
     const { name, username, password, role } = req.body;
@@ -142,6 +173,8 @@ app.post('/api/login', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
 
 
 app.listen(port, () => {

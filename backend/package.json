@@ -10,7 +10,8 @@
     "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
     "mysql2": "^3.9.2",
-    "node": "^21.6.2"
+    "node": "^21.6.2",
+    "twilio": "^4.23.0"
   },
   "name": "backend",
   "version": "1.0.0",
