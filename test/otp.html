@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Example</title>
+</head>
+<body>
+
+    <h1>OTP Example</h1>
+
+    <!-- Form for OTP Generation -->
+    <form id="generateOtpForm">
+        <label for="countryCode">Country Code:</label>
+        <input type="text" id="countryCode" name="countryCode" required>
+
+        <label for="phoneNumber">Phone Number:</label>
+        <input type="text" id="phoneNumber" name="phoneNumber" required>
+
+        <button type="button" onclick="generateOtp()">Generate OTP</button>
+    </form>
+
+    <!-- Form for OTP Verification -->
+    <form id="verifyOtpForm">
+        <label for="verifyCountryCode">Country Code:</label>
+        <input type="text" id="verifyCountryCode" name="verifyCountryCode" required>
+
+        <label for="verifyPhoneNumber">Phone Number:</label>
+        <input type="text" id="verifyPhoneNumber" name="verifyPhoneNumber" required>
+
+        <label for="otp">Enter OTP:</label>
+        <input type="text" id="otp" name="otp" required>
+
+        <button type="button" onclick="verifyOtp()">Verify OTP</button>
+    </form>
+
+    <script>
+        const apiUrl = 'http://localhost:3000/api';
+
+        async function generateOtp() {
+            const countryCode = document.getElementById('countryCode').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+
+            try {
+                const response = await fetch(`${apiUrl}/generate-otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ countryCode, phoneNumber }),
+                });
+
+                const result = await response.json();
+                alert(result.message);
+            } catch (error) {
+                console.error(error);
+                alert('Error generating OTP. Check console for details.');
+            }
+        }
+
+        async function verifyOtp() {
+            const verifyCountryCode = document.getElementById('verifyCountryCode').value;
+            const verifyPhoneNumber = document.getElementById('verifyPhoneNumber').value;
+            const otp = document.getElementById('otp').value;
+
+            try {
+                const response = await fetch(`${apiUrl}/verify-otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ countryCode: verifyCountryCode, phoneNumber: verifyPhoneNumber, otp }),
+                });
+
+                const result = await response.json();
+                alert(result.message);
+            } catch (error) {
+                console.error(error);
+                alert('Error verifying OTP. Check console for details.');
+            }
+        }
+    </script>
+</body>
+</html>
