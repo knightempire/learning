@@ -35,11 +35,21 @@
     <script>
         const apiUrl = 'http://localhost:3000/api';
 
+        // Function to check if the option parameter is empty and redirect accordingly
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const option = urlParams.get('option');
+            
+            if (!option) {
+                window.location.href = './forgot.html';
+            }
+        };
+
         async function generateOtp() {
             const phoneNumber = document.getElementById('phoneNumber').value;
 
             try {
-                const response = await fetch(`${apiUrl}/generate-otp`, {
+                const response = await fetch(`${apiUrl}/forgotgenerate-otp`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -73,18 +83,21 @@
 
                 const result = await response.json();
                 alert(result.message);
-                
+
                 if (response.ok) {
                     // Retrieve the option parameter from the URL
                     const urlParams = new URLSearchParams(window.location.search);
                     const option = urlParams.get('option');
-                    
+
                     // Redirect to reset.html page with phone number and reset option as URL parameters
-                    window.location.href = `./reset.html?phoneNumber=${encodeURIComponent(verifyPhoneNumber)}&option=${option}`;
+                    if (option) {
+                        window.location.href = `./reset.html?phoneNumber=${encodeURIComponent(verifyPhoneNumber)}&option=${option}`;
+                    } else {
+                        window.location.href = './forgot.html';
+                    }
                 } else {
                     console.log('OTP verification failed');
                 }
-
             } catch (error) {
                 console.error(error);
                 alert('Error verifying OTP. Check console for details.');
