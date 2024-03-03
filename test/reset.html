@@ -17,12 +17,32 @@
             var results = regex.exec(location.search);
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
+        
+        // Function to redirect to forgototp.html if phoneNumber is absent
+        function redirectToForgotOtp() {
+            window.location.href = 'forgototp.html';
+        }
+        
+        // Function to redirect to forgot.html if option is empty
+        function redirectToForgot() {
+            window.location.href = 'forgot.html';
+        }
     </script>
 
     <script>
         // Retrieve phone number and reset option from URL
         const phoneNumber = getUrlParameter('phoneNumber');
         const option = getUrlParameter('option');
+
+        // Check if phoneNumber is absent and redirect to forgototp.html
+        if (!phoneNumber) {
+            redirectToForgotOtp();
+        }
+        
+        // Check if option is empty and redirect to forgot.html
+        if (!option) {
+            redirectToForgot();
+        }
 
         // Display phone number
         document.write(`<p>Phone number: ${phoneNumber}</p>`);
@@ -67,7 +87,7 @@
             }
 
             try {
-                const response = await fetch(`/api/users/${phoneNumber}`, {
+                const response = await fetch(`http://localhost:3000/api/users/${phoneNumber}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -104,9 +124,10 @@
 
                 const data = await response.json();
                 alert(data.message);
-                     // Redirect to login page after successful password reset
-            window.location.href = 'login.html';
-            
+                
+                // Redirect to login page after successful password reset
+                window.location.href = 'login.html';
+                
             } catch (error) {
                 console.error('Error resetting password:', error);
                 alert('Failed to reset password. Please try again.');
