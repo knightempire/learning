@@ -20,6 +20,7 @@
     <form id="generateOtpForm">
         <label for="phoneNumber">Phone Number:</label>
         <input type="text" id="phoneNumber" name="phoneNumber" required>
+
         <button type="button" onclick="generateOtp()">Generate OTP</button>
     </form>
 
@@ -27,11 +28,12 @@
     <form id="verifyOtpForm">
         <label for="otp">Enter OTP:</label>
         <input type="text" id="otp" name="otp" required>
+
         <button type="button" onclick="verifyOtp()">Verify OTP</button>
     </form>
 
-    <p><a href="./login.html">Login</a></p>
 
+    
     <script>
         const apiUrl = 'http://localhost:3000/api';
 
@@ -44,25 +46,17 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ phoneNumber }),
+                    body: JSON.stringify({  phoneNumber }),
                 });
 
-                if (response.ok) {
-                    const result = await response.json();
-                    alert(result.message);
-                    // Display the OTP verification form upon successful OTP generation
-                    document.getElementById('verifyOtpForm').style.display = 'block';
-                } else if (response.status === 409) {
-                    const result = await response.json();
-                    alert(result.error); // Alert the error message if phone number already exists
+                const result = await response.json();
+                alert(result.message);
 
-                } else {
-                    console.error('Failed to generate OTP:', response.statusText);
-                    alert('Error generating OTP. Please try again.');
-                }
+                // Display the OTP verification form upon successful OTP generation
+                document.getElementById('verifyOtpForm').style.display = 'block';
             } catch (error) {
-                console.error('Error generating OTP:', error);
-                alert('Error generating OTP. Please check console for details.');
+                console.error(error);
+                alert('Error generating OTP. Check console for details.');
             }
         }
 
