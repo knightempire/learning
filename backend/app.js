@@ -102,12 +102,48 @@ const authenticateToken = (req, res, next) => {
 
 
 
-// Route for OTP generation
-app.post('/api/generate-otp', generateOtpMiddleware);
+// Route for generating OTP
+app.post('/api/generate-otp', async (req, res) => {
+    try {
+        const { phoneNumber } = req.body;
 
-// Route for OTP verification
+        // Check if the phone number exists in the database
+        const [existingUser] = await pool.execute('SELECT * FROM users WHERE phoneNumber = ?', [phoneNumber]);
+
+        if (existingUser.length > 0) {
+            return res.status(409).json({ error: 'Phone number already exists' });
+        } else {
+            // Proceed to generate OTP if the phone number doesn't exist
+            generateOtpMiddleware(req, res);
+        }
+    } catch (error) {
+        console.error('Error generating OTP:', error);
+        res.status(500).json({ error: 'Failed to generate OTP' });
+    }
+});
+
+// Route for verifying OTP
 app.post('/api/verify-otp', verifyOtpMiddleware);
 
+
+app.post('/api/forgotgenerate-otp', async (req, res) => {
+    try {
+        const { phoneNumber } = req.body;
+
+        // Check if the phone number exists in the database
+        const [existingUser] = await pool.execute('SELECT * FROM users WHERE phoneNumber = ?', [phoneNumber]);
+
+        if (existingUser.length === 0) {
+            return res.status(404).json({ error: 'Phone number not registered' });
+        } else {
+            // Proceed to generate OTP if the phone number exists
+            generateOtpMiddleware(req, res);
+        }
+    } catch (error) {
+        console.error('Error generating OTP:', error);
+        res.status(500).json({ error: 'Failed to generate OTP' });
+    }
+});
 
 
 //Route for register
