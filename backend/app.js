@@ -37,7 +37,7 @@ const {
 
 const dbConfig = {
     host: DB_HOST,
-    port: 3307,
+    port: 10379,
     user: DB_USER,
     password: DB_PASSWORD,
     database: DB_DATABASE,
