@@ -33,37 +33,43 @@
     </form>
 
 
-    
     <script>
         const apiUrl = 'https://learning-u7aw.onrender.com/api';
-
+    
         async function generateOtp() {
             const phoneNumber = document.getElementById('phoneNumber').value;
-
+    
             try {
                 const response = await fetch(`${apiUrl}/generate-otp`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({  phoneNumber }),
+                    body: JSON.stringify({ phoneNumber }),
                 });
-
+    
                 const result = await response.json();
-                alert(result.message);
-
-                // Display the OTP verification form upon successful OTP generation
-                document.getElementById('verifyOtpForm').style.display = 'block';
+                console.log(result); // Log the response to see its structure
+                
+                // Check if the response contains an error property
+                if (result.error) {
+                    alert(result.error);
+                } else {
+                    alert('OTP generated successfully');
+    
+                    // Display the OTP verification form upon successful OTP generation
+                    document.getElementById('verifyOtpForm').style.display = 'block';
+                }
             } catch (error) {
                 console.error(error);
                 alert('Error generating OTP. Check console for details.');
             }
         }
-
+    
         async function verifyOtp() {
             const verifyPhoneNumber = document.getElementById('phoneNumber').value; // Same phone number used for verification
             const otp = document.getElementById('otp').value;
-
+    
             try {
                 const response = await fetch(`${apiUrl}/verify-otp`, {
                     method: 'POST',
@@ -72,22 +78,23 @@
                     },
                     body: JSON.stringify({ phoneNumber: verifyPhoneNumber, otp }),
                 });
-
+    
                 const result = await response.json();
-                alert(result.message);
-                
+                console.log(result); // Log the response to see its structure
+    
                 if (response.ok) {
+                    alert(result.message); // Assuming the message is present in the response
                     // Redirect to register.html page with phone number as URL parameter
                     window.location.href = `./register.html?phoneNumber=${encodeURIComponent(verifyPhoneNumber)}`;
                 } else {
-                    console.log('OTP verification failed');
+                    alert('OTP verification failed');
                 }
-
             } catch (error) {
                 console.error(error);
                 alert('Error verifying OTP. Check console for details.');
             }
         }
     </script>
+    
 </body>
 </html>
