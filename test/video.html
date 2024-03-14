@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insert Video</title>
+</head>
+<body>
+
+    <h2>Insert Video</h2>
+
+    <form id="videoForm">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" required><br>
+        <label for="description">Description:</label><br>
+        <textarea id="description" name="description" required></textarea><br>
+        <label for="videoUrl">Video URL:</label><br>
+        <input type="text" id="videoUrl" name="videoUrl" required><br><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById('videoForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+            
+            // Get form data
+            const formData = new FormData(this);
+            const title = formData.get('title');
+            const description = formData.get('description');
+            const videoUrl = formData.get('videoUrl');
+
+            // Send POST request to the API endpoint
+            try {
+                const response = await fetch('http://localhost:3000/api/lectures', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title, description, videoUrl })
+                });
+
+                const data = await response.json();
+
+                // Check if request was successful
+                if (response.ok) {
+                    alert(data.message); // Show success message
+                } else {
+                    alert('Failed to insert video'); // Show error message
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.'); // Show generic error message
+            }
+        });
+    </script>
+
+</body>
+</html>

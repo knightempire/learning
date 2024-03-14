@@ -5,16 +5,21 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+
 // const authMiddleware = require('./authmiddleware');
 const { generateOtpMiddleware, verifyOtpMiddleware } = require('./middleWare/otpgeneration');
 const generateResponse = require('./middleWare/chat');
 
 const app = express();
-const port = 3000;
+const port = 3000||null;
 
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.static('public'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 const {
@@ -32,6 +37,7 @@ const {
 
 const dbConfig = {
     host: DB_HOST,
+    port: 3307,
     user: DB_USER,
     password: DB_PASSWORD,
     database: DB_DATABASE,
@@ -271,6 +277,44 @@ app.put('/api/users/:phoneNumber', async (req, res) => {
     }
 });
 
+
+
+//testing video
+
+
+// Define a POST endpoint to insert a video into the lectures table
+app.post('/api/lectures', (req, res) => {
+    // Extract video details from the request body
+    const { title, description, videoUrl } = req.body;
+
+    // Create a SQL query to insert the video into the lectures table
+    const query = 'INSERT INTO lectures (title, description, video_url) VALUES (?, ?, ?)';
+    const values = [title, description, videoUrl];
+
+    // Execute the query
+    pool.query(query, values, (error, results, fields) => {
+        if (error) {
+            console.error('Error inserting video:', error);
+            return res.status(500).json({ error: 'Failed to insert video' });
+        }
+
+        // If the insertion is successful, return success response
+        return res.status(200).json({ message: 'Video inserted successfully' });
+    });
+});
+
+
+// Endpoint to fetch all videos from the lectures table
+// Endpoint to fetch all videos from the lectures table
+app.get('/api/getlectures', async (req, res) => {
+    try {
+        const [rows, fields] = await pool.query('SELECT * FROM lectures');
+        res.json(rows);
+    } catch (error) {
+        console.error('Error fetching videos from database:', error);
+        res.status(500).json({ error: 'Failed to fetch videos from database' });
+    }
+});
 
 
 app.listen(port, () => {
