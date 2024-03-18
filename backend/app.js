@@ -237,7 +237,6 @@ app.post('/message', async (req, res) => {
 });
 
 
-
 // Route for updating user data (username or password)
 app.put('/api/users/:phoneNumber', async (req, res) => {
     const { phoneNumber } = req.params;
@@ -246,7 +245,7 @@ app.put('/api/users/:phoneNumber', async (req, res) => {
     try {
         // Check if the option is valid
         if (option !== 'username' && option !== 'password') {
-            return res.status(400).json({ error: 'Invalid option' });
+            return res.status(422).json({ error: 'Invalid option' });
         }
 
         // Create a connection pool
@@ -276,7 +275,6 @@ app.put('/api/users/:phoneNumber', async (req, res) => {
         res.status(500).json({ error: 'Failed to update user data' });
     }
 });
-
 
 
 //testing video

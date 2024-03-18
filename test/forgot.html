@@ -68,9 +68,13 @@
     </div>
     <script>
         function submitForgot(option) {
-            // Redirect to forgototp.html with the selected option
-            window.location.href = `./forgototp.html?option=${option}`;
+            // Encrypt the option parameter using Base64 encoding
+            var encryptedOption = btoa(option);
+    
+            // Redirect to forgototp.html with the encrypted option
+            window.location.href = `./forgototp.html?option=${encryptedOption}`;
         }
     </script>
+    
 </body>
 </html>

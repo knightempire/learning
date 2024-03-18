@@ -32,44 +32,36 @@
         <button type="button" onclick="verifyOtp()">Verify OTP</button>
     </form>
 
-
     <script>
         const apiUrl = 'https://learning-u7aw.onrender.com/api';
-    
+
         async function generateOtp() {
             const phoneNumber = document.getElementById('phoneNumber').value;
-    
+
             try {
-                const response = await fetch(`${apiUrl}/generate-otp`, {
+                const response = await fetch(`${apiUrl}/forgotgenerate-otp`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ phoneNumber }),
                 });
-    
+
                 const result = await response.json();
-                console.log(result); // Log the response to see its structure
-                
-                // Check if the response contains an error property
-                if (result.error) {
-                    alert(result.error);
-                } else {
-                    alert('OTP generated successfully');
-    
-                    // Display the OTP verification form upon successful OTP generation
-                    document.getElementById('verifyOtpForm').style.display = 'block';
-                }
+                alert(result.message);
+
+                // Display the OTP verification form upon successful OTP generation
+                document.getElementById('verifyOtpForm').style.display = 'block';
             } catch (error) {
                 console.error(error);
                 alert('Error generating OTP. Check console for details.');
             }
         }
-    
+
         async function verifyOtp() {
             const verifyPhoneNumber = document.getElementById('phoneNumber').value; // Same phone number used for verification
             const otp = document.getElementById('otp').value;
-    
+
             try {
                 const response = await fetch(`${apiUrl}/verify-otp`, {
                     method: 'POST',
@@ -78,23 +70,30 @@
                     },
                     body: JSON.stringify({ phoneNumber: verifyPhoneNumber, otp }),
                 });
-    
+
                 const result = await response.json();
-                console.log(result); // Log the response to see its structure
-    
+                alert(result.message);
+                
                 if (response.ok) {
-                    alert(result.message); // Assuming the message is present in the response
-                    // Redirect to register.html page with phone number as URL parameter
-                    window.location.href = `./register.html?phoneNumber=${encodeURIComponent(verifyPhoneNumber)}`;
+                    // Retrieve the option parameter from the URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const option = urlParams.get('option');
+                    
+                    // Encrypt option and phone number
+                    const encryptedOption = btoa(option);
+                    const encryptedPhoneNumber = btoa(verifyPhoneNumber);
+                    
+                    // Redirect to reset.html page with encrypted parameters as URL parameters
+                    window.location.href = `./reset.html?option=${encryptedOption}&phoneNumber=${encryptedPhoneNumber}`;
                 } else {
-                    alert('OTP verification failed');
+                    console.log('OTP verification failed');
                 }
+
             } catch (error) {
                 console.error(error);
                 alert('Error verifying OTP. Check console for details.');
             }
         }
     </script>
-    
 </body>
 </html>

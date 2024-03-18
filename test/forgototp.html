@@ -44,7 +44,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({  phoneNumber }),
+                    body: JSON.stringify({ phoneNumber }),
                 });
 
                 const result = await response.json();
@@ -79,8 +79,8 @@
                     const urlParams = new URLSearchParams(window.location.search);
                     const option = urlParams.get('option');
                     
-                    // Redirect to reset.html page with phone number and reset option as URL parameters
-                    window.location.href = `./reset.html?phoneNumber=${encodeURIComponent(verifyPhoneNumber)}&option=${option}`;
+                    // Redirect to reset.html page with encrypted parameters as URL parameters
+                    window.location.href = `./reset.html?option=${option}&phoneNumber=${btoa(verifyPhoneNumber)}`;
                 } else {
                     console.log('OTP verification failed');
                 }
