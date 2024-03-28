@@ -63,27 +63,51 @@ app.use(session({
 
 //function to create token
 const createtoken = (req, res, rows) => {
-    const token = jwt.sign({ email: rows[0].email }, JWT_SECRET, {
+    // Assuming rows contain user data with a username field
+    const username = rows[0].username;
+
+    // Sign the token with the username instead of email
+    const token = jwt.sign({ username: username }, JWT_SECRET, {
         expiresIn: JWT_EXPIRY,
     });
-    app.use(session({
-        secret: SESSION_SECRET, 
-        resave: false,
-        saveUninitialized: true,
-    }));
 
-    // Store token in session and set cookie
+    // Assuming you are using Express and want to store the token in the session
     req.session.jwtToken = token;
+
+    // Return the token
     return token;
-}
+};
 
 
 //function to verify token
-const authenticateToken = (req, res, next) => {
+// Middleware to authenticate token and retrieve user data
+// async function getUserDataByUsername(username) {
+//     try {
+//         // Query the database to find the user by username
+//         const user = await User.findOne({ username });
+
+//         // If user is found, return user data
+//         if (user) {
+//             return {
+//                 id: user.id,
+//                 username: user.username,
+//                 email: user.email,
+//                 // Add other user data properties as needed
+//             };
+//         } else {
+//             return null; // Return null if user is not found
+//         }
+//     } catch (error) {
+//         console.error('Error fetching user data:', error.message);
+//         throw error; // Throw error for handling in the calling code
+//     }
+// }
+
+const authenticateToken = async (req, res, next) => {
     try {
         // Check if Authorization header exists
         if (!req.headers.authorization) {
-            return res.redirect('/index.html'); // Redirect to login page
+            return res.status(401).json({ error: 'Unauthorized' }); // Return 401 Unauthorized status
         }
 
         // Retrieve token from request headers and split it
@@ -91,13 +115,28 @@ const authenticateToken = (req, res, next) => {
         console.log("Token:", token); // Print token value
 
         // Verify token
-        jwt.verify(token, "learn@1234", (err, user) => {
+        jwt.verify(token, "learn@1234", async (err, decodedToken) => {
             if (err) {
                 console.error('Authentication error:', err.message);
                 // Token is invalid or expired, send 401 Unauthorized response to client
                 return res.status(401).json({ error: 'Unauthorized' });
             } else {
-                req.user = user; // Set user information in request object
+                console.log('Decoded Token:', decodedToken); // Print decoded token data
+                
+                // Decode the token to get the username
+                const username = decodedToken.username;
+
+                // Retrieve user data from the database based on the username
+                const userData = await getUserDataByUsername(username);
+
+                if (!userData) {
+                    // User not found in the database, send 401 Unauthorized response
+                    console.error('User not found');
+                    return res.status(401).json({ error: 'Unauthorized' });
+                }
+
+                // Set user information in request object
+                req.user = userData;
                 next(); // Proceed to next middleware
             }
         });
@@ -108,12 +147,58 @@ const authenticateToken = (req, res, next) => {
 };
 
 
+app.post('/api/decodeToken', async (req, res) => {
+    console.log('api decode requested');
+    try {
+        // Extract the token from the request body
+        const { token } = req.body;
+        console.log(token)
+
+        // Verify and decode the token
+        const decodedToken = jwt.verify(token, JWT_SECRET);
+        // console.log(decodedToken)
+
+        // Extract username from decoded token
+        const { username } = decodedToken;
+
+        // Get a connection from the pool
+        const connection = await pool.getConnection();
+
+        try {
+            // Query the database to retrieve user data based on username
+            const [rows] = await connection.execute('SELECT * FROM users WHERE username = ?', [username]);
+
+            // Check if user exists in the database
+            if (rows.length === 0) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            // Get the user data from the query results
+            const userData = rows[0];
+            console.log('decoded token');
+
+            // Send user data back to the client
+            res.status(200).json(userData);
+        } catch (error) {
+            console.error('Error querying database:', error.message);
+            res.status(500).json({ error: 'Internal server error' });
+        } finally {
+            // Release the connection back to the pool
+            connection.release();
+        }
+    } catch (error) {
+        // Handle any errors, such as token validation failure
+        console.error('Error decoding token:', error.message);
+        res.status(400).json({ error: 'Failed to decode token' });
+    }
+});
 
 
 
 // Route for generating OTP
 app.post('/api/generate-otp', async (req, res) => {
     try {
+        console.log('api generate otp requested');
         const { phoneNumber } = req.body;
 
         // Check if the phone number exists in the database
@@ -137,6 +222,7 @@ app.post('/api/verify-otp', verifyOtpMiddleware);
 
 app.post('/api/forgotgenerate-otp', async (req, res) => {
     try {
+        console.log('api forgot otp requested');
         const { phoneNumber } = req.body;
 
         // Check if the phone number exists in the database
@@ -160,7 +246,7 @@ app.post('/api/register', async (req, res) => {
     const { name, username, password, phoneNumber, role } = req.body;
 
     try {
-       
+        console.log('api register requested');
 
         // Check if the username is already taken
         const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
@@ -198,7 +284,7 @@ app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        console.log("api login is connected")
+        console.log('api login requested');
         // Query the database to check if the provided username exists
         const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
 
@@ -232,6 +318,7 @@ app.post('/api/login', async (req, res) => {
 
 //Route for chat
 app.post('/message', async (req, res) => {
+    console.log('api chat bot requested');
     const userInput = req.body.message;
 
     // Generate response using middleware
@@ -246,6 +333,7 @@ app.put('/api/users/:phoneNumber', async (req, res) => {
     const { option, newData } = req.body;
 
     try {
+        console.log('api users update requested');
         // Check if the option is valid
         if (option !== 'username' && option !== 'password') {
             return res.status(422).json({ error: 'Invalid option' });
@@ -285,6 +373,7 @@ app.put('/api/users/:phoneNumber', async (req, res) => {
 
 //making payment gpay
 app.post('/api/paymentmake', (req, res) => {
+    console.log('api gpay paymentmake requested');
     paymentValue = 1; // Set the payment value to 1
     console.log('Payment value set to 1');
 
@@ -299,6 +388,7 @@ app.post('/api/paymentmake', (req, res) => {
 
 //payment call
 app.get('/api/paymentcall', (req, res) => {
+    // console.log('api gpay paymentcall requested');
     res.json({ value: paymentValue });
 });
 
@@ -308,6 +398,7 @@ app.post('/api/payment', async (req, res) => {
     const { user_id, amount, course_name } = req.body;
 
     try {
+        console.log('api payment requested');
         // Get connection from the pool
         const connection = await pool.getConnection();
 
