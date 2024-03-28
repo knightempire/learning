@@ -160,12 +160,7 @@
 
 
         try {
-            // Retrieve the course ID based on the course name
-            const courseResponse = await fetch(`/api/courses/${courseName}`);
-            if (!courseResponse.ok) {
-                throw new Error('Course not found');
-            }
-            const { c_id } = await courseResponse.json();
+          
 
             // Construct payment data
             const paymentData = {
