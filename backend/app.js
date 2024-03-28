@@ -311,13 +311,25 @@ app.post('/api/payment', async (req, res) => {
         const [paymentResult] = await connection.execute(sql, [user_id, amount, payment_date, payment_status, c_id]);
         const p_id = paymentResult.insertId; // Get the inserted payment_id
 
-        // Insert into the student table
-        const joining_date = new Date().toISOString().slice(0, 10);
-        const studentSql = 'INSERT INTO student (s_id, c_id, p_id, joining_date) VALUES (?, ?, ?, ?)';
-        await connection.execute(studentSql, [user_id, c_id, p_id, joining_date]);
+        // Check if the student record already exists based on s_id
+        const checkStudentSql = 'SELECT * FROM student WHERE s_id = ?';
+        const [existingStudentRows] = await connection.execute(checkStudentSql, [user_id]);
 
-        console.log('Payment details and student record inserted successfully');
-        res.status(200).json({ message: 'Payment details and student record inserted successfully' });
+        if (existingStudentRows.length === 0) {
+            // Insert into the student table
+            const joining_date = new Date().toISOString().slice(0, 10);
+            const studentSql = 'INSERT INTO student (s_id, c_id, p_id, joining_date) VALUES (?, ?, ?, ?)';
+            await connection.execute(studentSql, [user_id, c_id, p_id, joining_date]);
+            console.log('New student record inserted successfully');
+        } else {
+            // Update the existing student record with new c_id, p_id, and joining_date
+            const updateStudentSql = 'UPDATE student SET c_id = ?, p_id = ?, joining_date = ? WHERE s_id = ?';
+            await connection.execute(updateStudentSql, [c_id, p_id, new Date().toISOString().slice(0, 10), user_id]);
+            console.log('Existing student record updated successfully');
+        }
+
+        console.log('Payment details inserted successfully');
+        res.status(200).json({ message: 'Payment details inserted successfully' });
 
         // Release the connection
         connection.release();
