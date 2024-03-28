@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 28, 2024 at 08:28 AM
+-- Generation Time: Mar 28, 2024 at 10:59 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -70,6 +70,16 @@ CREATE TABLE `course` (
   `m_id` int(11) DEFAULT NULL,
   `course_name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `course`
+--
+
+INSERT INTO `course` (`c_id`, `c_duration`, `c_no_certificate`, `c_description`, `m_id`, `course_name`) VALUES
+(1, NULL, NULL, NULL, NULL, 'HTML'),
+(2, NULL, NULL, NULL, NULL, 'DBMS'),
+(3, NULL, NULL, NULL, NULL, 'AI'),
+(4, NULL, NULL, NULL, NULL, 'AWS');
 
 -- --------------------------------------------------------
 
