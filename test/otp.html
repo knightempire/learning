@@ -59,41 +59,34 @@
         }
 
         async function verifyOtp() {
-            const verifyPhoneNumber = document.getElementById('phoneNumber').value; // Same phone number used for verification
-            const otp = document.getElementById('otp').value;
+    const verifyPhoneNumber = document.getElementById('phoneNumber').value; // Same phone number used for verification
+    const otp = document.getElementById('otp').value;
 
-            try {
-                const response = await fetch(`${apiUrl}/verify-otp`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ phoneNumber: verifyPhoneNumber, otp }),
-                });
+    try {
+        const response = await fetch(`${apiUrl}/verify-otp`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ phoneNumber: verifyPhoneNumber, otp }),
+        });
 
-                const result = await response.json();
-                alert(result.message);
-                
-                if (response.ok) {
-                    // Retrieve the option parameter from the URL
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const option = urlParams.get('option');
-                    
-                    // Encrypt option and phone number
-                    const encryptedOption = btoa(option);
-                    const encryptedPhoneNumber = btoa(verifyPhoneNumber);
-                    
-                    // Redirect to reset.html page with encrypted parameters as URL parameters
-                    window.location.href = `./reset.html?option=${encryptedOption}&phoneNumber=${encryptedPhoneNumber}`;
-                } else {
-                    console.log('OTP verification failed');
-                }
-
-            } catch (error) {
-                console.error(error);
-                alert('Error verifying OTP. Check console for details.');
-            }
+        const result = await response.json();
+        alert(result.message);
+        
+        if (response.ok) {
+            // Redirect to register.html with phone number as URL parameter
+            window.location.href = `./register.html?phoneNumber=${verifyPhoneNumber}`;
+        } else {
+            console.log('OTP verification failed');
         }
+
+    } catch (error) {
+        console.error(error);
+        alert('Error verifying OTP. Check console for details.');
+    }
+}
+
     </script>
 </body>
 </html>
