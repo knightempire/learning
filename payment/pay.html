@@ -5,6 +5,8 @@
                                 <meta charset='utf-8'>
                                 <meta name='viewport' content='width=device-width, initial-scale=1'>
                                 <title>Edu well</title>
+                                <script src="https://cdnjs.cloudflare.com/ajax/libs/jwt-decode/3.1.2/jwt-decode.min.js"></script>
+
                                 <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet'>
                                 <link href='https://use.fontawesome.com/releases/v5.8.1/css/all.css' rel='stylesheet'>
                                 <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
@@ -78,7 +80,7 @@
                                             </label> <input type="text" required class="form-control"> </div>
                                     </div>
                                 </div>
-                        <a href="./loading.html">        <div class="card-footer"> <button type="button" class="subscribe btn btn-primary btn-block shadow-sm"> Confirm Payment </button> </a>
+                              <div class="card-footer"> <button type="button" class="subscribe btn btn-primary btn-block shadow-sm"> Confirm Payment </button> 
                             </form>
                         </div>
                     </div> <!-- End -->
@@ -135,32 +137,6 @@
                             </html>
                             
 
-                            <script>
-                                // Retrieve the JWT token from local storage
-                            const token = localStorage.getItem('jwtToken');
-                            
-                            if (token) {
-                                try {
-                                    // Decode the JWT token
-                                    const decodedToken = jwt_decode(token);
-                                    
-                                    // Extract user ID from the decoded token
-                                    const userId = decodedToken.user_id;
-                            
-                                    // Now you can use the userId in your backend logic
-                                    console.log('User ID:', userId);
-                                    
-                                    // Perform operations with the user ID, such as updating the payment status in the database
-                                    // For example, you can make an API request to your backend endpoint '/api/paymentstatus' with the user ID
-                                } catch (error) {
-                                    console.error('Error decoding JWT token:', error);
-                                }
-                            } else {
-                                console.error('JWT token not found in local storage');
-                            }
-                            
-                            </script>
-
 <script>
     // Function to extract the course name from the URL query parameter
     function getCourseNameFromURL() {
@@ -182,12 +158,6 @@
         const courseName = document.getElementById('courseName').value;
         const amount = 100; // Example amount
 
-        // Retrieve the user ID from local storage
-        const userId = localStorage.getItem('userId');
-        if (!userId) {
-            console.error('User ID not found in local storage');
-            return;
-        }
 
         try {
             // Retrieve the course ID based on the course name

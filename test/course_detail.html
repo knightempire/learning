@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jwt-decode/3.1.2/jwt-decode.min.js"></script>
+
   <title>Course Selection</title>
   <style>
     body {
@@ -50,28 +52,3 @@
 </html>
 
 
-<script>
-    // Retrieve the JWT token from local storage
-const token = localStorage.getItem('jwtToken');
-
-if (token) {
-    try {
-        // Decode the JWT token
-        const decodedToken = jwt_decode(token);
-        
-        // Extract user ID from the decoded token
-        const userId = decodedToken.user_id;
-
-        // Now you can use the userId in your backend logic
-        console.log('User ID:', userId);
-        
-        // Perform operations with the user ID, such as updating the payment status in the database
-        // For example, you can make an API request to your backend endpoint '/api/paymentstatus' with the user ID
-    } catch (error) {
-        console.error('Error decoding JWT token:', error);
-    }
-} else {
-    console.error('JWT token not found in local storage');
-}
-
-</script>

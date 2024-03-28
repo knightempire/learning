@@ -17,7 +17,6 @@
     <p><a href="./chat.html">chat</a></p>
     <p><a href="../payment/pay.html">payment</a></p>
 
-
     <script>
         async function login() {
             const username = document.getElementById('username').value;
@@ -36,9 +35,12 @@
             console.log(data);
             
             if (response.ok) {
-                // Handle successful login
-                console.log('Login successful');
-                window.location.href = './course_detail.html'; // Redirect to contact.html after successful login
+                // Store token in local storage upon successful login
+                localStorage.setItem('jwtToken', data.token);
+                console.log('Token stored in local storage');
+                
+                // Redirect to course_detail.html after successful login
+                window.location.href = './course_detail.html';
             } else {
                 document.getElementById('loginMessage').textContent = data.error;
             }
