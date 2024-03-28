@@ -122,7 +122,7 @@ app.post('/api/generate-otp', async (req, res) => {
         if (existingUser.length > 0) {
             return res.status(409).json({ error: 'Phone number already exists' });
         } else {
-            // Proceed to generate OTP if the phone number doesn't exist
+            // Proceed to generate OTP if the phone number doesn't ist
             generateOtpMiddleware(req, res);
         }
     } catch (error) {
