@@ -133,7 +133,6 @@
                                 </body>
                             </html>
                             
-
                             <script>
                                 // Function to extract the course name from the URL query parameter
                                 function getCourseNameFromURL() {
@@ -141,9 +140,45 @@
                                     return urlParams.get('course');
                                 }
                             
-                                // Example usage
-                                const courseName = getCourseNameFromURL();
-                                console.log('Course Name:', courseName);
+                                async function getTokenFromLocalStorage() {
+                                    const token = localStorage.getItem('Token');
+                                    return token;
+                                }
+                            
+                                window.onload = async function() {
+                                    try {
+                                        const token = await getTokenFromLocalStorage();
+                                        if (!token) {
+                                            window.location.href = 'https://eduwell.onrender.com/';
+                                            return;
+                                        }
+                            
+                                        // Token is available, proceed to authenticate it
+                                        const authenticateResponse = await fetch('https://learning-u7aw.onrender.com/api/authenticateToken', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Authorization': `Bearer ${token}`
+                                            }
+                                        });
+                            
+                                        if (authenticateResponse.status === 200) {
+                                            const userData = await authenticateResponse.json();
+                                            console.log('User Data:', userData);
+                                            
+                                            // Token is valid, proceed with other functions
+                                            const courseName = getCourseNameFromURL();
+                                            console.log('Course Name:', courseName);
+                            
+                                            // Call the function to check payment status every 2 seconds
+                                            setInterval(checkPaymentStatus, 4000);
+                                        } else {
+                                            // Token is invalid, redirect to login page
+                                            window.location.href = 'https://eduwell.onrender.com/';
+                                        }
+                                    } catch (error) {
+                                        console.error('Error:', error.message);
+                                    }
+                                };
                             
                                 async function checkPaymentStatus() {
                                     try {
@@ -193,8 +228,5 @@
                                         console.error('Error:', error.message);
                                     }
                                 }
-                            
-                                // Call the function to check payment status every 2 seconds
-                                setInterval(checkPaymentStatus, 4000);
                             </script>
                             
