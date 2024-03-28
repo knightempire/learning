@@ -94,14 +94,12 @@
                 alert('New username and confirmed username do not match');
                 return;
             }
-            const token = localStorage.getItem('token');
 
             try {
                 const response = await fetch(`https://learning-u7aw.onrender.com/api/users/${phoneNumber}`, {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` 
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ option, newData: newUsername })
                 });
@@ -130,13 +128,12 @@
                 alert('New password and confirmed password do not match');
                 return;
             }
-            const token = localStorage.getItem('token');
+
             try {
                 const response = await fetch(`https://learning-u7aw.onrender.com/api/users/${phoneNumber}`, {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` 
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ option, newData: newPassword })
                 });

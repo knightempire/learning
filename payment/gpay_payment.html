@@ -114,14 +114,11 @@
         onClick: function() {
           // Show loader
           document.getElementById('loader').style.display = 'block';
-          const token = localStorage.getItem('token');
+
           // Call your API here
           fetch('https://learning-u7aw.onrender.com/api/paymentmake', {
             method: 'POST',
-            headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` 
-                    },
+            // Add any necessary headers and body for your API call
           })
           .then(response => {
             // Check if the response status is 200
