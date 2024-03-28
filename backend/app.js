@@ -183,7 +183,7 @@ app.post('/api/login', async (req, res) => {
 
 
 //Route for chat
-app.post('/message', authenticateToken, async (req, res) => {
+app.post('/message', async (req, res) => {
     const userInput = req.body.message;
 
     // Generate response using middleware
@@ -193,7 +193,7 @@ app.post('/message', authenticateToken, async (req, res) => {
 
 
 // Route for updating user data (username or password)
-app.put('/api/users/:phoneNumber', authenticateToken, async (req, res) => {
+app.put('/api/users/:phoneNumber',  async (req, res) => {
     const { phoneNumber } = req.params;
     const { option, newData } = req.body;
 
@@ -236,7 +236,7 @@ app.put('/api/users/:phoneNumber', authenticateToken, async (req, res) => {
 
 
 //making payment gpay
-app.post('/api/paymentmake', authenticateToken, (req, res) => {
+app.post('/api/paymentmake',  (req, res) => {
     paymentValue = 1; // Set the payment value to 1
     console.log('Payment value set to 1');
 
@@ -250,7 +250,7 @@ app.post('/api/paymentmake', authenticateToken, (req, res) => {
 });
 
 //payment call
-app.get('/api/paymentcall', authenticateToken, (req, res) => {
+app.get('/api/paymentcall',  (req, res) => {
     res.json({ value: paymentValue });
 });
 

@@ -197,16 +197,17 @@
     async function checkPaymentStatus() {
         try {
             // Retrieve the JWT token from local storage
-            const token = localStorage.getItem('jwtToken'); // Assuming your JWT token key is 'jwtToken'
+            const jwtToken = localStorage.getItem('jwtToken'); // Assuming your JWT token key is 'jwtToken'
+            console.log(jwtToken)
 
-            if (!token) {
+            if (!jwtToken) {
                 console.error('JWT token not found in local storage');
                 return;
             }
 
             const paymentStatusResponse = await fetch('https://learning-u7aw.onrender.com/api/paymentcall', {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${jwtToken}`
                 }
             });
 
