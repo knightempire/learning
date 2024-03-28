@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Selection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+  <script>
+    function redirectToPayment(course) {
+      window.location.href = '../payment/pay.html?course=' + course;
+    }
+  </script>
+</head>
+<body>
+  <h2>Select a Course</h2>
+  <div class="button-container">
+    <button class="button" onclick="redirectToPayment('HTML')">HTML</button>
+    <button class="button" onclick="redirectToPayment('DBMS')">DBMS</button>
+    <button class="button" onclick="redirectToPayment('AI')">AI</button>
+    <button class="button" onclick="redirectToPayment('AWS')">AWS</button>
+  </div>
+</body>
+</html>
+
+
+<script>
+    // Retrieve the JWT token from local storage
+const token = localStorage.getItem('jwtToken');
+
+if (token) {
+    try {
+        // Decode the JWT token
+        const decodedToken = jwt_decode(token);
+        
+        // Extract user ID from the decoded token
+        const userId = decodedToken.user_id;
+
+        // Now you can use the userId in your backend logic
+        console.log('User ID:', userId);
+        
+        // Perform operations with the user ID, such as updating the payment status in the database
+        // For example, you can make an API request to your backend endpoint '/api/paymentstatus' with the user ID
+    } catch (error) {
+        console.error('Error decoding JWT token:', error);
+    }
+} else {
+    console.error('JWT token not found in local storage');
+}
+
+</script>

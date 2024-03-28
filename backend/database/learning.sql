@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 28, 2024 at 05:50 AM
+-- Generation Time: Mar 28, 2024 at 08:28 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -67,7 +67,8 @@ CREATE TABLE `course` (
   `c_duration` varchar(100) DEFAULT NULL,
   `c_no_certificate` int(11) DEFAULT NULL,
   `c_description` text DEFAULT NULL,
-  `m_id` int(11) DEFAULT NULL
+  `m_id` int(11) DEFAULT NULL,
+  `course_name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -185,7 +186,8 @@ CREATE TABLE `payment` (
   `user_id` int(11) NOT NULL,
   `amount` decimal(10,2) NOT NULL,
   `payment_date` timestamp NOT NULL DEFAULT current_timestamp(),
-  `payment_status` varchar(50) NOT NULL DEFAULT 'Pending'
+  `payment_status` varchar(50) NOT NULL DEFAULT 'Pending',
+  `c_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -393,7 +395,8 @@ ALTER TABLE `mentor_student_course`
 --
 ALTER TABLE `payment`
   ADD PRIMARY KEY (`payment_id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `fk_payment_course` (`c_id`);
 
 --
 -- Indexes for table `performance`
@@ -574,6 +577,7 @@ ALTER TABLE `mentor_student_course`
 -- Constraints for table `payment`
 --
 ALTER TABLE `payment`
+  ADD CONSTRAINT `fk_payment_course` FOREIGN KEY (`c_id`) REFERENCES `course` (`c_id`),
   ADD CONSTRAINT `payment_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 --

@@ -280,40 +280,44 @@ app.put('/api/users/:phoneNumber', async (req, res) => {
 //testing video
 
 
-// Define a POST endpoint to insert a video into the lectures table
-app.post('/api/lectures', (req, res) => {
-    // Extract video details from the request body
-    const { title, description, videoUrl } = req.body;
+//payment
+app.post('/api/payment', (req, res) => {
+    const { user_id, amount } = req.body;
+    const course_name = req.body.course_name; // Corrected to req.body
+    const payment_date = new Date().toLocaleString(); // Get payment date in local time
+    const payment_status = 'completed';
 
-    // Create a SQL query to insert the video into the lectures table
-    const query = 'INSERT INTO lectures (title, description, video_url) VALUES (?, ?, ?)';
-    const values = [title, description, videoUrl];
+    // Query to select c_id from the course table based on the course name
+    const selectCourseIdQuery = 'SELECT c_id FROM course WHERE course_name = ?';
 
-    // Execute the query
-    pool.query(query, values, (error, results, fields) => {
-        if (error) {
-            console.error('Error inserting video:', error);
-            return res.status(500).json({ error: 'Failed to insert video' });
+    // Execute the query to get the c_id
+    connection.query(selectCourseIdQuery, [course_name], (err, rows) => {
+        if (err) {
+            console.error('Error selecting c_id from course table:', err);
+            return res.status(500).json({ error: 'Error selecting c_id from course table' });
         }
 
-        // If the insertion is successful, return success response
-        return res.status(200).json({ message: 'Video inserted successfully' });
+        if (rows.length === 0) {
+            // If no course with the provided name is found
+            return res.status(404).json({ error: 'Course not found' });
+        }
+
+        const c_id = rows[0].c_id; // Extract c_id from the query result
+
+        // Insert payment details into the payment table
+        const sql = 'INSERT INTO payment (user_id, amount, payment_date, payment_status, c_id) VALUES (?, ?, ?, ?, ?)';
+        const values = [user_id, amount, payment_date, payment_status, c_id];
+
+        connection.query(sql, values, (err, result) => {
+            if (err) {
+                console.error('Error inserting payment details:', err);
+                return res.status(500).json({ error: 'Error inserting payment details' });
+            }
+            console.log('Payment details inserted successfully');
+            return res.status(200).json({ message: 'Payment details inserted successfully' });
+        });
     });
 });
-
-
-// Endpoint to fetch all videos from the lectures table
-// Endpoint to fetch all videos from the lectures table
-app.get('/api/getlectures', async (req, res) => {
-    try {
-        const [rows, fields] = await pool.query('SELECT * FROM lectures');
-        res.json(rows);
-    } catch (error) {
-        console.error('Error fetching videos from database:', error);
-        res.status(500).json({ error: 'Failed to fetch videos from database' });
-    }
-});
-
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
