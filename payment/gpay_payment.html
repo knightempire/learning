@@ -74,6 +74,9 @@
       text-align: center;
       margin-top: 20px;
     }
+    #loader {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -83,13 +86,14 @@
   <!-- HTML fragment -->
   <div class="payment-details">
     <h2>Pay to <span class="eduwell">Eduwell</span></h2>
-    <br>
+    <br><br>
     <div class="amount-container">
       <div class="amount-circle">&#8377;100</div>
       <p class="amount">100</p>
     </div>
     <br><br>
     <div id="googlePayButton"></div>
+    <div id="loader">Loading...</div>
     <div id="thankYouMessage">
       <h1>Thank you for your payment!</h1>
     </div>
@@ -108,16 +112,24 @@
         buttonColor: 'black',
         buttonType: 'long',
         onClick: function() {
+          // Show loader
+          document.getElementById('loader').style.display = 'block';
+
           // Call your API here
-          fetch('/paymentdone', {
+          fetch('http://localhost:3000/api/paymentmake', {
             method: 'POST',
             // Add any necessary headers and body for your API call
           })
           .then(response => {
             // Check if the response status is 200
             if (response.status === 200) {
-              // Show the thank you message
-              document.getElementById('thankYouMessage').style.display = 'block';
+              // Hide loader
+              document.getElementById('loader').style.display = 'none';
+              
+              // Show the thank you message after 4 seconds
+              setTimeout(() => {
+                document.getElementById('thankYouMessage').style.display = 'block';
+              }, 4000);
             } else {
               // Handle other status codes if needed
               console.error('Error completing payment:', response.statusText);
@@ -127,6 +139,9 @@
             // Handle errors
             console.error('Error completing payment:', error);
           });
+
+          // Log a message indicating that the API is called
+          console.log('API is called');
         },
         paymentOptions: {
           // Define your payment options here

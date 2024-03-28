@@ -51,6 +51,7 @@ const dbConfig = {
 
 // Create a MySQL pool
 const pool = mysql.createPool(dbConfig);
+let paymentValue = 0;
 
 // Session middleware configuration
 app.use(session({
@@ -282,7 +283,27 @@ app.put('/api/users/:phoneNumber', async (req, res) => {
 //testing video
 
 
-//payment
+//making payment gpay
+app.post('/api/paymentmake', (req, res) => {
+    paymentValue = 1; // Set the payment value to 1
+    console.log('Payment value set to 1');
+
+    // Reset the payment value to 0 after 5 seconds
+    setTimeout(() => {
+        paymentValue = 0; // Reset the payment value to 0
+        console.log('Payment value reset to 0 after 6 seconds');
+    }, 6000);
+
+    res.sendStatus(200);
+});
+
+//payment call
+app.get('/api/paymentcall', (req, res) => {
+    res.json({ value: paymentValue });
+});
+
+
+//payment 
 app.post('/api/payment', async (req, res) => {
     const { user_id, amount, course_name } = req.body;
 
