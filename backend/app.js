@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const moment = require('moment');
 
 // const authMiddleware = require('./authmiddleware');
 const { generateOtpMiddleware, verifyOtpMiddleware } = require('./middleWare/otpgeneration');
@@ -13,6 +14,7 @@ const generateResponse = require('./middleWare/chat');
 
 const app = express();
 const port = 3000||null;
+
 
 app.use(cors());
 app.use(express.json());
@@ -281,42 +283,48 @@ app.put('/api/users/:phoneNumber', async (req, res) => {
 
 
 //payment
-app.post('/api/payment', (req, res) => {
-    const { user_id, amount } = req.body;
-    const course_name = req.body.course_name; // Corrected to req.body
-    const payment_date = new Date().toLocaleString(); // Get payment date in local time
-    const payment_status = 'completed';
+app.post('/api/payment', async (req, res) => {
+    const { user_id, amount, course_name } = req.body;
 
-    // Query to select c_id from the course table based on the course name
-    const selectCourseIdQuery = 'SELECT c_id FROM course WHERE course_name = ?';
+    try {
+        // Get connection from the pool
+        const connection = await pool.getConnection();
 
-    // Execute the query to get the c_id
-    connection.query(selectCourseIdQuery, [course_name], (err, rows) => {
-        if (err) {
-            console.error('Error selecting c_id from course table:', err);
-            return res.status(500).json({ error: 'Error selecting c_id from course table' });
-        }
+        // Query to select c_id from the course table based on the course name
+        const selectCourseIdQuery = 'SELECT c_id FROM course WHERE course_name = ?';
+
+        // Execute the query to get the c_id
+        const [rows] = await connection.execute(selectCourseIdQuery, [course_name]);
 
         if (rows.length === 0) {
-            // If no course with the provided name is found
             return res.status(404).json({ error: 'Course not found' });
         }
 
-        const c_id = rows[0].c_id; // Extract c_id from the query result
+        const c_id = rows[0].c_id;
+
+        // Format payment date properly
+        const payment_date = new Date().toISOString().slice(0, 19).replace('T', ' '); // Get payment date in UTC format
+        const payment_status = 'completed';
 
         // Insert payment details into the payment table
         const sql = 'INSERT INTO payment (user_id, amount, payment_date, payment_status, c_id) VALUES (?, ?, ?, ?, ?)';
-        const values = [user_id, amount, payment_date, payment_status, c_id];
+        const [paymentResult] = await connection.execute(sql, [user_id, amount, payment_date, payment_status, c_id]);
+        const p_id = paymentResult.insertId; // Get the inserted payment_id
 
-        connection.query(sql, values, (err, result) => {
-            if (err) {
-                console.error('Error inserting payment details:', err);
-                return res.status(500).json({ error: 'Error inserting payment details' });
-            }
-            console.log('Payment details inserted successfully');
-            return res.status(200).json({ message: 'Payment details inserted successfully' });
-        });
-    });
+        // Insert into the student table
+        const joining_date = new Date().toISOString().slice(0, 10);
+        const studentSql = 'INSERT INTO student (s_id, c_id, p_id, joining_date) VALUES (?, ?, ?, ?)';
+        await connection.execute(studentSql, [user_id, c_id, p_id, joining_date]);
+
+        console.log('Payment details and student record inserted successfully');
+        res.status(200).json({ message: 'Payment details and student record inserted successfully' });
+
+        // Release the connection
+        connection.release();
+    } catch (error) {
+        console.error('Error in payment route:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 app.listen(port, () => {

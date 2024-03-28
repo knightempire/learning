@@ -80,7 +80,8 @@
                                             </label> <input type="text" required class="form-control"> </div>
                                     </div>
                                 </div>
-                              <div class="card-footer"> <button type="button" class="subscribe btn btn-primary btn-block shadow-sm"> Confirm Payment </button> 
+                              <div class="card-footer"> <button id="confirmPaymentBtn" type="button" class="subscribe btn btn-primary btn-block shadow-sm" onclick="insertPaymentDetails()">Confirm Payment</button>
+
                             </form>
                         </div>
                     </div> <!-- End -->
@@ -146,41 +147,36 @@
     // Your payment submission code here
     // You can send the courseName along with other payment details in your AJAX request
   </script>
+ <script>
+        async function insertPaymentDetails() {
+            const courseName = getCourseNameFromURL(); // Assuming you have a function to get course name from URL
+            const amount = 100; // Example amount
 
-<script>
-    // Function to insert payment details
-    async function insertPaymentDetails() {
-        const courseName = document.getElementById('courseName').value;
-        const amount = 100; // Example amount
+            try {
+                const paymentData = {
+                    user_id: user, // Assuming user_id is 1 for example
+                    amount: amount,
+                    course_name: courseName,
+                };
 
-        try {
-           
-            // Construct payment data
-            const paymentData = {
-                user_id: userId,
-                amount: amount,
-                course_name: courseName,
-            };
+                console.log('API Request:', paymentData);
 
-            // Make payment submission request
-            const paymentResponse = await fetch('https://learning-u7aw.onrender.com/api/payment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(paymentData)
-            });
+                const paymentResponse = await fetch('http://localhost:3000/api/payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(paymentData)
+                });
 
-            // Check if payment response is successful (status code 200)
-            if (paymentResponse.ok) {
-                // Redirect to ./load.html
-                window.location.href = './load.html';
-            } else {
-                // Handle payment error
-                throw new Error('Error submitting payment');
+                if (paymentResponse.ok) {
+                    console.log('Payment successful');
+                    window.location.href = './loading.html'; // Redirect on success
+                } else {
+                    console.error('Error submitting payment');
+                }
+            } catch (error) {
+                console.error('Error:', error.message);
             }
-        } catch (error) {
-            console.error('Error:', error.message);
         }
-    }
-</script>
+    </script>
