@@ -242,7 +242,11 @@ app.post('/message', async (req, res) => {
 
 // Route for updating user data (username or password)
 <<<<<<< HEAD
+<<<<<<< HEAD
 app.put('/api/users/:phoneNumber',  async (req, res) => {
+=======
+app.put('/api/users/:phoneNumber', async (req, res) => {
+>>>>>>> parent of c1644f8 (authtokenverification)
 =======
 app.put('/api/users/:phoneNumber', async (req, res) => {
 >>>>>>> parent of c1644f8 (authtokenverification)
@@ -289,7 +293,11 @@ app.put('/api/users/:phoneNumber', async (req, res) => {
 
 //making payment gpay
 <<<<<<< HEAD
+<<<<<<< HEAD
 app.post('/api/paymentmake',  (req, res) => {
+=======
+app.post('/api/paymentmake', (req, res) => {
+>>>>>>> parent of c1644f8 (authtokenverification)
 =======
 app.post('/api/paymentmake', (req, res) => {
 >>>>>>> parent of c1644f8 (authtokenverification)
@@ -307,7 +315,11 @@ app.post('/api/paymentmake', (req, res) => {
 
 //payment call
 <<<<<<< HEAD
+<<<<<<< HEAD
 app.get('/api/paymentcall',  (req, res) => {
+=======
+app.get('/api/paymentcall', (req, res) => {
+>>>>>>> parent of c1644f8 (authtokenverification)
 =======
 app.get('/api/paymentcall', (req, res) => {
 >>>>>>> parent of c1644f8 (authtokenverification)
