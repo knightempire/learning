@@ -147,7 +147,7 @@
                             
                                 async function checkPaymentStatus() {
                                     try {
-                                        const paymentStatusResponse = await fetch('http://localhost:3000/api/paymentcall');
+                                        const paymentStatusResponse = await fetch('https://learning-u7aw.onrender.com/api/paymentcall');
                                         if (paymentStatusResponse.ok) {
                                             const paymentStatus = await paymentStatusResponse.json();
                                             console.log('Payment Status:', paymentStatus.value);
@@ -175,7 +175,7 @@
                             
                                         console.log('API Request:', paymentData);
                             
-                                        const paymentResponse = await fetch('http://localhost:3000/api/payment', {
+                                        const paymentResponse = await fetch('https://learning-u7aw.onrender.com/api/payment', {
                                             method: 'POST',
                                             headers: {
                                                 'Content-Type': 'application/json'
