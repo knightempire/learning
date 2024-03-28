@@ -122,16 +122,11 @@
         </div>
     </div>
                                 <script type='text/javascript' src='https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js'></script>
-                                <script type='text/javascript' src='#'></script>
-                                <script type='text/javascript' src='#'></script>
-                                <script type='text/javascript' src='#'></script>
+                     
                                 <script type='text/javascript'>$(function() {
   $('[data-toggle="tooltip"]').tooltip()
 })</script>
-                                <script type='text/javascript'>var myLink = document.querySelector('a[href="#"]');
-                                myLink.addEventListener('click', function(e) {
-                                  e.preventDefault();
-                                });</script>
+
                             
                                 </body>
                             </html>
@@ -158,16 +153,13 @@
         const courseName = document.getElementById('courseName').value;
         const amount = 100; // Example amount
 
-
         try {
-          
-
+           
             // Construct payment data
             const paymentData = {
                 user_id: userId,
                 amount: amount,
                 course_name: courseName,
-        
             };
 
             // Make payment submission request
@@ -179,14 +171,14 @@
                 body: JSON.stringify(paymentData)
             });
 
-            // Handle payment response
-            if (!paymentResponse.ok) {
+            // Check if payment response is successful (status code 200)
+            if (paymentResponse.ok) {
+                // Redirect to ./load.html
+                window.location.href = './load.html';
+            } else {
+                // Handle payment error
                 throw new Error('Error submitting payment');
             }
-
-            // Display success message
-            const paymentResult = await paymentResponse.json();
-            console.log(paymentResult); // Log the payment result
         } catch (error) {
             console.error('Error:', error.message);
         }
