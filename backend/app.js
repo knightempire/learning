@@ -11,6 +11,8 @@ const moment = require('moment');
 // const authMiddleware = require('./authmiddleware');
 const { generateOtpMiddleware, verifyOtpMiddleware } = require('./middleWare/otpgeneration');
 const generateResponse = require('./middleWare/chat');
+const authenticateToken = require('./middleWare/verifytocken')
+const createtoken = require('./middleWare/createtoken');
 
 const app = express();
 const port = 3000||null;
@@ -59,56 +61,6 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
 }));
-
-
-//function to create token
-const createtoken = (req, res, rows) => {
-    const token = jwt.sign({ email: rows[0].email }, JWT_SECRET, {
-        expiresIn: JWT_EXPIRY,
-    });
-    app.use(session({
-        secret: SESSION_SECRET, 
-        resave: false,
-        saveUninitialized: true,
-    }));
-
-    // Store token in session and set cookie
-    req.session.jwtToken = token;
-    return token;
-}
-
-
-//function to verify token
-const authenticateToken = (req, res, next) => {
-    try {
-        // Check if Authorization header exists
-        if (!req.headers.authorization) {
-            return res.redirect('/index.html'); // Redirect to login page
-        }
-
-        // Retrieve token from request headers and split it
-        const token = req.headers.authorization.split(' ')[1];
-        console.log("Token:", token); // Print token value
-
-        // Verify token
-        jwt.verify(token, "learn@1234", (err, user) => {
-            if (err) {
-                console.error('Authentication error:', err.message);
-                // Token is invalid or expired, send 401 Unauthorized response to client
-                return res.status(401).json({ error: 'Unauthorized' });
-            } else {
-                req.user = user; // Set user information in request object
-                next(); // Proceed to next middleware
-            }
-        });
-    } catch (err) {
-        console.error('Error in authentication middleware:', err.message);
-        res.status(500).send('Internal Server Error');
-    }
-};
-
-
-
 
 
 // Route for generating OTP
@@ -231,7 +183,7 @@ app.post('/api/login', async (req, res) => {
 
 
 //Route for chat
-app.post('/message', async (req, res) => {
+app.post('/message', authenticateToken, async (req, res) => {
     const userInput = req.body.message;
 
     // Generate response using middleware
@@ -241,7 +193,7 @@ app.post('/message', async (req, res) => {
 
 
 // Route for updating user data (username or password)
-app.put('/api/users/:phoneNumber', async (req, res) => {
+app.put('/api/users/:phoneNumber', authenticateToken, async (req, res) => {
     const { phoneNumber } = req.params;
     const { option, newData } = req.body;
 
@@ -284,7 +236,7 @@ app.put('/api/users/:phoneNumber', async (req, res) => {
 
 
 //making payment gpay
-app.post('/api/paymentmake', (req, res) => {
+app.post('/api/paymentmake', authenticateToken, (req, res) => {
     paymentValue = 1; // Set the payment value to 1
     console.log('Payment value set to 1');
 
@@ -298,13 +250,13 @@ app.post('/api/paymentmake', (req, res) => {
 });
 
 //payment call
-app.get('/api/paymentcall', (req, res) => {
+app.get('/api/paymentcall', authenticateToken, (req, res) => {
     res.json({ value: paymentValue });
 });
 
 
 //payment 
-app.post('/api/payment', async (req, res) => {
+app.post('/api/payment', authenticateToken, async (req, res) => {
     const { user_id, amount, course_name } = req.body;
 
     try {
