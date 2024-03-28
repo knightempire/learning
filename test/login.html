@@ -36,9 +36,9 @@
             
             if (response.ok) {
                 // Store token in local storage upon successful login
-                localStorage.setItem('jwtToken', data.token);
+                localStorage.setItem('Token', data.token);
                 console.log('Token stored in local storage');
-                
+                 
                 // Redirect to course_detail.html after successful login
                 window.location.href = './course_detail.html';
             } else {
