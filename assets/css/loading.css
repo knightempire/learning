@@ -1,0 +1,110 @@
+body {
+    font-family : 'Roboto', sans-serif;
+  }
+  
+  .payment-loader {
+    width : 150px;
+    position: absolute;
+    top: 50%;
+    left : 50%;
+    -webkit-transform: translateY(-50%) translateX(-50%);
+    -moz-transform: translateY(-50%) translateX(-50%);
+    -o-transform: translateY(-50%) translateX(-50%);
+    transform: translateY(-50%) translateX(-50%);
+  }
+  
+  .payment-loader .binding {
+    content : '';
+    width : 60px;
+    height : 4px;
+    border : 2px solid #00c4bd;
+    margin : 0 auto;
+  }
+  
+  .payment-loader .pad {
+    width : 60px;
+    height : 38px;
+    border-radius : 8px;
+    border : 2px solid #00c4bd;
+    padding : 6px;
+    margin : 0 auto;
+  }
+  
+  .payment-loader .chip {
+    width : 12px;
+    height: 8px;
+    background: #00c4bd;
+    border-radius: 3px;
+    margin-top: 4px;
+    margin-left: 3px;
+  }
+  
+  .payment-loader .line {
+    width : 52px;
+    margin-top : 6px;
+    margin-left : 3px;
+    height : 4px;
+    background: #00c4bd;
+    border-radius: 100px;
+    opacity : 0;
+    -webkit-animation : writeline 3s infinite ease-in;
+    -moz-animation : writeline 3s infinite ease-in;
+    -o-animation : writeline 3s infinite ease-in;
+    animation : writeline 3s infinite ease-in;
+  }
+  
+  .payment-loader .line2 {
+    width : 32px;
+    margin-top : 6px;
+    margin-left : 3px;
+    height : 4px;
+    background: #00c4bd;
+    border-radius: 100px;
+    opacity : 0;
+    -webkit-animation : writeline2 3s infinite ease-in;
+    -moz-animation : writeline2 3s infinite ease-in;
+    -o-animation : writeline2 3s infinite ease-in;
+    animation : writeline2 3s infinite ease-in;
+  }
+  
+  .payment-loader .line:first-child {
+    margin-top : 0;
+  }
+  
+  .payment-loader .line.line1 {
+    -webkit-animation-delay: 0s;
+    -moz-animation-delay: 0s;
+    -o-animation-delay: 0s;
+    animation-delay: 0s;
+  }
+  
+  .payment-loader .line.line2 {
+    -webkit-animation-delay: 0.5s;
+    -moz-animation-delay: 0.5s;
+    -o-animation-delay: 0.5s;
+    animation-delay: 0.5s;
+  }
+  
+  .payment-loader .loader-text {
+    text-align : center;
+    margin-top : 20px;
+    font-size : 16px;
+    line-height: 16px;
+    color : #5f6571;
+    font-weight: bold;
+  }
+  
+  
+  @keyframes writeline {
+    0% { width : 0px; opacity: 0; }
+    33% { width : 52px; opacity : 1; }
+    70% { opacity : 1; }
+    100% {opacity : 0; }
+  }
+  
+  @keyframes writeline2 {
+    0% { width : 0px; opacity: 0; }
+    33% { width : 32px; opacity : 1; }
+    70% { opacity : 1; }
+    100% {opacity : 0; }
+  }

@@ -77,25 +77,19 @@
                 }
             }
         }
+
+
+
+        $(document).ready(function() {
+    
+    $(window).scroll(function(){
+        $('.tez').css("opacity", 1- $(window).scrollTop() / 300) 
+    })
+
+});
         </script>
         
-        <style>
-        h1 {
-            text-align: center;
-        }
         
-        #reader {
-            width: 500px;
-            margin: 0 auto;
-        }
-        
-        .row {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        </style>
         
 
   
@@ -416,14 +410,20 @@ body {
         color: #667e8d;
         margin-top: .5rem; }
 
+        h1 {
+            text-align: center;
+        }
+        
+        #reader {
+            width: 500px;
+            margin: 0 auto;
+        }
+        
+        .row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
 </style>
-
-<script>
-    $(document).ready(function() {
-    
-    $(window).scroll(function(){
-        $('.tez').css("opacity", 1- $(window).scrollTop() / 300) 
-    })
-
-});
-</script>
