@@ -37,12 +37,13 @@
 
         async function generateOtp() {
             const phoneNumber = document.getElementById('phoneNumber').value;
-
+            const token = localStorage.getItem('token');
             try {
                 const response = await fetch(`${apiUrl}/forgotgenerate-otp`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({ phoneNumber }),
                 });
@@ -61,12 +62,13 @@
         async function verifyOtp() {
             const verifyPhoneNumber = document.getElementById('phoneNumber').value; // Same phone number used for verification
             const otp = document.getElementById('otp').value;
-
+            const token = localStorage.getItem('token');
             try {
                 const response = await fetch(`${apiUrl}/verify-otp`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({ phoneNumber: verifyPhoneNumber, otp }),
                 });

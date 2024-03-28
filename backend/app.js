@@ -2,16 +2,15 @@ const express = require('express');
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const moment = require('moment');
 
-// const authMiddleware = require('./authmiddleware');
 const { generateOtpMiddleware, verifyOtpMiddleware } = require('./middleWare/otpgeneration');
+const authenticateToken=require('./middleWare/verifytocken')
 const generateResponse = require('./middleWare/chat');
-
+const createtoken = require('./middleWare/createtoken');
 const app = express();
 const port = 3000||null;
 
@@ -33,8 +32,6 @@ const {
     DB_CONNECTION_LIMIT,
     DB_QUEUE_LIMIT,
     SESSION_SECRET,
-    JWT_SECRET,
-    JWT_EXPIRY,
 } = process.env;
 
 const dbConfig = {
@@ -43,7 +40,7 @@ const dbConfig = {
     user: DB_USER,
     password: DB_PASSWORD,
     database: DB_DATABASE,
-    waitForConnections: DB_WAIT_FOR_CONNECTIONS === 'true', // Convert string to boolean
+    waitForConnections: DB_WAIT_FOR_CONNECTIONS === 'true',
     connectionLimit: parseInt(DB_CONNECTION_LIMIT, 10),
     queueLimit: parseInt(DB_QUEUE_LIMIT, 10),
 };
@@ -58,56 +55,6 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
 }));
-
-
-//function to create token
-const createtoken = (req, res, rows) => {
-    const token = jwt.sign({ email: rows[0].email }, JWT_SECRET, {
-        expiresIn: JWT_EXPIRY,
-    });
-    app.use(session({
-        secret: SESSION_SECRET, 
-        resave: false,
-        saveUninitialized: true,
-    }));
-
-    // Store token in session and set cookie
-    req.session.jwtToken = token;
-    return token;
-}
-
-
-//function to verify token
-const authenticateToken = (req, res, next) => {
-    try {
-        // Check if Authorization header exists
-        if (!req.headers.authorization) {
-            return res.redirect('/index.html'); // Redirect to login page
-        }
-
-        // Retrieve token from request headers and split it
-        const token = req.headers.authorization.split(' ')[1];
-        console.log("Token:", token); // Print token value
-
-        // Verify token
-        jwt.verify(token, "learn@1234", (err, user) => {
-            if (err) {
-                console.error('Authentication error:', err.message);
-                // Token is invalid or expired, send 401 Unauthorized response to client
-                return res.status(401).json({ error: 'Unauthorized' });
-            } else {
-                req.user = user; // Set user information in request object
-                next(); // Proceed to next middleware
-            }
-        });
-    } catch (err) {
-        console.error('Error in authentication middleware:', err.message);
-        res.status(500).send('Internal Server Error');
-    }
-};
-
-
-
 
 
 // Route for generating OTP
@@ -160,7 +107,6 @@ app.post('/api/register', async (req, res) => {
 
     try {
        
-
         // Check if the username is already taken
         const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
 
@@ -230,7 +176,7 @@ app.post('/api/login', async (req, res) => {
 
 
 //Route for chat
-app.post('/message', async (req, res) => {
+app.post('/message', authenticateToken, async (req, res) => {
     const userInput = req.body.message;
 
     // Generate response using middleware
@@ -240,7 +186,7 @@ app.post('/message', async (req, res) => {
 
 
 // Route for updating user data (username or password)
-app.put('/api/users/:phoneNumber', async (req, res) => {
+app.put('/api/users/:phoneNumber', authenticateToken, async (req, res) => {
     const { phoneNumber } = req.params;
     const { option, newData } = req.body;
 
@@ -283,7 +229,7 @@ app.put('/api/users/:phoneNumber', async (req, res) => {
 
 
 //payment
-app.post('/api/payment', async (req, res) => {
+app.post('/api/payment', authenticateToken, async (req, res) => {
     const { user_id, amount, course_name } = req.body;
 
     try {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -84,6 +85,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="chat-box">
         <div id="chat-messages"></div> <br>
@@ -101,10 +103,13 @@
 
             document.getElementById('typing-indicator').style.display = 'block';
 
+            const token = localStorage.getItem('token');
+
             const response = await fetch('http://localhost:3000/message', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
                 },
                 body: JSON.stringify({ message: userInput })
             });
@@ -135,4 +140,5 @@
         }
     </script>
 </body>
+
 </html>
