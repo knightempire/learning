@@ -62,71 +62,29 @@ app.use(session({
 
 
 //function to create token
-const createtoken = async (username) => {
-    try {
-        // Query the database to get user details based on the username
-        const [userData] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
+const createtoken = (req, res, rows) => {
+    const token = jwt.sign({ email: rows[0].email }, JWT_SECRET, {
+        expiresIn: JWT_EXPIRY,
+    });
+    app.use(session({
+        secret: SESSION_SECRET, 
+        resave: false,
+        saveUninitialized: true,
+    }));
 
-        if (userData.length === 0) {
-            throw new Error('User not found');
-        }
-
-        // Extract user details
-        const { id, email } = userData[0];
-
-        // Create the token payload
-        const payload = {
-            id: id,
-            username: username,
-            email: email
-        };
-
-        // Sign the token with the payload and secret
-        const token = jwt.sign(payload, JWT_SECRET, {
-            expiresIn: JWT_EXPIRY,
-        });
-
-        return token;
-    } catch (error) {
-        throw error; // Throw error for handling elsewhere
-    }
+    // Store token in session and set cookie
+    req.session.jwtToken = token;
+    return token;
 }
 
-app.post('/api/auth', (req, res) => {
-    try {
-        // Check if Authorization header exists
-        // if (!req.headers.authorization) {
-        //     return res.redirect(302, 'https://eduwell.onrender.com/'); // Redirect to specified URL
-        // }
-
-        // Retrieve token from request headers and split it
-        const token = req.headers.authorization.split(' ')[1];
-        console.log("Token:", token); // Print token value
-
-        // Verify token
-        jwt.verify(token, JWT_SECRET, (err, user) => {
-            if (err) {
-                console.error('Authentication error:', err.message);
-                // Token is invalid or expired, send 401 Unauthorized response to client
-                return res.status(401).json({ error: 'Unauthorized' });
-            } else {
-                // Token is valid, send user information in the response
-                res.status(200).json({ user });
-            }
-        });
-    } catch (err) {
-        console.error('Error in authentication middleware:', err.message);
-        res.status(500).send('Internal Server Error');
-    }
-});
 
 //function to verify token
 const authenticateToken = (req, res, next) => {
     try {
         // Check if Authorization header exists
-        // if (!req.headers.authorization) {
-        //     return res.redirect('https://eduwell.onrender.com/'); // Redirect to specified URL
-        // }
+        if (!req.headers.authorization) {
+            return res.redirect('/index.html'); // Redirect to login page
+        }
 
         // Retrieve token from request headers and split it
         const token = req.headers.authorization.split(' ')[1];
@@ -148,7 +106,6 @@ const authenticateToken = (req, res, next) => {
         res.status(500).send('Internal Server Error');
     }
 };
-
 
 
 
@@ -241,11 +198,13 @@ app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
+        console.log("api login is connected")
         // Query the database to check if the provided username exists
         const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
 
         if (existingUser.length === 0) {
             // If the username doesn't exist, return an error
+            console.log("no user found")
             return res.status(400).json({ error: 'Invalid username ' });
         }
 
@@ -254,15 +213,13 @@ app.post('/api/login', async (req, res) => {
 
         if (!isPasswordValid) {
             // If the password is incorrect, return an error
+            console.log("password invalid")
             return res.status(400).json({ error: 'Invalid password' });
         }
 
         // User is authenticated
-        const token = await createtoken(username); // Call the createtoken function with the username
+        const token = createtoken(req, res, existingUser); // Call the createtoken function with req and res
         console.log(token)
-
-        // Store token in session and set cookie
-        req.session.jwtToken = token;
 
         res.json({ isValid: true, token });
     } catch (error) {
@@ -270,7 +227,6 @@ app.post('/api/login', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
 
 
 
