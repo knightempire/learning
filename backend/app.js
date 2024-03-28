@@ -95,9 +95,9 @@ const createtoken = async (username) => {
 app.post('/api/auth', (req, res) => {
     try {
         // Check if Authorization header exists
-        if (!req.headers.authorization) {
-            return res.redirect(302, 'https://eduwell.onrender.com/'); // Redirect to specified URL
-        }
+        // if (!req.headers.authorization) {
+        //     return res.redirect(302, 'https://eduwell.onrender.com/'); // Redirect to specified URL
+        // }
 
         // Retrieve token from request headers and split it
         const token = req.headers.authorization.split(' ')[1];
@@ -124,9 +124,9 @@ app.post('/api/auth', (req, res) => {
 const authenticateToken = (req, res, next) => {
     try {
         // Check if Authorization header exists
-        if (!req.headers.authorization) {
-            return res.redirect('https://eduwell.onrender.com/'); // Redirect to specified URL
-        }
+        // if (!req.headers.authorization) {
+        //     return res.redirect('https://eduwell.onrender.com/'); // Redirect to specified URL
+        // }
 
         // Retrieve token from request headers and split it
         const token = req.headers.authorization.split(' ')[1];
