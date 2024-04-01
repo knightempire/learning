@@ -125,6 +125,7 @@ const authenticateToken = async (req, res, next) => {
                 
                 // Decode the token to get the username
                 const username = decodedToken.username;
+                console.log(username)
 
                 // Retrieve user data from the database based on the username
                 const userData = await getUserDataByUsername(username);
