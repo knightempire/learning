@@ -565,7 +565,7 @@ app.post('/api/lecture', async (req, res) => {
     try {
         console.log('API lecture requested');
         // Query the database to retrieve lecture data based on the provided course ID
-        const [lectureData] = await pool.execute('SELECT * FROM lectures WHERE c_id = ?', [c_id]);
+        const [lectureData] = await pool.execute('SELECT * FROM lecture WHERE c_id = ?', [c_id]);
 
         // Check if any lecture data is found for the provided course ID
         if (lectureData.length === 0) {

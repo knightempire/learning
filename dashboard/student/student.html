@@ -193,7 +193,7 @@
 </section>
 
   <section class="section main-section">
-
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/oZxg1hbl_64?si=Ys314uIRjrq32HXD&amp;start=256" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
   </section>
 
 <footer class="footer">
@@ -287,11 +287,12 @@
         return response.json();
       })
       .then(checkStudentData => {
-        // Handle the response data from /api/checkstudent
-        console.log('Check student data:', checkStudentData);
+  // Log the entire response object to inspect its structure
+  console.log('Check student data:', checkStudentData);
 
-        // Extract the c_id from the checkStudentData
-        const c_id = checkStudentData.c_id;
+  // Extract the c_id from the checkStudentData
+  const c_id = checkStudentData.data.c_id;
+  console.log('Extracted c_id:', c_id);
 
         // Send the c_id to the /api/lecture endpoint
         fetch('https://learning-u7aw.onrender.com/api/lecture', {
