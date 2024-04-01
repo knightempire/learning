@@ -468,6 +468,32 @@ app.get('/api/courselist', (req, res) => {
 });
 
 
+//upload video
+app.post('/api/uploadvideo', async (req, res) => {
+    const { title, video_url, c_id } = req.body;
+
+    try {
+        console.log('API uploadvideo requested');
+
+        // Insert the new lecture into the database
+        const [result] = await pool.execute('INSERT INTO lecture (title, video_url, c_id) VALUES (?, ?, ?)', [title, video_url, c_id]);
+        
+        // Check if insertion was successful
+        if (result.affectedRows === 1) {
+            return res.status(201).json({ message: 'Video uploaded successfully' });
+        } else {
+            throw new Error('Failed to upload video');
+        }
+    } catch (error) {
+        console.error('Error during video upload:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
+
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
