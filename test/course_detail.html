@@ -43,6 +43,7 @@
     <button class="button" onclick="redirectToPayment('AWS')">AWS</button>
   </div>
 
+ 
   <script>
     // Function to perform AJAX request to decodeToken endpoint
     function decodeTokenAndLoad() {
@@ -69,14 +70,46 @@
         return response.json();
       })
       .then(userData => {
-        // console.log('User data:', userData);
+        console.log('User data:', userData);
         // Now you have access to the decoded user data, you can perform further actions if needed
+        
+        // Call the checkUser function with the decoded user data
+        checkUser(userData);
       })
       .catch(error => {
         console.error('Error decoding token:', error.message);
         // Handle the error condition here, such as redirecting to a login page or displaying an error message to the user
       });
     }
+  
+ // Function to check user after decoding token
+function checkUser(userData) {
+  // Perform AJAX request to checkuser endpoint
+  fetch('https://learning-u7aw.onrender.com/api/checkstudent', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ s_id: userData.u_id }) // Assuming s_id is derived from u_id
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to check user');
+    }
+    return response.json();
+  })
+  .then(checkData => {
+    console.log('Check user data:', checkData);
+    // If the response is successful (status code 200) and the data indicates the student exists, redirect to student.html
+    if (response.status === 200 && checkData.exists) {
+      window.location.href = 'student.html';
+    }
+  })
+  .catch(error => {
+    console.error('Error checking user:', error.message);
+    // Handle the error condition here
+  });
+}
 
     // Call the decodeTokenAndLoad function when the page loads
     window.onload = decodeTokenAndLoad;
@@ -86,5 +119,7 @@
       window.location.href = '../payment/pay.html?course=' + course;
     }
   </script>
+  
+
 </body>
 </html>

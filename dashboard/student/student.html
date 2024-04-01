@@ -253,3 +253,47 @@
 
 </body>
 </html>
+
+
+<script>
+  // Function to retrieve token from localStorage
+  function getToken() {
+      return localStorage.getItem('token');
+  }
+
+  // Function to make a fetch request to decodeToken endpoint
+  function decodeToken() {
+      const token = getToken();
+
+      if (!token) {
+          console.error('Token not found in localStorage.');
+          return;
+      }
+
+      fetch('/api/decodeToken', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              // Assuming token is passed in the Authorization header
+              'Authorization': `Bearer ${token}`
+          }
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Failed to decode token');
+          }
+          return response.json();
+      })
+      .then(data => {
+          console.log('Decoded token data:', data);
+          // Handle decoded token data as needed
+      })
+      .catch(error => {
+          console.error('Error decoding token:', error);
+          // Handle error
+      });
+  }
+
+  // Call decodeToken function when the page loads
+  document.addEventListener('DOMContentLoaded', decodeToken);
+</script>
