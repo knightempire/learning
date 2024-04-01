@@ -39,7 +39,7 @@
   <div class="button-container">
     <button class="button" onclick="redirectToPayment('HTML')">HTML</button>
     <button class="button" onclick="redirectToPayment('DBMS')">DBMS</button>
-    <button class="button" onclick="redirectToPayment('AI')">AI</button>
+    <button class="button" onclick="redirectToPayment('ML')">ML</button>
     <button class="button" onclick="redirectToPayment('AWS')">AWS</button>
   </div>
 
@@ -70,7 +70,10 @@
         return response.json();
       })
       .then(userData => {
-        console.log('User data:', userData);
+    
+        // Log s_id in console
+        console.log('s_id:', userData.user_id);
+        
         // Now you have access to the decoded user data, you can perform further actions if needed
         
         // Call the checkUser function with the decoded user data
@@ -82,7 +85,9 @@
       });
     }
   
- // Function to check user after decoding token
+    // Function to check user after decoding token
+// Function to check user after decoding token
+// Function to check user after decoding token
 function checkUser(userData) {
   // Perform AJAX request to checkuser endpoint
   fetch('https://learning-u7aw.onrender.com/api/checkstudent', {
@@ -90,7 +95,7 @@ function checkUser(userData) {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ s_id: userData.u_id }) // Assuming s_id is derived from u_id
+    body: JSON.stringify({ s_id: userData.user_id }) // Assuming s_id is derived from u_id
   })
   .then(response => {
     if (!response.ok) {
@@ -100,9 +105,12 @@ function checkUser(userData) {
   })
   .then(checkData => {
     console.log('Check user data:', checkData);
-    // If the response is successful (status code 200) and the data indicates the student exists, redirect to student.html
-    if (response.status === 200 && checkData.exists) {
-      window.location.href = 'student.html';
+    // If the data indicates the student exists, redirect to student.html
+    if (checkData.data && checkData.data.s_id === userData.user_id) {
+      console.log('User exists. Redirecting...');
+      window.location.href = '../dashboard/student/student.html';
+    } else {
+      console.log('User does not exist or mismatch. Not redirecting...');
     }
   })
   .catch(error => {
@@ -110,6 +118,8 @@ function checkUser(userData) {
     // Handle the error condition here
   });
 }
+
+
 
     // Call the decodeTokenAndLoad function when the page loads
     window.onload = decodeTokenAndLoad;
