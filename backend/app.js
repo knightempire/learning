@@ -455,16 +455,20 @@ app.post('/api/payment', async (req, res) => {
 
 
 //courses
-app.get('/api/courselist', (req, res) => {
-    const query = 'SELECT c_id, course_name FROM course';
-    connection.query(query, (err, results) => {
-        if (err) {
-            console.error('Error fetching course list:', err);
-            res.status(500).json({ error: 'Internal Server Error' });
-            return;
+app.get('/api/courselist', async (req, res) => {
+    try {
+ 
+        const [rows] = await pool.query('SELECT c_id, course_name FROM course');
+        if (!Array.isArray(rows)) {
+            throw new Error('Data returned from query is not an array');
         }
-        res.json(results);
-    });
+        
+        console.log("API courselist requested")
+        res.json(rows);
+    } catch (error) {
+        console.error('Error fetching:', error);
+        res.status(500).json({ error: 'An error occurred while fetching' });
+    }
 });
 
 
