@@ -68,6 +68,8 @@ const createtoken = (req, res, rows) => {
 
     // Sign the token with the username instead of email
     const token = jwt.sign({ username: username }, JWT_SECRET, {
+
+        
         expiresIn: JWT_EXPIRY,
     });
 
@@ -147,6 +149,40 @@ const authenticateToken = async (req, res, next) => {
     }
 };
 
+//Route for login
+app.post('/api/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        console.log('api login requested');
+        // Query the database to check if the provided username exists
+        const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
+
+        if (existingUser.length === 0) {
+            // If the username doesn't exist, return an error
+            console.log("no user found")
+            return res.status(400).json({ error: 'Invalid username ' });
+        }
+
+        // Verify the password
+        const isPasswordValid = await bcrypt.compare(password, existingUser[0].password);
+
+        if (!isPasswordValid) {
+            // If the password is incorrect, return an error
+            console.log("password invalid")
+            return res.status(400).json({ error: 'Invalid password' });
+        }
+
+        // User is authenticated
+        const token = createtoken(req, res, existingUser); // Call the createtoken function with req and res
+        console.log(token)
+
+        res.json({ isValid: true, token });
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 app.post('/api/decodeToken', async (req, res) => {
     console.log('api decode requested');
@@ -280,29 +316,40 @@ app.post('/api/register', async (req, res) => {
 
 
 
-// Route for checking student
-app.post('/api/checkstudent', async (req, res) => {
-    const { s_id } = req.body;
+//Route for login
+app.post('/api/login', async (req, res) => {
+    const { username, password } = req.body;
 
     try {
-        console.log('api checkstudent requested');
-        // Query the database to check if the provided student ID exists
-        const [existingStudent] = await pool.execute('SELECT * FROM student WHERE s_id = ?', [s_id]);
+        console.log('api login requested');
+        // Query the database to check if the provided username exists
+        const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
 
-        if (existingStudent.length === 0) {
-            // If the student ID doesn't exist, return an error
-            console.log("Student not found")
-            return res.status(404).json({ error: 'Student not found' });
+        if (existingUser.length === 0) {
+            // If the username doesn't exist, return an error
+            console.log("no user found")
+            return res.status(400).json({ error: 'Invalid username ' });
         }
 
-        // Student is found, return student data
-        res.status(200).json({ data: existingStudent[0] });
+        // Verify the password
+        const isPasswordValid = await bcrypt.compare(password, existingUser[0].password);
+
+        if (!isPasswordValid) {
+            // If the password is incorrect, return an error
+            console.log("password invalid")
+            return res.status(400).json({ error: 'Invalid password' });
+        }
+
+        // User is authenticated
+        const token = createtoken(req, res, existingUser); // Call the createtoken function with req and res
+        console.log(token)
+
+        res.json({ isValid: true, token });
     } catch (error) {
-        console.error('Error during student check:', error);
+        console.error('Error during login:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
 
 
 
@@ -361,19 +408,17 @@ app.put('/api/users/:phoneNumber', async (req, res) => {
 //testing video
 
 
-app.post('/api/paymentmake', async (req, res) => {
+//making payment gpay
+app.post('/api/paymentmake', (req, res) => {
     console.log('api gpay paymentmake requested');
     paymentValue = 1; // Set the payment value to 1
     console.log('Payment value set to 1');
 
     // Reset the payment value to 0 after 5 seconds
-    await new Promise(resolve => {
-        setTimeout(() => {
-            paymentValue = 0; // Reset the payment value to 0
-            console.log('Payment value reset to 0 after 6 seconds');
-            resolve();
-        }, 6000);
-    });
+    setTimeout(() => {
+        paymentValue = 0; // Reset the payment value to 0
+        console.log('Payment value reset to 0 after 6 seconds');
+    }, 6000);
 
     res.sendStatus(200);
 });
@@ -444,40 +489,17 @@ app.post('/api/payment', async (req, res) => {
 });
 
 
-//check student
-app.post('/api/checkstudent', async (req, res) => {
-    const { s_id } = req.body; // Extract student ID from request body
-
-    try {
-        // Check if s_id is present in the student table
-        const result = await pool.query('SELECT * FROM student WHERE s_id = $1', [s_id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Student not found' });
-        }
-
-        // If s_id is present, return the student data
-        res.status(200).json({ data: result.rows[0] });
-    } catch (error) {
-        console.error('Error executing query', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-
-
 
 //courses
 app.get('/api/courselist', async (req, res) => {
     try {
  
-        console.log("API courselist requested")
         const [rows] = await pool.query('SELECT c_id, course_name FROM course');
         if (!Array.isArray(rows)) {
             throw new Error('Data returned from query is not an array');
         }
         
-      
+        console.log("API courselist requested")
         res.json(rows);
     } catch (error) {
         console.error('Error fetching:', error);
