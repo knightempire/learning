@@ -452,6 +452,23 @@ app.post('/api/payment', async (req, res) => {
     }
 });
 
+
+
+//courses
+app.get('/api/courselist', (req, res) => {
+    const query = 'SELECT c_id, course_name FROM course';
+    connection.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching course list:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        res.json(results);
+    });
+});
+
+
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 }).on('error', (err) => {

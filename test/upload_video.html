@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Lecture Form</title>
+</head>
+<body>
+    <h2>Add Lecture</h2>
+    <form>
+        <label for="course">Select Course:</label>
+        <select id="course" name="course">
+            <!-- Course options will be dynamically added here -->
+        </select>
+        <br>
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title">
+        <br>
+        <label for="video_url">Video URL:</label>
+        <input type="text" id="video_url" name="video_url">
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        // Fetch data from API and populate the dropdown menu
+        fetch('/api/courselist')
+            .then(response => response.json())
+            .then(data => {
+                const courseSelect = document.getElementById('course');
+                data.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course.c_id;
+                    option.textContent = course.course_name;
+                    courseSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching course list:', error));
+    </script>
+</body>
+</html>
