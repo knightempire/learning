@@ -36,8 +36,11 @@
 </head>
 <body>
   <h2>Select a Course</h2>
-  <div class="button-container" id="buttonContainer">
-    <!-- Course buttons will be dynamically added here -->
+  <div class="button-container">
+    <button class="button" onclick="redirectToPayment('HTML')">HTML</button>
+    <button class="button" onclick="redirectToPayment('DBMS')">DBMS</button>
+    <button class="button" onclick="redirectToPayment('ML')">ML</button>
+    <button class="button" onclick="redirectToPayment('AWS')">AWS</button>
   </div>
 
  
@@ -67,6 +70,7 @@
         return response.json();
       })
       .then(userData => {
+    
         // Log s_id in console
         console.log('s_id:', userData.user_id);
         
@@ -83,77 +87,46 @@
   
     // Function to check user after decoding token
     function checkUser(userData) {
-      // Perform AJAX request to checkuser endpoint
-      fetch('https://learning-u7aw.onrender.com/api/checkstudent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ s_id: userData.user_id }) // Assuming s_id is derived from u_id
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to check user');
-        }
-        return response.json();
-      })
-      .then(checkData => {
-        console.log('Check user data:', checkData);
-        // If the data indicates the student exists, redirect to student.html
-        if (checkData.data && checkData.data.s_id === userData.user_id) {
-          console.log('User exists. Redirecting...');
-          window.location.href = '../dashboard/student/student.html';
-        } else {
-          console.log('User does not exist or mismatch. Not redirecting...');
-          // Fetch and display course buttons
-          fetchCourseButtons();
-        }
-      })
-      .catch(error => {
-        console.error('Error checking user:', error.message);
-        // Handle the error condition here
-      });
+  // Perform AJAX request to checkuser endpoint
+  fetch('https://learning-u7aw.onrender.com/api/checkstudent', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ s_id: userData.user_id }) // Assuming s_id is derived from u_id
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to check user');
     }
-
-    // Function to fetch and display course buttons
-    function fetchCourseButtons() {
-      fetch('https://learning-u7aw.onrender.com/api/courselist')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to fetch course list');
-          }
-          return response.json();
-        })
-        .then(courses => {
-          console.log('Course list:', courses);
-          displayCourseButtons(courses);
-        })
-        .catch(error => {
-          console.error('Error fetching course list:', error.message);
-        });
+    return response.json();
+  })
+  .then(checkData => {
+    console.log('Check user data:', checkData);
+    // If the data indicates the student exists, redirect to student.html
+    if (checkData.data && checkData.data.s_id === userData.user_id) {
+      console.log('User exists. Redirecting...');
+      window.location.href = '../dashboard/student/student.html';
+    } else {
+      console.log('User does not exist or mismatch. Not redirecting...');
     }
+  })
+  .catch(error => {
+    console.error('Error checking user:', error.message);
+    // Handle the error condition here
+  });
+}
 
-    // Function to display course buttons
-    function displayCourseButtons(courses) {
-      const buttonContainer = document.getElementById('buttonContainer');
-      courses.forEach(course => {
-        const button = document.createElement('button');
-        button.textContent = course.course_name;
-        button.className = 'button';
-        button.onclick = function () {
-          redirectToPayment(course.course_name);
-        };
-        buttonContainer.appendChild(button);
-      });
-    }
 
+    // Call the decodeTokenAndLoad function when the page loads
+    window.onload = decodeTokenAndLoad;
+    
     // Function to redirect to payment page with selected course
     function redirectToPayment(course) {
       window.location.href = '../payment/pay.html?course=' + course;
     }
-
-    // Call the decodeTokenAndLoad function when the page loads
-    window.onload = decodeTokenAndLoad;
   </script>
+  
+
 </body>
 </html>

@@ -115,25 +115,16 @@
      
      
       <li>
-        <a class="dropdown">
+        <a class="dropdown" id="lecture-dropdown">
             <span class="icon"><i class="mdi mdi-table"></i></span>
-            <span class="menu-item-label">lectures</span>
-          <span class="icon"><i class="mdi mdi-plus"></i></span>
+            <span class="menu-item-label">Lectures</span>
+            <span class="icon"><i class="mdi mdi-plus"></i></span>
         </a>
-        <ul>
-          <li>
-            <a href="#void">
-              <span>Sub-item One</span>
-            </a>
-          </li>
-          <li>
-            <a href="#void">
-              <span>Sub-item Two</span>
-            </a>
-          </li>
+        <ul id="lecture-dropdown-items">
+            <!-- Dropdown items will be dynamically populated here -->
         </ul>
-      </li>
-
+    </li>
+    
 
       <li>
         <a class="dropdown">
@@ -231,7 +222,7 @@
 <script type="text/javascript" src="js/main.min.js?v=1628755089081"></script>
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
-<script type="text/javascript" src="js/chart.sample.min.js"></script>
+<!-- <script type="text/javascript" src="js/chart.sample.min.js"></script> -->
 
 
 <script>
@@ -254,46 +245,93 @@
 </body>
 </html>
 
-
 <script>
-  // Function to retrieve token from localStorage
-  function getToken() {
-      return localStorage.getItem('token');
-  }
+  // Retrieve the token from localStorage
+  const token = localStorage.getItem('Token');
 
-  // Function to make a fetch request to decodeToken endpoint
-  function decodeToken() {
-      const token = getToken();
+  // Check if the token exists
+  if (token) {
+    // Token exists, you can use it for further operations
+    console.log('Token:', token);
 
-      if (!token) {
-          console.error('Token not found in localStorage.');
-          return;
+    // Send the token to the API endpoint to decode it
+    fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ token: token }) // Send token in the request body
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok.');
       }
+      return response.json();
+    })
+    .then(data => {
+      // Extract the s_id (user_id) from the decoded token
+      const s_id = data.user_id;
 
-      fetch('/api/decodeToken', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              // Assuming token is passed in the Authorization header
-              'Authorization': `Bearer ${token}`
-          }
+      // Send the s_id to the /api/checkstudent endpoint
+      fetch('https://learning-u7aw.onrender.com/api/checkstudent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ s_id: s_id }) // Send s_id in the request body
       })
       .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok.');
+        }
+        return response.json();
+      })
+      .then(checkStudentData => {
+        // Handle the response data from /api/checkstudent
+        console.log('Check student data:', checkStudentData);
+
+        // Extract the c_id from the checkStudentData
+        const c_id = checkStudentData.c_id;
+
+        // Send the c_id to the /api/lecture endpoint
+        fetch('https://learning-u7aw.onrender.com/api/lecture', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ c_id: c_id }) // Send c_id in the request body
+        })
+        .then(response => {
           if (!response.ok) {
-              throw new Error('Failed to decode token');
+            throw new Error('Network response was not ok.');
           }
           return response.json();
-      })
-      .then(data => {
-          console.log('Decoded token data:', data);
-          // Handle decoded token data as needed
+        })
+        .then(lectureData => {
+          // Handle the response data from /api/lecture as needed
+          console.log('Lecture data:', lectureData);
+        })
+        .catch(error => {
+          console.error('Error fetching lectures:', error);
+          // Redirect to ### if fetching lectures fails
+          window.location.href = '###';
+        });
       })
       .catch(error => {
-          console.error('Error decoding token:', error);
-          // Handle error
+        console.error('Error checking student:', error);
+        // Redirect to ### if decoding token or checking student fails
+        window.location.href = '###';
       });
+    })
+    .catch(error => {
+      console.error('Error decoding token:', error);
+      // Redirect to ### if decoding token fails
+      window.location.href = '###';
+    });
+  } else {
+    // Token doesn't exist, handle the case accordingly
+    console.log('Token not found in localStorage');
+    // Redirect to ### if token is not found
+    window.location.href = '###';
   }
-
-  // Call decodeToken function when the page loads
-  document.addEventListener('DOMContentLoaded', decodeToken);
 </script>
