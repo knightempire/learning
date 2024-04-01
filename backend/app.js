@@ -458,12 +458,13 @@ app.post('/api/payment', async (req, res) => {
 app.get('/api/courselist', async (req, res) => {
     try {
  
+        console.log("API courselist requested")
         const [rows] = await pool.query('SELECT c_id, course_name FROM course');
         if (!Array.isArray(rows)) {
             throw new Error('Data returned from query is not an array');
         }
         
-        console.log("API courselist requested")
+      
         res.json(rows);
     } catch (error) {
         console.error('Error fetching:', error);

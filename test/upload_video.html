@@ -19,46 +19,65 @@
         <label for="video_url">Video URL:</label>
         <input type="text" id="video_url" name="video_url">
         <br>
-        <input type="submit" value="Submit">
+        <!-- Button to initiate upload -->
+        <button type="button" onclick="uploadVideo()">Upload</button>
     </form>
 
     <script>
+        // Function to handle video upload
+        function uploadVideo() {
+            // Get form data
+            const course = document.getElementById('course').value;
+            const title = document.getElementById('title').value;
+            const videoUrl = document.getElementById('video_url').value;
+
+            // Check if all required fields are filled
+            if (!course || !title || !videoUrl) {
+                alert('Please fill all fields before submitting the form.');
+                return;
+            }
+
+            const formData = {
+                c_id: course,
+                title: title,
+                video_url: videoUrl
+            };
+
+            // Send form data to the server
+            fetch('https://learning-u7aw.onrender.com/api/uploadvideo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to submit form');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Form submission successful:', data);
+                alert('Lecture added successfully!');
+                // Optionally, redirect to another page or update the UI
+            })
+            .catch(error => {
+                console.error('Error submitting form:', error);
+                alert('Failed to add lecture. Please try again.');
+            });
+        }
+
+        // Fetch data from API and populate the dropdown menu
         document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('lectureForm');
-
-            form.addEventListener('submit', function(event) {
-                event.preventDefault(); // Prevent the default form submission
-                
-                // Get form data
-                const formData = new FormData(form);
-
-                // Send form data to the server
-                fetch('https://learning-u7aw.onrender.com/api/uploadvideo', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to submit form');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Form submission successful:', data);
-                    alert('Lecture added successfully!');
-                    // Optionally, redirect to another page or update the UI
-                })
-                .catch(error => {
-                    console.error('Error submitting form:', error);
-                    alert('Failed to add lecture. Please try again.');
-                });
+            const courseSelect = document.getElementById('course');
+            courseSelect.addEventListener('change', function() {
+                console.log('Selected course ID:', this.value);
             });
 
-            // Fetch data from API and populate the dropdown menu
             fetch('https://learning-u7aw.onrender.com/api/courselist')
                 .then(response => response.json())
                 .then(data => {
-                    const courseSelect = document.getElementById('course');
                     data.forEach(course => {
                         const option = document.createElement('option');
                         option.value = course.c_id;

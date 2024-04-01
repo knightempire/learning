@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 01, 2024 at 03:03 PM
+-- Generation Time: Apr 01, 2024 at 07:05 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -78,7 +78,7 @@ CREATE TABLE `course` (
 INSERT INTO `course` (`c_id`, `c_duration`, `c_no_certificate`, `c_description`, `m_id`, `course_name`) VALUES
 (1, NULL, NULL, NULL, NULL, 'HTML'),
 (2, NULL, NULL, NULL, NULL, 'DBMS'),
-(3, NULL, NULL, NULL, NULL, 'AI'),
+(3, NULL, NULL, NULL, NULL, 'ML'),
 (4, NULL, NULL, NULL, NULL, 'AWS');
 
 -- --------------------------------------------------------
