@@ -287,12 +287,8 @@
         return response.json();
       })
       .then(checkStudentData => {
-  // Log the entire response object to inspect its structure
-  console.log('Check student data:', checkStudentData);
-
-  // Extract the c_id from the checkStudentData
-  const c_id = checkStudentData.data.c_id;
-  console.log('Extracted c_id:', c_id);
+        // Extract the c_id from the checkStudentData
+        const c_id = checkStudentData.data.c_id;
 
         // Send the c_id to the /api/lecture endpoint
         fetch('https://learning-u7aw.onrender.com/api/lecture', {
@@ -309,8 +305,24 @@
           return response.json();
         })
         .then(lectureData => {
-          // Handle the response data from /api/lecture as needed
+          // Log the fetched lecture data
           console.log('Lecture data:', lectureData);
+
+          // Populate the dropdown with lecture titles
+          const dropdown = document.getElementById('lecture-dropdown-items');
+          lectureData.data.forEach(lecture => {
+            const listItem = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = '#'; // Set href to '#' to prevent default behavior
+            link.textContent = lecture.title;
+            link.addEventListener('click', () => {
+              // Update the src attribute of the iframe with the video URL
+              const iframe = document.querySelector('iframe');
+              iframe.src = lecture.video_url;
+            });
+            listItem.appendChild(link);
+            dropdown.appendChild(listItem);
+          });
         })
         .catch(error => {
           console.error('Error fetching lectures:', error);
