@@ -184,6 +184,8 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+
+//decoding the token
 app.post('/api/decodeToken', async (req, res) => {
     console.log('api decode requested');
     try {
@@ -485,6 +487,28 @@ app.post('/api/payment', async (req, res) => {
     } catch (error) {
         console.error('Error in payment route:', error);
         res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+//check the students
+//check student
+app.post('/api/checkstudent', async (req, res) => {
+    const { s_id } = req.body; // Extract student ID from request body
+
+    try {
+        // Check if s_id is present in the student table
+        const result = await pool.query('SELECT * FROM student WHERE s_id = $1', [s_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Student not found' });
+        }
+
+        // If s_id is present, return the student data
+        res.status(200).json({ data: result.rows[0] });
+    } catch (error) {
+        console.error('Error executing query', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
