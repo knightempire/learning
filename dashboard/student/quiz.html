@@ -391,4 +391,15 @@
     window.location.href = '###';
   }
 
+// Function to handle logout
+function logout() {
+  console.log("button clicked")
+  // Remove the token from localStorage
+  localStorage.removeItem('Token');
+
+  // Redirect to index.html
+  window.location.href = '../../index.html';
+}
+
+
 </script>
