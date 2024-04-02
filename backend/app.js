@@ -584,7 +584,29 @@ app.post('/api/lecture', async (req, res) => {
 
 
 
+// Route for retrieving quiz data
+app.post('/api/quiz', async (req, res) => {
+    const { c_id } = req.body; // Assuming c_id is passed in the request body
 
+    try {
+        console.log('API quiz requested');
+        // Query the database to retrieve quiz data based on the provided course ID
+        const [quizData] = await pool.execute('SELECT * FROM quiz WHERE c_id = ?', [c_id]);
+
+        // Check if any quiz data is found for the provided course ID
+        if (quizData.length === 0) {
+            // If no quiz data is found, return an error
+            console.log("No quizzes found for the provided course ID")
+            return res.status(404).json({ error: 'No quizzes found for the provided course ID' });
+        }
+
+        // Quiz data found, return it
+        res.status(200).json({ data: quizData });
+    } catch (error) {
+        console.error('Error retrieving quiz data:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 app.listen(port, () => {
