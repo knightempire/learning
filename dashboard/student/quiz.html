@@ -122,22 +122,27 @@
     <ul class="menu-list">
      
      
-      <li class="active">
+      <!-- <li class="active">
         <a class="dropdown" id="lecture-dropdown">
             <span class="icon"><i class="mdi mdi-table"></i></span>
             <span class="menu-item-label">Lectures</span>
             <span class="icon"><i class="mdi mdi-plus"></i></span>
         </a>
         <ul id="lecture-dropdown-items">
-            <!-- Dropdown items will be dynamically populated here -->
+      
         </ul>
-    </li>
+    </li> -->
 
-    
+    <li class="--set-active-forms-html">
+      <a href="./lecture.html">
+        <span class="icon"><i class="mdi mdi-plus"></i></span>
+        <span class="menu-item-label">Lectures</span>
+      </a>
+    </li>
     
 
    <!-- Dropdown for quizzes -->
-   <!-- <li>
+   <li>
     <a class="dropdown" id="quiz-dropdown">
         <span class="icon"><i class="mdi mdi-square-edit-outline"></i></span>
         <span class="menu-item-label">Quiz</span>
@@ -146,14 +151,14 @@
     <ul id="quiz-dropdown-items">
      
     </ul>
-  </li> -->
+  </li>
 
-  <li class="--set-active-forms-html">
+  <!-- <li class="--set-active-forms-html">
     <a href="./quiz.html">
       <span class="icon"><i class="mdi mdi-square-edit-outline"></i></span>
         <span class="menu-item-label">Quiz</span>
     </a>
-  </li>
+  </li> -->
 
       <li class="--set-active-forms-html">
         <a href="forms.html">
@@ -205,7 +210,9 @@
   <section class="section main-section">
     <iframe width="560" height="315" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
   </section>
-
+  <section class="section main-section">
+    <!-- Quiz content will be dynamically populated here -->
+  </section>
   
 
 <footer class="footer">
@@ -257,6 +264,7 @@
 </body>
 </html>
 
+
 <script>
   // Retrieve the token from localStorage
   const token = localStorage.getItem('Token');
@@ -282,12 +290,11 @@
     })
     .then(data => {
       // Extract the s_id (user_id) from the decoded token
-      console.log(data)
+      console.log(data);
       const name = data.name;
       const s_id = data.user_id;
       const userNameElement = document.querySelector('.is-user-name span');
-
-userNameElement.textContent = name;
+      userNameElement.textContent = name;
 
       // Send the s_id to the /api/checkstudent endpoint
       fetch('https://learning-u7aw.onrender.com/api/checkstudent', {
@@ -305,10 +312,9 @@ userNameElement.textContent = name;
       })
       .then(checkStudentData => {
         // Extract the c_id from the checkStudentData
-        console.log(checkStudentData)
         const c_id = checkStudentData.data.c_id;
-
-        // Fetch data from the /api/lecture endpoint
+        
+        // Fetch lecture data using the obtained c_id
         fetch('https://learning-u7aw.onrender.com/api/lecture', {
           method: 'POST',
           headers: {
@@ -323,69 +329,66 @@ userNameElement.textContent = name;
           return response.json();
         })
         .then(lectureData => {
-          // Log the fetched lecture data
+          // Handle the fetched lecture data
           console.log('Lecture data:', lectureData);
 
           // Populate the dropdown with lecture titles
           const dropdown = document.getElementById('lecture-dropdown-items');
-          const videoTitle = document.getElementById('video-title');
-          lectureData.data.forEach(lecture => {
-            const listItem = document.createElement('li');
-            const link = document.createElement('a');
-            link.href = '#'; // Set href to '#' to prevent default behavior
-            link.textContent = lecture.title;
-            link.addEventListener('click', () => {
-              // Update the src attribute of the iframe with the video URL
-              const iframe = document.querySelector('iframe');
-              iframe.src = lecture.video_url;
-              videoTitle.textContent = lecture.title;
+          console.log(c_id)
+
+          // Call /api/quiz with c_id in the body
+          fetch('https://learning-u7aw.onrender.com/api/quiz', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ c_id: c_id }) // Send c_id in the request body
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok.');
+            }
+            return response.json();
+          })
+          .then(quizData => {
+            // Handle the fetched quiz data
+            console.log('Quiz data:', quizData);
+        
+            // Populate the dropdown with quiz titles
+            const dropdown = document.getElementById('quiz-dropdown-items');
+            quizData.data.forEach(quiz => {
+              const listItem = document.createElement('li');
+              const link = document.createElement('a');
+              link.href = '#'; // Set href to '#' to prevent default behavior
+              link.textContent = quiz.title;
+              listItem.appendChild(link);
+              dropdown.appendChild(listItem);
             });
-            listItem.appendChild(link);
-            dropdown.appendChild(listItem);
+          })
+          .catch(error => {
+            console.error('Error fetching quiz data:', error);
+            // Handle or log the error if fetching quiz data fails
           });
         })
         .catch(error => {
-          console.error('Error fetching lectures:', error);
-          // Handle or log the error if fetching lectures fails
+          console.error('Error fetching lecture data:', error);
+          // Handle or log the error if fetching lecture data fails
         });
-
-        console.log(c_id)
-
-
-  
       })
       .catch(error => {
         console.error('Error checking student:', error);
-        // Redirect to ### if decoding token or checking student fails
-        window.location.href = '###';
+        // Handle or log the error if checking student fails
       });
     })
     .catch(error => {
       console.error('Error decoding token:', error);
-      // Redirect to ### if decoding token fails
-      window.location.href = '###';
+      // Handle or log the error if decoding token fails
     });
   } else {
     // Token doesn't exist, handle the case accordingly
     console.log('Token not found in localStorage');
     // Redirect to ### if token is not found
-    window.location.href = '../../test/login.html';
+    window.location.href = '###';
   }
 
-
-
-  
-// Function to handle logout
-function logout() {
-  console.log("button clicked")
-  // Remove the token from localStorage
-  localStorage.removeItem('Token');
-
-  // Redirect to index.html
-  window.location.href = '../../index.html';
-}
-
-
-
 </script>
-

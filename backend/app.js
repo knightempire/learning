@@ -205,7 +205,7 @@ app.post('/api/decodeToken', async (req, res) => {
 
         try {
             // Query the database to retrieve user data based on username
-            const [rows] = await connection.execute('SELECT * FROM users WHERE username = ?', [username]);
+            const [rows] = await connection.execute('SELECT user_id,name FROM users WHERE username = ?', [username]);
 
             // Check if user exists in the database
             if (rows.length === 0) {
