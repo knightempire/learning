@@ -185,13 +185,11 @@
 
 <section class="is-hero-bar">
   <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
-    <h1 class="title">
-      Topic name
-    </h1>
-
+      <h1 class="title" id="video-title">
+          Topic name
+      </h1>
   </div>
 </section>
-
   <section class="section main-section">
     <iframe width="560" height="315" src="https://www.youtube.com/embed/oZxg1hbl_64?si=Ys314uIRjrq32HXD&amp;start=256" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
   </section>
@@ -310,6 +308,7 @@
 
           // Populate the dropdown with lecture titles
           const dropdown = document.getElementById('lecture-dropdown-items');
+          const videoTitle = document.getElementById('video-title');
           lectureData.data.forEach(lecture => {
             const listItem = document.createElement('li');
             const link = document.createElement('a');
@@ -319,6 +318,7 @@
               // Update the src attribute of the iframe with the video URL
               const iframe = document.querySelector('iframe');
               iframe.src = lecture.video_url;
+              videoTitle.textContent = lecture.title;
             });
             listItem.appendChild(link);
             dropdown.appendChild(listItem);
