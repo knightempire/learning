@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 01, 2024 at 07:05 PM
+-- Generation Time: Apr 02, 2024 at 07:15 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -218,11 +218,11 @@ CREATE TABLE `performance` (
 --
 
 CREATE TABLE `quiz` (
-  `quiz_id` int(11) NOT NULL,
+  `q_id` int(11) NOT NULL,
   `c_id` int(11) NOT NULL,
   `lecture_id` int(11) NOT NULL,
-  `question` text DEFAULT NULL,
-  `answer` text DEFAULT NULL
+  `no_of_questions` int(11) DEFAULT NULL,
+  `total_mark` decimal(5,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -232,9 +232,10 @@ CREATE TABLE `quiz` (
 --
 
 CREATE TABLE `quiz_info` (
-  `q_id` int(11) NOT NULL,
-  `c_id` int(11) NOT NULL,
-  `total_marks` decimal(5,2) DEFAULT NULL
+  `q_id` int(11) DEFAULT NULL,
+  `question` text DEFAULT NULL,
+  `options` text DEFAULT NULL,
+  `answer` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -417,7 +418,7 @@ ALTER TABLE `performance`
 -- Indexes for table `quiz`
 --
 ALTER TABLE `quiz`
-  ADD PRIMARY KEY (`quiz_id`),
+  ADD PRIMARY KEY (`q_id`),
   ADD KEY `fk_quiz_course` (`c_id`),
   ADD KEY `fk_quiz_lecture` (`lecture_id`);
 
@@ -425,8 +426,7 @@ ALTER TABLE `quiz`
 -- Indexes for table `quiz_info`
 --
 ALTER TABLE `quiz_info`
-  ADD PRIMARY KEY (`q_id`,`c_id`),
-  ADD KEY `c_id` (`c_id`);
+  ADD KEY `q_id` (`q_id`);
 
 --
 -- Indexes for table `salary`
@@ -499,7 +499,7 @@ ALTER TABLE `payment`
 -- AUTO_INCREMENT for table `quiz`
 --
 ALTER TABLE `quiz`
-  MODIFY `quiz_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `q_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `salary`
@@ -606,8 +606,7 @@ ALTER TABLE `quiz`
 -- Constraints for table `quiz_info`
 --
 ALTER TABLE `quiz_info`
-  ADD CONSTRAINT `quiz_info_ibfk_1` FOREIGN KEY (`q_id`) REFERENCES `quiz` (`quiz_id`),
-  ADD CONSTRAINT `quiz_info_ibfk_2` FOREIGN KEY (`c_id`) REFERENCES `course` (`c_id`);
+  ADD CONSTRAINT `quiz_info_ibfk_1` FOREIGN KEY (`q_id`) REFERENCES `quiz` (`q_id`);
 
 --
 -- Constraints for table `salary`

@@ -591,7 +591,8 @@ app.post('/api/quiz', async (req, res) => {
     try {
         console.log('API quiz requested');
         // Query the database to retrieve quiz data based on the provided course ID
-        const [quizData] = await pool.execute('SELECT * FROM quiz WHERE c_id = ?', [c_id]);
+        const [quizData] = await pool.execute(` SELECT q.*, l.title   FROM quiz q  JOIN lecture l ON q.lecture_id = l.lecture_id WHERE q.c_id = ?; `, [c_id]);
+    
 
         // Check if any quiz data is found for the provided course ID
         if (quizData.length === 0) {
