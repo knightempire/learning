@@ -5,7 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OTP Example</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
+
+        
         /* Style for the OTP verification form */
         #verifyOtpForm {
             display: none;
@@ -14,23 +18,35 @@
 </head>
 <body>
 
-    <h1>OTP Example</h1>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="text-center">OTP - Reset </h1>
+                <!-- Form for OTP Generation -->
+                <form id="generateOtpForm" class="border rounded p-4">
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number:</label>
+                        <input type="text" id="phoneNumber" name="phoneNumber" class="form-control" required>
+                    </div>
+                    <button type="button" onclick="generateOtp()" class="btn btn-primary btn-block">Generate OTP</button>
+                </form>
+                
+                <!-- Form for OTP Verification -->
+                <form id="verifyOtpForm" class="mt-4 border rounded p-4">
+                    <div class="form-group">
+                        <label for="otp">Enter OTP:</label>
+                        <input type="text" id="otp" name="otp" class="form-control" required>
+                    </div>
+                    <button type="button" onclick="verifyOtp()" class="btn btn-primary btn-block">Verify OTP</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
-    <!-- Form for OTP Generation -->
-    <form id="generateOtpForm">
-        <label for="phoneNumber">Phone Number:</label>
-        <input type="text" id="phoneNumber" name="phoneNumber" required>
-
-        <button type="button" onclick="generateOtp()">Generate OTP</button>
-    </form>
-
-    <!-- Form for OTP Verification -->
-    <form id="verifyOtpForm">
-        <label for="otp">Enter OTP:</label>
-        <input type="text" id="otp" name="otp" required>
-
-        <button type="button" onclick="verifyOtp()">Verify OTP</button>
-    </form>
+    <!-- Bootstrap JS (Optional, if you need JavaScript functionality) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
         const apiUrl = 'https://learning-u7aw.onrender.com/api';
@@ -50,7 +66,8 @@
                 const result = await response.json();
                 alert(result.message);
 
-                // Display the OTP verification form upon successful OTP generation
+                // Hide the OTP generation form and display the OTP verification form
+                document.getElementById('generateOtpForm').style.display = 'none';
                 document.getElementById('verifyOtpForm').style.display = 'block';
             } catch (error) {
                 console.error(error);
