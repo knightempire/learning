@@ -8,8 +8,6 @@
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-
-        
         /* Style for the OTP verification form */
         #verifyOtpForm {
             display: none;
@@ -64,14 +62,14 @@
                 });
 
                 const result = await response.json();
-                alert(result.message);
+                showAlert(result.message);
 
                 // Hide the OTP generation form and display the OTP verification form
                 document.getElementById('generateOtpForm').style.display = 'none';
                 document.getElementById('verifyOtpForm').style.display = 'block';
             } catch (error) {
                 console.error(error);
-                alert('Error generating OTP. Check console for details.');
+                showAlert('Error generating OTP. Check console for details.');
             }
         }
 
@@ -89,7 +87,7 @@
                 });
 
                 const result = await response.json();
-                alert(result.message);
+                showAlert(result.message);
                 
                 if (response.ok) {
                     // Retrieve the option parameter from the URL
@@ -104,8 +102,35 @@
 
             } catch (error) {
                 console.error(error);
-                alert('Error verifying OTP. Check console for details.');
+                showAlert('Error verifying OTP. Check console for details.');
             }
+        }
+
+        function showAlert(message) {
+            // Create a Bootstrap modal for the alert message
+            const alertModal = `
+                <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="alertModalLabel">Alert</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                ${message}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Append the modal HTML to the body
+            document.body.insertAdjacentHTML('beforeend', alertModal);
+
+            // Show the modal
+            $('#alertModal').modal('show');
         }
     </script>
 </body>

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +21,7 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <h1 class="text-center">OTP -Register </h1>
+                <h1 class="text-center">OTP - Reset </h1>
                 <!-- Form for OTP Generation -->
                 <form id="generateOtpForm" class="border rounded p-4">
                     <div class="form-group">
@@ -62,13 +64,14 @@
                 });
 
                 const result = await response.json();
-                alert(result.message);
+                showAlert(result.message);
 
-                // Display the OTP verification form upon successful OTP generation
+                // Hide the OTP generation form and display the OTP verification form
+                document.getElementById('generateOtpForm').style.display = 'none';
                 document.getElementById('verifyOtpForm').style.display = 'block';
             } catch (error) {
                 console.error(error);
-                alert('Error generating OTP. Check console for details.');
+                showAlert('Error generating OTP. Check console for details.');
             }
         }
 
@@ -86,19 +89,50 @@
                 });
 
                 const result = await response.json();
-                alert(result.message);
+                showAlert(result.message);
                 
                 if (response.ok) {
-                    // Redirect to register.html with phone number as URL parameter
-                    window.location.href = `./register.html?phoneNumber=${verifyPhoneNumber}`;
+                    // Retrieve the option parameter from the URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const option = urlParams.get('option');
+                    
+                    // Redirect to reset.html page with encrypted parameters as URL parameters
+                    window.location.href = `./reset.html?option=${option}&phoneNumber=${btoa(verifyPhoneNumber)}`;
                 } else {
                     console.log('OTP verification failed');
                 }
 
             } catch (error) {
                 console.error(error);
-                alert('Error verifying OTP. Check console for details.');
+                showAlert('Error verifying OTP. Check console for details.');
             }
+        }
+
+        function showAlert(message) {
+            // Create a Bootstrap modal for the alert message
+            const alertModal = `
+                <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="alertModalLabel">Alert</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                ${message}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Append the modal HTML to the body
+            document.body.insertAdjacentHTML('beforeend', alertModal);
+
+            // Show the modal
+            $('#alertModal').modal('show');
         }
     </script>
 </body>

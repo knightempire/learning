@@ -191,6 +191,7 @@ app.post('/api/decodeToken', async (req, res) => {
     try {
         // Extract the token from the request body
         const { token } = req.body;
+    
         console.log(token)
 
         // Verify and decode the token
@@ -511,6 +512,30 @@ app.post('/api/checkstudent', async (req, res) => {
         res.status(200).json({ data: existingStudent[0] });
     } catch (error) {
         console.error('Error during student check:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+// Route for retrieving course data by c_id for a student
+app.post('/api/studentcourse', async (req, res) => {
+    const { c_id } = req.body;
+
+    try {
+        console.log('API studentcourse requested');
+        // Query the database to retrieve all data from the course table for the provided c_id
+        const [courseData] = await pool.execute('SELECT * FROM course WHERE c_id = ?', [c_id]);
+
+        if (courseData.length === 0) {
+            // If no course data found for the provided c_id, return an error
+            console.log("Course data not found")
+            return res.status(404).json({ error: 'Course data not found' });
+        }
+
+        // Return the course data
+        res.status(200).json({ data: courseData });
+    } catch (error) {
+        console.error('Error retrieving course data:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
