@@ -8,6 +8,10 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const moment = require('moment');
 
+const XLSX = require('xlsx');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' }); 
+
 // const authMiddleware = require('./authmiddleware');
 const { generateOtpMiddleware, verifyOtpMiddleware } = require('./middleWare/otpgeneration');
 const generateResponse = require('./middleWare/chat');
@@ -631,6 +635,93 @@ app.post('/api/quiz', async (req, res) => {
     } catch (error) {
         console.error('Error retrieving quiz data:', error);
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+// Route for adding new quiz
+app.post('/api/quiz', async (req, res) => {
+    const { c_id, lecture_id, no_of_questions, total_marks } = req.body; 
+
+    try {
+        console.log('API quiz upload requested');
+        // Insert the quiz data into the database
+        await pool.execute('INSERT INTO quiz (c_id, lecture_id, no_of_questions, total_marks) VALUES (?, ?, ?, ?)', [c_id, lecture_id, no_of_questions, total_marks]);
+
+        // Return success message
+        res.status(200).json({ message: 'Quiz data uploaded successfully' });
+    } catch (error) {
+        console.error('Error uploading quiz data:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+// Route for adding quiz information
+app.post('/api/quizinfo', async (req, res) => {
+    const { q_id, question, a, b, c, d, answer } = req.body; 
+
+    try {
+        console.log('API quiz info upload requested');
+        // Insert the quiz information into the database
+        await pool.execute('INSERT INTO quiz_info (q_id, question, a, b, c, d, answer) VALUES (?, ?, ?, ?, ?, ?, ?)', [q_id, question, a, b, c, d, answer]);
+
+        // Return success message
+        res.status(200).json({ message: 'Quiz information uploaded successfully' });
+    } catch (error) {
+        console.error('Error uploading quiz information:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+// Route for uploading quiz information from an Excel file
+app.post('/api/quizinfoes/upload', upload.single('excelFile'), async (req, res) => {
+    try {
+        // Ensure that a file was uploaded
+        if (!req.file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+
+        // Read the uploaded Excel file
+        const workbook = XLSX.read(req.file.buffer);
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const excelData = XLSX.utils.sheet_to_json(sheet);
+
+        // Ensure that the Excel data is not empty
+        if (excelData.length === 0) {
+            return res.status(400).json({ message: 'Empty file or incorrect format' });
+        }
+
+        // Prepare the data for insertion into the database
+        const values = excelData.map(row => [
+            req.body.q_id, // Use q_id from the request body
+            row.question,
+            row.a,
+            row.b,
+            row.c,
+            row.d,
+            row.answer
+        ]);
+
+        // Prepare the SQL query
+        const query = `INSERT INTO quiz_info (q_id, question, a, b, c, d, answer) VALUES ?`;
+
+        // Get a connection from the pool
+        const connection = await pool.getConnection();
+
+        // Execute the insert query
+        await connection.query(query, [values]);
+
+        // Release the connection back to the pool
+        connection.release();
+
+        console.log('Quiz information inserted successfully');
+        res.json({ message: 'Quiz information inserted successfully' });
+    } catch (error) {
+        console.error('Error inserting quiz information:', error);
+        res.status(500).json({ message: 'Error inserting quiz information into database' });
     }
 });
 

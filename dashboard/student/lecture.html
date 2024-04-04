@@ -185,12 +185,12 @@
 <section class="is-title-bar">
   <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
     <ul>
-      <li></li>
-      <li>Dashboard</li>
+      <li id="course-name-li">course name </li>
+      <li>Lecture</li>
     </ul>
-  
   </div>
 </section>
+
 
 <section class="is-hero-bar">
   <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
@@ -287,7 +287,7 @@
       const s_id = data.user_id;
       const userNameElement = document.querySelector('.is-user-name span');
 
-userNameElement.textContent = name;
+      userNameElement.textContent = name;
 
       // Send the s_id to the /api/checkstudent endpoint
       fetch('https://learning-u7aw.onrender.com/api/checkstudent', {
@@ -343,6 +343,37 @@ userNameElement.textContent = name;
             listItem.appendChild(link);
             dropdown.appendChild(listItem);
           });
+
+          // Call the /api/studentcourse endpoint with c_id
+          fetch('https://learning-u7aw.onrender.com/api/studentcourse', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ c_id: c_id }) // Send c_id in the request body
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok.');
+            }
+            return response.json();
+          })
+          .then(studentCourseData => {
+  // Log the fetched student course data
+  console.log('Student course data:', studentCourseData);
+
+  // Handle the student course data as needed
+  const courseName = studentCourseData.data[0].course_name;
+  
+  const courseNameLi = document.getElementById('course-name-li');
+  courseNameLi.textContent = courseName;
+
+          })
+          .catch(error => {
+            console.error('Error fetching student course data:', error);
+            // Handle or log the error if fetching student course data fails
+          });
+
         })
         .catch(error => {
           console.error('Error fetching lectures:', error);
@@ -350,9 +381,6 @@ userNameElement.textContent = name;
         });
 
         console.log(c_id)
-
-
-  
       })
       .catch(error => {
         console.error('Error checking student:', error);
@@ -372,20 +400,14 @@ userNameElement.textContent = name;
     window.location.href = '../../test/login.html';
   }
 
+  // Function to handle logout
+  function logout() {
+    console.log("button clicked")
+    // Remove the token from localStorage
+    localStorage.removeItem('Token');
 
-
-  
-// Function to handle logout
-function logout() {
-  console.log("button clicked")
-  // Remove the token from localStorage
-  localStorage.removeItem('Token');
-
-  // Redirect to index.html
-  window.location.href = '../../index.html';
-}
-
-
-
+    // Redirect to index.html
+    window.location.href = '../../index.html';
+  }
 </script>
 

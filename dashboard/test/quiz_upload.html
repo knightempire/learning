@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Quiz Information</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <style>
+        .divider {
+            margin-top: 20px;
+            border-top: 1px solid #000; /* Dark black color */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Upload Quiz Information</h1>
+        <form id="quizInfoForm">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="q_id">Quiz ID:</label>
+                    <input type="text" class="form-control" id="q_id" name="q_id">
+                </div>
+            
+                <div class="form-group col-md-6">
+                    <label for="title">Title:</label>
+                    <input type="text" class="form-control" id="title" name="title">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="no_of_questions">No. of Questions:</label>
+                    <input type="number" class="form-control" id="no_of_questions" name="no_of_questions" min="1">
+                </div>
+            </div>
+
+            <div id="questionsContainer" class="mb-4"></div>
+
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+
+        <div id="message" class="mt-3"></div>
+    </div>
+
+    <script>
+        document.getElementById('quizInfoForm').addEventListener('submit', async function(event) {
+            // Prevent form submission
+            event.preventDefault();
+
+            // Get form data
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch('/api/quizinfo', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('message').innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                } else {
+                    document.getElementById('message').innerHTML = `<div class="alert alert-danger">Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('message').innerHTML = `<div class="alert alert-danger">Error: Failed to upload quiz information</div>`;
+            }
+        });
+
+        // Add event listener to "No. of Questions" input
+        document.getElementById('no_of_questions').addEventListener('input', function() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            const noOfQuestions = parseInt(this.value);
+
+            for (let i = 1; i <= noOfQuestions; i++) {
+                const div = document.createElement('div');
+                div.classList.add('form-group');
+                div.innerHTML = `
+                    <label for="question_${i}">Question ${i}:</label>
+                    <input type="text" class="form-control" id="question_${i}" name="question_${i}">
+                    <div class="row">
+                        <div class="col">
+                            <label for="a_${i}">Option A:</label>
+                            <input type="text" class="form-control" id="a_${i}" name="a_${i}">
+                        </div>
+                        <div class="col">
+                            <label for="b_${i}">Option B:</label>
+                            <input type="text" class="form-control" id="b_${i}" name="b_${i}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="c_${i}">Option C:</label>
+                            <input type="text" class="form-control" id="c_${i}" name="c_${i}">
+                        </div>
+                        <div class="col">
+                            <label for="d_${i}">Option D:</label>
+                            <input type="text" class="form-control" id="d_${i}" name="d_${i}">
+                        </div>
+                    </div>
+                    <label for="answer_${i}">Correct Answer:</label>
+                    <input type="text" class="form-control" id="answer_${i}" name="answer_${i}">
+                    <div class="divider"></div>
+                `;
+                container.appendChild(div);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -142,7 +142,7 @@
     
 
    <!-- Dropdown for quizzes -->
-   <li>
+   <!-- <li>
     <a class="dropdown" id="quiz-dropdown">
         <span class="icon"><i class="mdi mdi-square-edit-outline"></i></span>
         <span class="menu-item-label">Quiz</span>
@@ -151,7 +151,18 @@
     <ul id="quiz-dropdown-items">
      
     </ul>
-  </li>
+  </li> -->
+
+  <li class="active">
+    <a class="dropdown" id="quiz-dropdown">
+        <span class="icon"><i class="mdi mdi mdi-square-edit-outline"></i></span>
+        <span class="menu-item-label">Quiz</span>
+        <span class="icon"><i class="mdi mdi-plus"></i></span>
+    </a>
+    <ul id="quiz-dropdown-items">
+        <!-- Dropdown items will be dynamically populated here -->
+    </ul>
+</li>
 
   <!-- <li class="--set-active-forms-html">
     <a href="./quiz.html">
@@ -190,10 +201,9 @@
 <section class="is-title-bar">
   <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
     <ul>
-      <li>HTML</li>
-      <li>Dashboard</li>
+      <li id="course-name-li">course name </li>
+      <li>Lecture</li>
     </ul>
-  
   </div>
 </section>
 
@@ -364,6 +374,35 @@
               listItem.appendChild(link);
               dropdown.appendChild(listItem);
             });
+             // Call the /api/studentcourse endpoint with c_id
+          fetch('https://learning-u7aw.onrender.com/api/studentcourse', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ c_id: c_id }) // Send c_id in the request body
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok.');
+            }
+            return response.json();
+          })
+          .then(studentCourseData => {
+  // Log the fetched student course data
+  console.log('Student course data:', studentCourseData);
+
+  // Handle the student course data as needed
+  const courseName = studentCourseData.data[0].course_name;
+  
+  const courseNameLi = document.getElementById('course-name-li');
+  courseNameLi.textContent = courseName;
+
+          })
+          .catch(error => {
+            console.error('Error fetching student course data:', error);
+            // Handle or log the error if fetching student course data fails
+          });
           })
           .catch(error => {
             console.error('Error fetching quiz data:', error);
