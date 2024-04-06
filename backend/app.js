@@ -684,7 +684,7 @@ app.post('/api/quizinfo', async (req, res) => {
         console.log('API quizinfo requested for quiz ID:', q_id);
         
         // Query the database to get quiz information based on q_id
-        const [quizInfoRows] = await pool.execute('SELECT * FROM quiz WHERE q_id = ?', [q_id]);
+        const [quizInfoRows] = await pool.execute('SELECT * FROM quiz_info WHERE q_id = ?', [q_id]);
 
         // Check if quiz information exists
         if (quizInfoRows.length === 0) {
