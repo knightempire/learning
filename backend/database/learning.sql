@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 02, 2024 at 07:15 AM
+-- Generation Time: Apr 06, 2024 at 07:55 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -134,6 +134,32 @@ CREATE TABLE `lecture` (
   `c_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `lecture`
+--
+
+INSERT INTO `lecture` (`lecture_id`, `title`, `video_url`, `c_id`) VALUES
+(1, 'Introduction', 'https://www.youtube.com/embed/khKoJUpcXUE?si=1NTid86netkk3FhV', 2),
+(2, 'Types of Databases and Architecture', 'https://www.youtube.com/embed/OdG6fhcO6rU?si=GdoT8EBP2nAXZFN7', 2),
+(3, 'Designing Databases', 'https://www.youtube.com/embed/caxAA6ssLok?si=CWLKlWw1kabd-PWE', 2),
+(4, 'E - R Modeling', 'https://www.youtube.com/embed/-ZbsUiAf-uc?si=2lswyAv0qTFZfl2Z', 2),
+(5, 'Types of Attributes in E-R Model', 'https://www.youtube.com/embed/eHm7M3d3dQk?si=imoypvsWj9q8sEfS', 2),
+(6, 'Relational Model Introduction', 'https://www.youtube.com/embed/_P1bKokswCk?si=kOipGlroqLTHqLic', 2),
+(7, 'Functional dependency', 'https://www.youtube.com/embed/7F9oQGIMwN8?si=Dat1udbL4xEw2DeL', 2),
+(8, 'Finding Keys Using Functional Dependencies', 'https://www.youtube.com/embed/lwrmiizoZ68?si=jV_4__fLE1GooHex', 2),
+(9, 'Normalization: Introduction, 1NF, 2NF', 'https://www.youtube.com/embed/iqGR9uXkfWI?si=kmomtep9bZwpGgSN', 2),
+(10, 'Normalization | 3NF, BCNF', 'https://www.youtube.com/embed/oFKWf8k72gA?si=4yct476oWeNH--Ei', 2),
+(11, 'Introduction To AWS', 'https://www.youtube.com/embed/n6RWhajimZg?si=MXA5NOIyFSY9ZX-Q', 4),
+(12, 'Virtual Private Cloud (VPC)', 'https://www.youtube.com/embed/P8g7Z4NYk3Q?si=nTJaB_w88uJlwCgX', 4),
+(13, 'Security Groups and NACL', 'https://www.youtube.com/embed/TtlKFgfN3PU?si=2FEwfTWClnTJa5g1', 4),
+(14, 'Route 53', 'https://www.youtube.com/embed/6BoTfTtNsGU?si=D4sScMdMRXi_PwGC', 4),
+(15, 'AWS S3', 'https://www.youtube.com/embed/6BoTfTtNsGU?si=D4sScMdMRXi_PwGC', 4),
+(16, 'AWS CLI', 'https://www.youtube.com/embed/TiDSwf8gydk?si=rbiLGFHQGve3FHL3', 4),
+(17, 'Cloud Formation Template', 'https://www.youtube.com/embed/ov4WmWgQgsA?si=XZw9-10maMtsep5J', 4),
+(18, 'Cloud Watch', 'https://www.youtube.com/embed/u4XngwbY-O0?si=32obtYgzDJQrtuVJ', 4),
+(19, 'AWS Lambda Introduction', 'https://www.youtube.com/embed/5fTtmeCpSRw?si=pI_Mn2HWzqbd5S5v', 4),
+(20, 'AWS Cloud Front', 'https://www.youtube.com/embed/yhieOhvHz6Q?si=8HcWgMtpRkAVzsjm', 4);
+
 -- --------------------------------------------------------
 
 --
@@ -225,6 +251,23 @@ CREATE TABLE `quiz` (
   `total_mark` decimal(5,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `quiz`
+--
+
+INSERT INTO `quiz` (`q_id`, `c_id`, `lecture_id`, `no_of_questions`, `total_mark`) VALUES
+(1, 2, 2, 8, 8.00),
+(2, 2, 3, 5, 5.00),
+(3, 2, 5, 8, 8.00),
+(4, 2, 6, 5, 5.00),
+(5, 2, 8, 8, 8.00),
+(6, 2, 10, 8, 8.00),
+(8, 4, 11, 7, 7.00),
+(9, 4, 13, 6, 6.00),
+(10, 4, 16, 8, 8.00),
+(11, 4, 18, 8, 8.00),
+(12, 4, 20, 8, 8.00);
+
 -- --------------------------------------------------------
 
 --
@@ -234,9 +277,97 @@ CREATE TABLE `quiz` (
 CREATE TABLE `quiz_info` (
   `q_id` int(11) DEFAULT NULL,
   `question` text DEFAULT NULL,
-  `options` text DEFAULT NULL,
+  `a` varchar(255) DEFAULT NULL,
+  `b` varchar(255) DEFAULT NULL,
+  `c` varchar(255) DEFAULT NULL,
+  `d` varchar(255) DEFAULT NULL,
   `answer` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `quiz_info`
+--
+
+INSERT INTO `quiz_info` (`q_id`, `question`, `a`, `b`, `c`, `d`, `answer`) VALUES
+(1, 'What is a \'tuple\'?', 'An attribute attached to a record.', 'A row or record in a database table.', 'Another name for the key linking different tables in a database.', 'Another name for a table in an RDBMS.', 'A row or record in a database table.'),
+(1, 'Redundancy is minimized with a computer based database approach.', 'True', 'False', NULL, NULL, 'True'),
+(1, 'A Row in a database can also be called a domain.', 'True', 'False', NULL, NULL, 'False'),
+(1, 'Which of the following is component of DBMS Software?', 'Hardware', 'Software', 'Data', 'All of the above', 'All of the above'),
+(1, 'What is the basic client/server architecture, one has to deal with?', 'Large number of PCs', 'Web servers', 'Database Servers', 'All of the above', 'All of the above'),
+(1, 'How many types of DBMS architectures are there?', '1', '2', '3', '4', '3'),
+(1, 'What is TRUE about 1-tier architecture?', 'It is directly not available to the user', 'Changes are not done on the database', 'No handy tool is provided for the end user', 'It is not used for the development of local application', 'No handy tool is provided for the end user'),
+(1, 'Basic client-server model is similar to', '2-tier architecture', '3-tier architecture', '4-tier architecture', '5-tier architecture', '2-tier architecture'),
+(2, 'A disadvantage of a distributed database management system (DDBMS) is that:', 'There are lack of standards', 'It is slower in terms of data access', 'Adding new sites affects other sites\' operations', 'It is processor dependent', 'There are lack of standards'),
+(2, 'A distributed database is composed of several parts known as:', 'Sections', 'Fragments', 'Partitions', 'Parts', 'Fragments'),
+(2, '______ is the delay imposed by the amount of time required for a data packet to make around trip from point A to point B.', 'Data distribution', 'Replica transparency', 'Network Latency', 'Network Partitioning', 'Network Latency'),
+(2, 'A distributed database management system (DDBMS) governs the storage and processing of logically related data over interconnected computer systems.', 'True', 'False', NULL, NULL, 'True'),
+(2, 'One of the advantages of a distributed database management system (DDBMS) is security.', 'True', 'False', NULL, NULL, 'False'),
+(3, 'ER aims to:', 'Facilitate database programming', 'Facilitate database organization', 'Facilitate database design', 'Facilitate database website', 'Facilitate database design'),
+(3, 'The Conceptual data model is the set of concepts that:', 'Describe the structure of a database and the associated insert and update transactions', 'Describe the structure of a database and the associated retrieval and update transactions', 'Describe the structure of a database and the associated retrieval transactions', 'None of the above', 'Describe the structure of a database and the associated retrieval and update transactions'),
+(3, 'A high-level conceptual model is dependent on the DBMS and HW platform used to implement the database. True or false?', 'True', 'False', NULL, NULL, 'False'),
+(3, 'An Entity is', 'An instance of an Entity type that is uniquely identifiable', 'An instance of a DBA type that is uniquely identifiable', 'An instance of a type that is uniquely identifiable', 'None of the above', 'An instance of an Entity type that is uniquely identifiable'),
+(3, 'Weak entity type:', 'An entity that is not existence-dependent on some other entity type', 'An Entity that characterizes a DBMS', 'An instance that is existence-dependent on some other entity type', 'None of the above', 'An instance that is existence-dependent on some other entity type'),
+(3, 'Strong entity type:', 'An entity that is not existence-dependent on some other entity type', 'An Entity that characterizes a DBMS', 'An instance that is existence-dependent on some other entity type', 'All of the above', 'An entity that is not existence-dependent on some other entity type'),
+(3, 'An Attribute is a property of an entity or a relationship type. True or false?', 'True', 'False', NULL, NULL, 'True'),
+(3, 'An Attribute:', 'A set of values that might be assigned to an attribute.', 'Is a property of an entity or a relationship type', 'A set of numbers and values', 'None of the above', 'Is a property of an entity or a relationship type'),
+(4, 'What is the primary key in a relational model?', 'Unique identifier for a table', 'Non-unique identifier for a table', 'Combination of attributes in a table', 'Indexed attribute in a table', 'Unique identifier for a table'),
+(4, 'Which of the following best describes a foreign key?', 'A key that uniquely identifies each record in a table', 'A key that establishes a link between two tables', 'A key that is used for sorting records in a table', 'A key that cannot contain NULL values', 'A key that establishes a link between two tables'),
+(4, 'What is normalization in the context of the relational model?', 'Adding redundancy to improve data retrieval', 'Removing redundancy to reduce data anomalies', 'Combining multiple tables into one to simplify queries', 'Adding additional columns to store calculated values', 'Removing redundancy to reduce data anomalies'),
+(4, 'Which of the following is an example of a relational database management system (RDBMS)?', 'MongoDB', 'SQLite', 'Redis', 'Cassandra', 'SQLite'),
+(4, 'In a relational database, what is the purpose of a join operation?', 'To add new records to a table', 'To update existing records in a table', 'To combine related information from multiple tables', 'To delete records from a table', 'To combine related information from multiple tables'),
+(5, 'What is a functional dependency in a relational database?', 'A relationship between two attributes such that one attribute uniquely determines the value of another attribute.', 'A measure of the strength of association between two attributes in a database.', 'A constraint that ensures each tuple in a relation is unique.', 'A type of indexing technique used to optimize query performance.', 'A relationship between two attributes such that one attribute uniquely determines the value of another attribute.'),
+(5, 'In a functional dependency A → B, what does A represent?', 'The dependent attribute.', 'The determinant attribute.', 'Both A and B.', 'None of the above.', 'The determinant attribute.'),
+(5, 'What is a superkey in the context of functional dependencies?', 'A key that is minimal but not necessarily unique.', 'A set of attributes that uniquely determines all other attributes in a relation.', 'An attribute that is functionally dependent on another attribute.', 'A key that is unique but not necessarily minimal.', 'A set of attributes that uniquely determines all other attributes in a relation.'),
+(5, 'Which of the following statements about candidate keys is true?', 'Candidate keys are determined solely by functional dependencies.', 'A candidate key is always a superkey.', 'There can be only one candidate key in a relation.', 'A candidate key uniquely identifies a tuple in a relation.', 'A candidate key is always a superkey.'),
+(5, 'How can we determine the candidate keys of a relation using functional dependencies?', 'By identifying the minimal superkeys and checking if they uniquely identify the tuples.', 'By checking for transitive dependencies.', 'By using normalization techniques.', 'By performing a join operation on the relation.', 'By identifying the minimal superkeys and checking if they uniquely identify the tuples.'),
+(5, 'What is closure of attributes with respect to a set of functional dependencies?', 'The process of determining all attributes functionally dependent on a given set of attributes.', 'The process of checking if two relations can be joined using a common attribute.', 'A technique for optimizing query performance.', 'A type of indexing technique used in databases.', 'The process of determining all attributes functionally dependent on a given set of attributes.'),
+(5, 'Which normal form ensures that every non-prime attribute is fully functionally dependent on the primary key?', 'First Normal Form (1NF)', 'Second Normal Form (2NF)', 'Third Normal Form (3NF)', 'Boyce-Codd Normal Form (BCNF)', 'Third Normal Form (3NF)'),
+(5, 'What is the purpose of normalizing a database?', 'To eliminate redundancy and minimize data anomalies.', 'To speed up database queries.', 'To increase the storage capacity of the database.', 'To add redundancy for fault tolerance.', 'To eliminate redundancy and minimize data anomalies.'),
+(6, 'What is the primary objective of normalization in databases?', 'Reducing storage space', 'Enhancing data security', 'Eliminating data redundancy and inconsistency', 'Improving query performance', 'Eliminating data redundancy and inconsistency'),
+(6, 'Which of the following is a requirement for a table to be in 1NF?', 'Data redundancy', 'Composite primary key', 'Atomic values in each column', 'Partial dependencies', 'Atomic values in each column'),
+(6, 'Which normal form eliminates partial dependencies?', '1NF', '2NF', '3NF', 'BCNF', '2NF'),
+(6, 'What is the primary focus of 3NF?', 'Eliminating data redundancy', 'Eliminating partial dependencies', 'Eliminating transitive dependencies', 'All of the above', 'Eliminating transitive dependencies'),
+(6, 'In BCNF, what must be true about every determinant?', 'It must be a candidate key', 'It must be a non-prime attribute', 'It must be a composite key', 'It must be a foreign key', 'It must be a candidate key'),
+(6, 'Which normal form is the most basic?', '1NF', '2NF', '3NF', 'BCNF', '1NF'),
+(6, 'Which normal form deals with transitive dependencies?', '1NF', '2NF', '3NF', 'BCNF', '3NF'),
+(6, 'What does 2NF eliminate?', 'Data redundancy', 'Partial dependencies', 'Composite keys', 'Foreign keys', 'Partial dependencies'),
+(8, 'What does AWS stand for?', 'Amazon Web Services', 'Advanced Web Solutions', 'Application Web Services', 'Automated Web Servers', 'Amazon Web Services'),
+(8, 'Which of the following is NOT a key benefit of using AWS?', 'Cost-effectiveness', 'Scalability', 'Complexity', 'Flexibility', 'Complexity'),
+(8, 'Which AWS service is commonly used for deploying and managing virtual servers in the cloud?', 'Amazon S3', 'Amazon EC2', 'Amazon RDS', 'Amazon Lambda', 'Amazon EC2'),
+(8, 'What is the AWS service used for storing and retrieving any amount of data from anywhere on the web?', 'Amazon EC2', 'Amazon S3', 'Amazon RDS', 'Amazon DynamoDB', 'Amazon S3'),
+(8, 'Which AWS service is a fully managed database service that supports multiple database engines like MySQL, PostgreSQL, and Oracle?', 'Amazon EC2', 'Amazon S3', 'Amazon RDS', 'Amazon DynamoDB', 'Amazon RDS'),
+(8, 'Which AWS service allows users to run code without provisioning or managing servers, and it automatically scales based on demand?', 'Amazon EC2', 'Amazon S3', 'Amazon RDS', 'Amazon Lambda', 'Amazon Lambda'),
+(8, 'What is the primary advantage of using cloud computing services like AWS?', 'Increased hardware management', 'Decreased scalability', 'Reduced infrastructure costs', 'Limited geographic availability', 'Reduced infrastructure costs'),
+(9, 'What is the primary purpose of a Virtual Private Cloud (VPC) in AWS?', 'To provide a dedicated physical network for each AWS account', 'To allow secure communication between AWS services and resources', 'To enable connections between on-premises networks and AWS cloud resources', 'To isolate and control network resources within a virtual network environment', 'To isolate and control network resources within a virtual network environment'),
+(9, 'Which of the following is NOT a valid component of an AWS VPC?', 'Subnet', 'Internet Gateway', 'Route Table', 'VPN Tunnel', 'VPN Tunnel'),
+(9, 'What is the purpose of a Security Group in AWS?', 'To define access control rules for EC2 instances at the instance level', 'To provide encryption for data stored in S3 buckets', 'To manage user authentication and authorization for AWS services', 'To configure network ACLs', 'To define access control rules for EC2 instances at the instance level'),
+(9, 'Which of the following is true regarding Security Groups in AWS?', 'Security Groups are applied directly to EC2 instances.', 'Security Groups can span multiple AWS regions.', 'Security Groups can be configured with deny rules for inbound traffic.', 'Security Groups operate at the subnet level.', 'Security Groups are applied directly to EC2 instances.'),
+(9, 'Which of the following is NOT a valid component of an AWS VPC?', 'Subnet', 'Internet Gateway', 'Route Table', 'VPN Tunnel', 'VPN Tunnel'),
+(9, 'What is the purpose of a Security Group in AWS?', 'To define access control rules for EC2 instances at the instance level', 'To provide encryption for data stored in S3 buckets', 'To manage user authentication and authorization for AWS services', 'To configure network ACLs', 'To define access control rules for EC2 instances at the instance level'),
+(10, 'What is the AWS CLI used for?', 'Deploying physical servers in AWS data centers', 'Managing AWS resources from the command line', 'Creating graphical user interfaces for AWS services', 'Configuring network firewalls in AWS VPCs', 'Managing AWS resources from the command line'),
+(10, 'Which AWS CLI command is used to list all S3 buckets in an AWS account?', 'aws s3 create-bucket', 'aws s3 delete-bucket', 'aws s3 ls', 'aws s3 cp', 'aws s3 ls'),
+(10, 'How can you upload a file to an S3 bucket using the AWS CLI?', 'aws s3 put-object', 'aws s3 copy', 'aws s3 upload', 'aws s3 sync', 'aws s3 put-object'),
+(10, 'What is the maximum size of a single object that can be uploaded to Amazon S3?', '1 GB', '5 GB', '10 GB', '5 TB', '5 TB'),
+(10, 'Which AWS CLI command is used to create a new hosted zone in Route 53?', 'aws route53 create-hosted-zone', 'aws route53 delete-hosted-zone', 'aws route53 list-hosted-zones', 'aws route53 change-resource-record-sets', 'aws route53 create-hosted-zone'),
+(10, 'What is the primary purpose of Amazon S3?', 'To deploy and manage virtual servers', 'To provide scalable compute capacity', 'To store and retrieve data objects', 'To manage domain name system (DNS) records', 'To store and retrieve data objects'),
+(10, 'How can you copy files from one S3 bucket to another using the AWS CLI?', 'aws s3 mv', 'aws s3 sync', 'aws s3 cp', 'aws s3 ls', 'aws s3 cp'),
+(10, 'What does Route 53 refer to in AWS?', 'A content delivery network (CDN) service', 'A database service for real-time analytics', 'A managed domain name system (DNS) web service', 'A file storage service for archiving data', 'A managed domain name system (DNS) web service'),
+(11, 'What is AWS CloudWatch primarily used for?', 'Monitoring and logging AWS resources and applications', 'Provisioning and managing cloud infrastructure', 'Storing and retrieving data objects in the cloud', 'Managing domain name system (DNS) records', 'Monitoring and logging AWS resources and applications'),
+(11, 'Which AWS service provides automated actions based on predefined metrics or thresholds?', 'Amazon EC2', 'Amazon S3', 'AWS CloudWatch', 'AWS Lambda', 'AWS CloudWatch'),
+(11, 'What type of information can AWS CloudWatch collect and track?', 'Performance metrics', 'Security logs', 'Database queries', 'File storage usage', 'Performance metrics'),
+(11, 'Which of the following is NOT a component of AWS CloudWatch?', 'Alarms', 'Events', 'Dashboards', 'Templates', 'Templates'),
+(11, 'What is the main purpose of AWS CloudFormation?', 'Monitoring AWS resources and applications', 'Storing and retrieving data objects in the cloud', 'Provisioning and managing AWS infrastructure as code', 'Managing domain name system (DNS) records', 'Provisioning and managing AWS infrastructure as code'),
+(11, 'Which file format is commonly used for defining AWS CloudFormation templates?', 'YAML', 'JSON', 'XML', 'CSV', 'JSON'),
+(11, 'What is the benefit of using AWS CloudFormation templates?', 'They provide real-time monitoring of AWS resources', 'They allow for the creation of customized virtual servers', 'They enable the automated provisioning and management of AWS resources', 'They facilitate data transfer between different AWS regions', 'They enable the automated provisioning and management of AWS resources'),
+(11, 'How can AWS CloudFormation templates be executed?', 'Through the AWS Management Console only', 'Via the AWS CLI and SDKs', 'By writing custom scripts in Python', 'Through third-party cloud management platforms', 'Via the AWS CLI and SDKs'),
+(12, 'What is AWS Lambda primarily used for?', 'Managing relational databases', 'Running serverless applications', 'Storing and retrieving data objects', 'Managing domain name system (DNS) records', 'Running serverless applications'),
+(12, 'Which of the following statements best describes AWS Lambda?', 'It is a fully managed relational database service.', 'It is a serverless compute service that runs code in response to events.', 'It is a content delivery network (CDN) service for web applications.', 'It is a file storage service for archiving data.', 'It is a serverless compute service that runs code in response to events.'),
+(12, 'What programming languages are supported by AWS Lambda?', 'Only Python', 'Only Java', 'Python, Java, Node.js, and more', 'Only Node.js', 'Python, Java, Node.js, and more'),
+(12, 'How is AWS Lambda pricing calculated?', 'Based on the number of Lambda functions deployed', 'Based on the number of times a Lambda function is invoked and the duration of its execution', 'Based on the amount of data transferred through Lambda functions', 'Based on the number of AWS regions where Lambda functions are deployed', 'Based on the number of times a Lambda function is invoked and the duration of its execution'),
+(12, 'What is AWS CloudFront primarily used for?', 'Managing relational databases', 'Running serverless applications', 'Content delivery and acceleration for web applications', 'Managing domain name system (DNS) records', 'Content delivery and acceleration for web applications'),
+(12, 'Which of the following best describes AWS CloudFront?', 'It is a fully managed relational database service.', 'It is a serverless compute service that runs code in response to events.', 'It is a content delivery network (CDN) service for web applications.', 'It is a file storage service for archiving data.', 'It is a content delivery network (CDN) service for web applications.'),
+(12, 'What is the benefit of using AWS CloudFront?', 'Improved database performance', 'Enhanced serverless application deployment', 'Reduced latency and improved content delivery speed', 'Simplified DNS management', 'Reduced latency and improved content delivery speed'),
+(12, 'How does AWS CloudFront accelerate content delivery?', 'By caching content at AWS data centers located around the world', 'By compressing data before delivery to end users', 'By optimizing database queries for faster response times', 'By encrypting data in transit to improve security', 'By caching content at AWS data centers located around the world');
 
 -- --------------------------------------------------------
 
@@ -487,7 +618,7 @@ ALTER TABLE `inquiry`
 -- AUTO_INCREMENT for table `lecture`
 --
 ALTER TABLE `lecture`
-  MODIFY `lecture_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `lecture_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `payment`
@@ -499,7 +630,7 @@ ALTER TABLE `payment`
 -- AUTO_INCREMENT for table `quiz`
 --
 ALTER TABLE `quiz`
-  MODIFY `q_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `q_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `salary`

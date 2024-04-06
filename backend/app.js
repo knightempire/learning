@@ -589,14 +589,28 @@ app.post('/api/uploadvideo', async (req, res) => {
 
 // Route for retrieving lecture data
 app.post('/api/lecture', async (req, res) => {
-    const { c_id } = req.body; // Assuming c_id is passed in the request body
+    const { s_id } = req.body; // Assuming s_id is passed in the request body
 
     try {
         console.log('API lecture requested');
-        // Query the database to retrieve lecture data based on the provided course ID
+
+        // Query the database to retrieve course ID (c_id) for the provided student ID (s_id)
+        const [studentData] = await pool.execute('SELECT c_id FROM student WHERE s_id = ?', [s_id]);
+
+        // Check if any course ID is found for the provided student ID
+        if (studentData.length === 0) {
+            // If no course ID is found, return an error
+            console.log("No course found for the provided student ID")
+            return res.status(404).json({ error: 'No course found for the provided student ID' });
+        }
+
+        // Extract the course ID (c_id) from the retrieved student data
+        const { c_id } = studentData[0];
+
+        // Query the database to retrieve lecture data based on the obtained course ID
         const [lectureData] = await pool.execute('SELECT * FROM lecture WHERE c_id = ?', [c_id]);
 
-        // Check if any lecture data is found for the provided course ID
+        // Check if any lecture data is found for the obtained course ID
         if (lectureData.length === 0) {
             // If no lecture data is found, return an error
             console.log("No lectures found for the provided course ID")
@@ -640,7 +654,7 @@ app.post('/api/quiz', async (req, res) => {
 
 
 // Route for adding new quiz
-app.post('/api/quiz', async (req, res) => {
+app.post('/api/uploadquiz', async (req, res) => {
     const { c_id, lecture_id, no_of_questions, total_marks } = req.body; 
 
     try {
