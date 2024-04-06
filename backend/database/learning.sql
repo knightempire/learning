@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 06, 2024 at 07:55 AM
+-- Generation Time: Apr 06, 2024 at 01:16 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -158,7 +158,17 @@ INSERT INTO `lecture` (`lecture_id`, `title`, `video_url`, `c_id`) VALUES
 (17, 'Cloud Formation Template', 'https://www.youtube.com/embed/ov4WmWgQgsA?si=XZw9-10maMtsep5J', 4),
 (18, 'Cloud Watch', 'https://www.youtube.com/embed/u4XngwbY-O0?si=32obtYgzDJQrtuVJ', 4),
 (19, 'AWS Lambda Introduction', 'https://www.youtube.com/embed/5fTtmeCpSRw?si=pI_Mn2HWzqbd5S5v', 4),
-(20, 'AWS Cloud Front', 'https://www.youtube.com/embed/yhieOhvHz6Q?si=8HcWgMtpRkAVzsjm', 4);
+(20, 'AWS Cloud Front', 'https://www.youtube.com/embed/yhieOhvHz6Q?si=8HcWgMtpRkAVzsjm', 4),
+(21, 'Introduction to HTML', 'https://www.youtube.com/embed/salY_Sm6mv4?si=Qdkrji00wbrR8Rnw', 1),
+(22, 'HTML Forms', 'https://www.youtube.com/embed/YwbIeMlxZAU?si=7hhfskXvSyiROEAL', 1),
+(23, 'CSS Flexbox - Introduction and Basics', 'https://www.youtube.com/embed/GCmoZTIysuE?si=SOqX4w2sI-LduoUI', 1),
+(24, 'Advanced HTML Elements', 'https://www.youtube.com/embed/1rbo_HHt5nw?si=iLo6pvx07QOToBFI', 1),
+(25, 'Stop HTML,CSS,JS Learn this & Become FRONTEND Developer', 'https://www.youtube.com/embed/K-kWkyUVqhg?si=TdKB_7GhD5gs7jJT', 1),
+(26, 'Advanced CSS Gradients | Linear, Radial | Detailed Video With Examples', 'https://www.youtube.com/embed/MLdSeJr1R_g?si=qQUc7riiGRCC-WTo', 1),
+(27, 'Responsive Navigation Bar with HTML CSS and Javascript | Responsive Menu', 'https://www.youtube.com/embed/XZsuI5wyRzs?si=BvGC8TpcKHd4fQ14', 1),
+(28, 'Social media buttons with amazing animation on hover using html & css', 'https://www.youtube.com/embed/fDm0WJ_66d0?si=5DclVWTq53S8STFk', 1),
+(29, 'CSS Skewed Border | Creative Box Border Hover Effects | Html CSS', 'https://www.youtube.com/embed/-1U62fdmCk4?si=BUFaCeoohFWuAmAe', 1),
+(30, 'CSS Glowing Icon with Text Typing Animation Effects | CSS Neon Glow Effect Animation', 'https://www.youtube.com/embed/Dw1ucY0TOrY?si=-yzb6vUBNmX4Mzlc', 1);
 
 -- --------------------------------------------------------
 
@@ -266,7 +276,13 @@ INSERT INTO `quiz` (`q_id`, `c_id`, `lecture_id`, `no_of_questions`, `total_mark
 (9, 4, 13, 6, 6.00),
 (10, 4, 16, 8, 8.00),
 (11, 4, 18, 8, 8.00),
-(12, 4, 20, 8, 8.00);
+(12, 4, 20, 8, 8.00),
+(14, 1, 21, 10, 10.00),
+(15, 1, 22, 10, 10.00),
+(16, 1, 23, 9, 9.00),
+(17, 1, 24, 9, 9.00),
+(18, 1, 25, 10, 10.00),
+(19, 1, 26, 10, 10.00);
 
 -- --------------------------------------------------------
 
@@ -367,7 +383,56 @@ INSERT INTO `quiz_info` (`q_id`, `question`, `a`, `b`, `c`, `d`, `answer`) VALUE
 (12, 'What is AWS CloudFront primarily used for?', 'Managing relational databases', 'Running serverless applications', 'Content delivery and acceleration for web applications', 'Managing domain name system (DNS) records', 'Content delivery and acceleration for web applications'),
 (12, 'Which of the following best describes AWS CloudFront?', 'It is a fully managed relational database service.', 'It is a serverless compute service that runs code in response to events.', 'It is a content delivery network (CDN) service for web applications.', 'It is a file storage service for archiving data.', 'It is a content delivery network (CDN) service for web applications.'),
 (12, 'What is the benefit of using AWS CloudFront?', 'Improved database performance', 'Enhanced serverless application deployment', 'Reduced latency and improved content delivery speed', 'Simplified DNS management', 'Reduced latency and improved content delivery speed'),
-(12, 'How does AWS CloudFront accelerate content delivery?', 'By caching content at AWS data centers located around the world', 'By compressing data before delivery to end users', 'By optimizing database queries for faster response times', 'By encrypting data in transit to improve security', 'By caching content at AWS data centers located around the world');
+(12, 'How does AWS CloudFront accelerate content delivery?', 'By caching content at AWS data centers located around the world', 'By compressing data before delivery to end users', 'By optimizing database queries for faster response times', 'By encrypting data in transit to improve security', 'By caching content at AWS data centers located around the world'),
+(14, 'What does HTML stand for?', 'Hyper Text Markup Language', 'High Tech Markup Language', 'Hyperlinks and Text Markup Language', 'Home Tool Markup Language', 'Hyper Text Markup Language'),
+(14, 'Which tag is used to define a hyperlink in HTML?', '<link>', '<href>', '<a>', '<hyperlink>', '<a>'),
+(14, 'What is the correct HTML for creating a hyperlink?', '<a>http://www.example.com</a>', '<a href=\"http://www.example.com\">Click here</a>', '<a url=\"http://www.example.com\">Click here</a>', '<a link=\"http://www.example.com\">Click here</a>', '<a href=\"http://www.example.com\">Click here</a>'),
+(14, 'Which tag is used to define an unordered list in HTML?', '<ol>', '<list>', '<ul>', '<unorderedlist>', '<ul>'),
+(14, 'What is the correct HTML for adding a background color to a webpage?', '<body style=\"background-color:yellow;\">', '<body bg=\"yellow\">', '<body background=\"yellow\">', '<background color=\"yellow\">', '<body style=\"background-color:yellow;\">'),
+(14, 'Which HTML tag is used to define the structure of a table?', '<table>', '<tab>', '<tr>', '<td>', '<table>'),
+(14, 'What is the correct HTML for creating a checkbox?', '<input type=\"check\">', '<input type=\"checkbox\">', '<check>', '<checkbox>', '<input type=\"checkbox\">'),
+(14, 'Which tag is used to define a section or division in an HTML document?', '<div>', '<section>', '<division>', '<sep>', '<div>'),
+(14, 'What is the correct HTML for inserting an image?', '<img src=\"image.jpg\" alt=\"MyImage\">', '<image src=\"image.jpg\" alt=\"MyImage\">', '<img=\"image.jpg\" alt=\"MyImage\">', '<insert image=\"image.jpg\" alt=\"MyImage\">', '<img src=\"image.jpg\" alt=\"MyImage\">'),
+(14, 'Which tag is used to define a paragraph in HTML?', '<p>', '<para>', '<paragraph>', '<ph>', '<p>'),
+(15, 'What HTML element is used to define a section of navigation links?', '<nav>', '<section>', '<div>', '<header>', '<nav>'),
+(15, 'Which HTML element is used to group a set of related form elements together?', '<fieldset>', '<group>', '<formset>', '<formgroup>', '<fieldset>'),
+(15, 'What is the purpose of the <details> element in HTML?', 'To define a list of details', 'To define a section that can be toggled to show or hide content', 'To define a section of navigation links', 'To define a section of metadata for the document', 'To define a section that can be toggled to show or hide content'),
+(15, 'How can you embed a video in an HTML document?', 'Using the <video> element', 'Using the <media> element', 'Using the <embed> element', 'Using the <movie> element', 'Using the <video> element'),
+(15, 'Which HTML element is used to display computer code?', '<code>', '<pre>', '<var>', '<samp>', '<code>'),
+(15, 'What is the purpose of the <canvas> element in HTML?', 'To display graphics', 'To define a client-side image map', 'To embed external content', 'To create animations', 'To display graphics'),
+(15, 'How can you create a table with alternating row colors using only HTML?', 'By using the <table> element and applying CSS for alternate rows', 'By using the <tr> element and applying CSS for alternate rows', 'By using the <tbody> element and applying CSS for alternate rows', 'By using the <col> element and applying CSS for alternate rows', 'By using the <table> element and applying CSS for alternate rows'),
+(15, 'What is the purpose of the <progress> element in HTML?', 'To display the progress of a task', 'To define a client-side image map', 'To create a group of related form elements', 'To display computer code', 'To display the progress of a task'),
+(15, 'How can you add a background image to a webpage using CSS?', 'Using the background-image property', 'Using the background-color property', 'Using the image property', 'Using the background property', 'Using the background-image property'),
+(15, 'Which HTML element is used to define a client-side image map?', '<map>', '<image>', '<area>', '<imagemap>', '<map>'),
+(17, 'Which HTML element is used to embed interactive, programmable objects like games or video players into web pages?', '<applet>', '<object>', '<embed>', '<iframe>', '<object>'),
+(17, 'What is the purpose of the <details> element in HTML?', 'To define a list of details', 'To define a section that can be toggled to show or hide content', 'To define a section of navigation links', 'To define a section of metadata for the document', 'To define a section that can be toggled to show or hide content'),
+(17, 'Which HTML element is used to define navigation links?', '<nav>', '<links>', '<navigation>', '<navbar>', '<nav>'),
+(17, 'What is the purpose of the <figcaption> element in HTML?', 'To define a caption for a <figure> element', 'To define a caption for an image', 'To define a caption for a table', 'To define a caption for a video', 'To define a caption for a <figure> element'),
+(17, 'Which HTML element is used to define a container for an external application or interactive content?', '<object>', '<applet>', '<embed>', '<iframe>', '<object>'),
+(17, 'What is the purpose of the <main> element in HTML?', 'To define the main content of a document', 'To define the header of a document', 'To define the footer of a document', 'To define a sidebar in a document', 'To define the main content of a document'),
+(17, 'What is the purpose of the <mark> element in HTML?', 'To highlight text', 'To define a section of text that is a keyboard shortcut', 'To define a section of text that is user input', 'To define a section of text that is a variable', 'To highlight text'),
+(17, 'Which HTML element is used to define a container for content that should be visually presented as a separate section of the page?', '<section>', '<div>', '<article>', '<aside>', '<section>'),
+(17, 'What is the purpose of the <menu> element in HTML?', 'To define a list/menu of commands', 'To define a list/menu of navigation links', 'To define a list/menu of options', 'To define a list/menu of settings', 'To define a list/menu of commands'),
+(18, 'What is the correct syntax for creating a linear gradient in CSS?', 'background: linear-gradient(to right, red, blue);', 'background: linear-gradient(red, blue);', 'linear-gradient: red, blue;', 'background: gradient-linear(red, blue);', 'background: linear-gradient(to right, red, blue);'),
+(18, 'Which property is used to specify the direction of a linear gradient?', 'gradient-direction', 'gradient-angle', 'background-direction', 'background-angle', 'background-direction'),
+(18, 'Which of the following values can be used with the radial-gradient() function to create a circle?', 'circle', 'ellipse', 'radial', 'circular', 'circle'),
+(18, 'How can you create a radial gradient that starts from the center and ends at the edges of the element?', 'background: radial-gradient(ellipse at center, red, blue);', 'background: radial-gradient(circle at center, red, blue);', 'background: radial-gradient(circle, red, blue);', 'background: radial-gradient(ellipse, red, blue);', 'background: radial-gradient(circle at center, red, blue);'),
+(18, 'What is the correct syntax for specifying the size of a radial gradient?', 'radial-gradient(size, color1, color2);', 'radial-gradient(color1, color2, size);', 'radial-gradient(color1, size, color2);', 'radial-gradient(color1, color2);', 'radial-gradient(color1, size, color2);'),
+(18, 'Which of the following CSS properties is used to control the shape of a radial gradient?', 'background-size', 'gradient-shape', 'radial-shape', 'gradient-size', 'background-size'),
+(18, 'In a radial gradient, what does the closest-side value do?', 'Starts the gradient from the center and ends at the closest side of the element', 'Starts the gradient from the farthest side and ends at the closest side of the element', 'Starts the gradient from the closest side and ends at the farthest side of the element', 'Starts the gradient from the farthest side and ends at the farthest side of the element', 'Starts the gradient from the center and ends at the closest side of the element'),
+(18, 'How can you create a repeating linear gradient that goes from left to right?', 'background: repeating-linear-gradient(to right, red, blue);', 'background: repeating-linear-gradient(red, blue);', 'background: repeating-gradient-linear(to right, red, blue);', 'background: linear-gradient(repeat, red, blue);', 'background: repeating-linear-gradient(to right, red, blue);'),
+(18, 'Which of the following is true about gradients in CSS?', 'Gradients can only have two colors', 'Gradients can have multiple colors', 'Gradients can only be linear', 'Gradients can only be radial', 'Gradients can have multiple colors'),
+(18, 'How can you specify the starting and ending points of a linear gradient in CSS?', 'By using the from and to keywords', 'By using the start and end keywords', 'By using percentage values', 'By using the angle keyword', 'By using the from and to keywords'),
+(19, 'Which of the following is not a valid HTML5 semantic element?', '<section>', '<div>', '<article>', '<nav>', '<div>'),
+(19, 'How can you include an external CSS file in an HTML document?', '<link rel=\"stylesheet\" href=\"styles.css\">', '<style src=\"styles.css\">', '<css src=\"styles.css\">', '<stylesheet>styles.css</stylesheet>', '<link rel=\"stylesheet\" href=\"styles.css\">'),
+(19, 'What is the purpose of the box-sizing property in CSS?', 'It sets the size of the text box in a form.', 'It defines how the total width and height of an element are calculated.', 'It specifies the spacing between the borders of an element', 'It determines the layout of child elements within a container', 'It defines how the total width and height of an element are calculated'),
+(19, 'Which CSS property is used to create a shadow effect around an element\'s box?', 'box-shadow', 'text-shadow', 'shadow-effect', 'border-shadow', 'box-shadow'),
+(19, 'How can you make an element\'s text italicized in CSS?', 'font-style: italic;', 'text-decoration: italic;', 'font-weight: italic;', 'text-style: italic;', 'font-style: italic;'),
+(19, 'What does the display: inline-block; property do in CSS?', 'It displays an element as an inline-level block container', 'It displays an element as an inline-level block box', 'It hides an element from the display', 'It makes an element float to the left or right of its container.', 'It displays an element as an inline-level block box'),
+(19, 'How can you center an element horizontally in CSS?', 'text-align: center;', 'align: center;', 'margin: auto;', 'horizontal-align: center;', 'margin: auto;'),
+(19, 'What is the purpose of the <meta> tag in HTML?', 'To create a new section in the document.', 'To define metadata about the document, such as authorship or keywords.', 'To include an image in the document', 'To specify the character encoding of the document.', 'To define metadata about the document, such as authorship or keywords.'),
+(19, 'How can you create a horizontal navigation bar in HTML and CSS?', 'Using an unordered list (<ul>) with list items (<li>) styled as inline-block elements', 'Using a series of div elements styled with display: inline;', 'Using a table with table rows and cells', 'Using a series of anchor elements (<a>) styled as inline elements.', 'Using an unordered list (<ul>) with list items (<li>) styled as inline-block elements'),
+(19, 'Which CSS property is used to change the color of text?', 'text-color', 'color', 'font-color', 'text-style', 'color');
 
 -- --------------------------------------------------------
 
@@ -618,7 +683,7 @@ ALTER TABLE `inquiry`
 -- AUTO_INCREMENT for table `lecture`
 --
 ALTER TABLE `lecture`
-  MODIFY `lecture_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `lecture_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `payment`
@@ -630,7 +695,7 @@ ALTER TABLE `payment`
 -- AUTO_INCREMENT for table `quiz`
 --
 ALTER TABLE `quiz`
-  MODIFY `q_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `q_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `salary`

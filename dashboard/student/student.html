@@ -140,7 +140,7 @@
           <span class="menu-item-label">quiz</span>
           <span class="icon"><i class="mdi mdi-plus"></i></span>
       </a>
-      <ul id="lecture-dropdown-items">
+      <ul id="quiz-dropdown-items">
           <!-- Dropdown items will be dynamically populated here -->
       </ul>
   </li>
@@ -218,10 +218,32 @@
     <h2>graph</h2>
    </section>
 
-    <iframe id="video-frame" width="560" height="315" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-  </section>
+   <section class="quiztest">
 
-  
+
+   </section>
+   <div id="video-frame-container">
+    <iframe id="video-frame" width="560" height="315" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>  
+
+</section>
+
+<style>
+  #video-frame-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin-top: -7%;
+  }
+
+  #video-frame {
+    width: 80%; /* Set the width of the video to cover 60% of the viewport */
+    height: 75%; /* Allow the height to adjust proportionally based on the width */
+  }
+</style>
+
+
 
 <footer class="footer">
   <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0">
@@ -272,7 +294,11 @@
 </body>
 </html>
 
+
+
 <script>
+
+
   // Retrieve the token from local storage
   const token = localStorage.getItem('Token');
 
@@ -334,33 +360,42 @@
                   document.getElementById('video-frame').src = lecture.video_url;
                   // Hide the progress section
                   document.querySelector('.progress').style.display = 'none';
-
-                  // Send the c_id to the /api/quiz endpoint
-                  fetch('https://learning-u7aw.onrender.com/api/quiz', {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify({ c_id: c_id })
-                  })
-                  .then(response => {
-                      if (!response.ok) {
-                          throw new Error('Network response was not ok.');
-                      }
-                      return response.json();
-                  })
-                  .then(data => {
-                      // Handle the response from the server
-                      console.log('Response from /api/quiz:', data);
-                      // You can process the quiz data here
-                  })
-                  .catch(error => {
-                      // Handle any errors that occur during the fetch
-                      console.error('Error in /api/quiz request:', error);
-                  });
               });
               li.appendChild(anchor);
               lectureDropdownItems.appendChild(li);
+          });
+
+          // After populating the dropdown, call the /api/quiz endpoint
+          fetch('https://learning-u7aw.onrender.com/api/quiz', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ c_id: c_id })
+          })
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Network response was not ok.');
+              }
+              return response.json();
+          })
+          .then(data => {
+              // Handle the response from the server
+              console.log('Response from /api/quiz:', data);
+              // Dynamically populate the quiz dropdown menu with quiz titles
+              const quizDropdownItems = document.getElementById('quiz-dropdown-items');
+              data.data.forEach(quiz => {
+                  const li = document.createElement('li');
+                  const anchor = document.createElement('a');
+                  anchor.href = '#';
+                  anchor.textContent = quiz.title;
+                  li.appendChild(anchor);
+                  quizDropdownItems.appendChild(li);
+              });
+          })
+          .catch(error => {
+              // Handle any errors that occur during the fetch
+              console.error('Error in /api/quiz request:', error);
           });
       })
       .catch(error => {
@@ -372,4 +407,17 @@
       // Handle any errors that occur during the fetch
       console.error('Error in /api/decodeToken request:', error);
   });
+</script>
+
+
+
+<script>
+  function logout() {
+  console.log("button clicked")
+  // Remove the token from localStorage
+  localStorage.removeItem('Token');
+
+  // Redirect to index.html
+  window.location.href = '../../index.html';
+}
 </script>

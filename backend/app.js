@@ -594,7 +594,7 @@ app.post('/api/lecture', async (req, res) => {
     try {
         console.log('API lecture requested');
 
-        // Query the database to retrieve course ID (c_id) for the provided student ID (s_id)
+        // Query the database to retrieve course ID (c_id) and course name for the provided student ID (s_id)
         const [studentData] = await pool.execute('SELECT c_id FROM student WHERE s_id = ?', [s_id]);
 
         // Check if any course ID is found for the provided student ID
@@ -607,8 +607,13 @@ app.post('/api/lecture', async (req, res) => {
         // Extract the course ID (c_id) from the retrieved student data
         const { c_id } = studentData[0];
 
-        // Query the database to retrieve lecture data based on the obtained course ID
-        const [lectureData] = await pool.execute('SELECT * FROM lecture WHERE c_id = ?', [c_id]);
+        // Query the database to retrieve lecture data and course name based on the obtained course ID
+        const [lectureData] = await pool.execute(`
+            SELECT lecture.*, course.course_name 
+            FROM lecture 
+            JOIN course ON lecture.c_id = course.c_id 
+            WHERE lecture.c_id = ?
+        `, [c_id]);
 
         // Check if any lecture data is found for the obtained course ID
         if (lectureData.length === 0) {
