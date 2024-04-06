@@ -31,73 +31,61 @@
     </div>
 
     <script>
-        // Function to fetch quiz data from the API
-        async function fetchQuizData(q_id) {
-            try {
-                const response = await fetch('https://learning-u7aw.onrender.com/api/quizinfo', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ q_id: q_id })
-                });
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                console.log('Quiz Data:', data.quizInfo); // Print quiz data in console
-                return data.quizInfo;
-            } catch (error) {
-                console.error('Error fetching quiz data:', error);
-                return [];
-            }
-        }
-
-        // Global variables
+        let quizData = [];
         let currentQuestion = 0;
         let correctAnswers = 0;
         let wrongAnswers = 0;
-        let quizData = [];
 
-        // Function to load a new question
-        function loadQuestion() {
-            try {
-                const questionDiv = document.createElement('div');
-                questionDiv.classList.add('question', 'mb-3');
-
-                const questionNumber = currentQuestion + 1;
-
-                questionDiv.innerHTML = `
-                    <h3>Question ${questionNumber}: ${quizData[currentQuestion].question}</h3>
-                    <div id="optionsContainer" class="mt-3">
-                        <!-- Options will be dynamically added here -->
-                    </div>
-                `;
-
-                const optionsContainer = questionDiv.querySelector('#optionsContainer');
-                quizData[currentQuestion].options.forEach((option, index) => {
-                    const optionInput = document.createElement('input');
-                    optionInput.type = 'radio';
-                    optionInput.name = 'option';
-                    optionInput.value = option;
-                    optionInput.id = `option${index}`;
-                    optionInput.classList.add('mr-2');
-                    const optionLabel = document.createElement('label');
-                    optionLabel.textContent = option;
-                    optionLabel.setAttribute('for', `option${index}`);
-                    optionsContainer.appendChild(optionInput);
-                    optionsContainer.appendChild(optionLabel);
-                    optionsContainer.appendChild(document.createElement('br'));
-                });
-
-                document.getElementById('questionContainer').innerHTML = '';
-                document.getElementById('questionContainer').appendChild(questionDiv);
-            } catch (error) {
-                console.error('Error loading question:', error);
-            }
+        function fetchQuizData() {
+            fetch('https://learning-u7aw.onrender.com/api/quizinfo')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                quizData = data;
+                loadQuestion();
+            })
+            .catch(error => {
+                console.error('There was a problem fetching quiz data:', error);
+            });
         }
 
-        // Function to handle option selection
+        function loadQuestion() {
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question', 'mb-3');
+
+            const questionNumber = currentQuestion + 1;
+
+            questionDiv.innerHTML = `
+                <h3>Question ${questionNumber}: ${quizData[currentQuestion].question}</h3>
+                <div id="optionsContainer" class="mt-3">
+                    <!-- Options will be dynamically added here -->
+                </div>
+            `;
+            
+            const optionsContainer = questionDiv.querySelector('#optionsContainer');
+            quizData[currentQuestion].options.forEach((option, index) => {
+                const optionInput = document.createElement('input');
+                optionInput.type = 'radio';
+                optionInput.name = 'option';
+                optionInput.value = option;
+                optionInput.id = `option${index}`;
+                optionInput.classList.add('mr-2');
+                const optionLabel = document.createElement('label');
+                optionLabel.textContent = option;
+                optionLabel.setAttribute('for', `option${index}`);
+                optionsContainer.appendChild(optionInput);
+                optionsContainer.appendChild(optionLabel);
+                optionsContainer.appendChild(document.createElement('br'));
+            });
+
+            document.getElementById('questionContainer').innerHTML = '';
+            document.getElementById('questionContainer').appendChild(questionDiv);
+        }
+
         function selectOption() {
             const selectedOption = document.querySelector('input[name="option"]:checked').value;
             if (selectedOption === quizData[currentQuestion].answer) {
@@ -115,7 +103,6 @@
             }
         }
 
-        // Function to display result upon form submission
         function displayResult() {
             document.getElementById('result').innerHTML = `
                 <h3>Quiz Result</h3>
@@ -124,29 +111,16 @@
             `;
         }
 
-        // Event listener for form submission
         document.getElementById('quizForm').addEventListener('submit', function(event) {
             event.preventDefault();
             displayResult();
         });
 
-        // Event listener for "Next" button
         document.getElementById('nextBtn').addEventListener('click', function() {
             selectOption();
         });
 
-        // Fetch quiz data and load the first question on page load
-        const quizId = 1; // Set the quiz ID here
-        fetchQuizData(quizId).then(data => {
-            quizData = data;
-            if (quizData.length > 0) {
-                loadQuestion();
-            } else {
-                console.error('No quiz data found.');
-            }
-        }).catch(error => {
-            console.error('Error loading quiz data:', error);
-        });
+        fetchQuizData();
     </script>
 </body>
 </html>
