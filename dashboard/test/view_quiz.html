@@ -4,20 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Form</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* Styles for the .question class */
         .question {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-        }
+    background-color: #f8f9fa;
+    padding: 20px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    margin-bottom: 20px; /* Add some margin bottom for spacing */
+}
+
+.btn {
+    margin-right: 10px; /* Add margin between buttons */
+    padding: 10px 20px; /* Adjust padding for better button appearance */
+    border: none; /* Remove default button border */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    border-radius: 5px; /* Add rounded corners */
+}
+
+
+.btn-primary {
+    background-color: #007bff; /* Change background color for primary buttons */
+    color: #fff; /* Change text color for primary buttons */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Change background color on hover for primary buttons */
+}
+
     </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center">Quiz Form</h1>
+        <!-- <h1 class="text-center">Quiz Form</h1> -->
         <form id="quizForm">
             <div id="questionContainer">
                 <!-- Questions will be dynamically added here -->
@@ -37,7 +56,18 @@
         let wrongAnswers = 0;
 
         function fetchQuizData() {
-            fetch('https://learning-u7aw.onrender.com/api/quizinfo')
+            const q_id = 1; // Assuming the question ID is 1
+            const requestBody = {
+                q_id: q_id
+            };
+
+            fetch('https://learning-u7aw.onrender.com/api/quizinfo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -45,7 +75,7 @@
                 return response.json();
             })
             .then(data => {
-                quizData = data;
+                quizData = data.quizInfo;
                 loadQuestion();
             })
             .catch(error => {
@@ -55,31 +85,35 @@
 
         function loadQuestion() {
             const questionDiv = document.createElement('div');
-            questionDiv.classList.add('question', 'mb-3');
+            questionDiv.classList.add('question');
 
             const questionNumber = currentQuestion + 1;
 
             questionDiv.innerHTML = `
-                <h3>Question ${questionNumber}: ${quizData[currentQuestion].question}</h3>
+                <h3> ${questionNumber}: ${quizData[currentQuestion].question}</h3>
                 <div id="optionsContainer" class="mt-3">
                     <!-- Options will be dynamically added here -->
                 </div>
             `;
             
             const optionsContainer = questionDiv.querySelector('#optionsContainer');
-            quizData[currentQuestion].options.forEach((option, index) => {
-                const optionInput = document.createElement('input');
-                optionInput.type = 'radio';
-                optionInput.name = 'option';
-                optionInput.value = option;
-                optionInput.id = `option${index}`;
-                optionInput.classList.add('mr-2');
-                const optionLabel = document.createElement('label');
-                optionLabel.textContent = option;
-                optionLabel.setAttribute('for', `option${index}`);
-                optionsContainer.appendChild(optionInput);
-                optionsContainer.appendChild(optionLabel);
-                optionsContainer.appendChild(document.createElement('br'));
+            const options = ['a', 'b', 'c', 'd']; // Options columns
+            options.forEach((optionKey, index) => {
+                const optionValue = quizData[currentQuestion][optionKey];
+                if (optionValue) { // Check if option is not null
+                    const optionInput = document.createElement('input');
+                    optionInput.type = 'radio';
+                    optionInput.name = 'option';
+                    optionInput.value = optionValue;
+                    optionInput.id = `option${index}`;
+                    optionInput.classList.add('mr-2');
+                    const optionLabel = document.createElement('label');
+                    optionLabel.textContent = optionValue;
+                    optionLabel.setAttribute('for', `option${index}`);
+                    optionsContainer.appendChild(optionInput);
+                    optionsContainer.appendChild(optionLabel);
+                    optionsContainer.appendChild(document.createElement('br'));
+                }
             });
 
             document.getElementById('questionContainer').innerHTML = '';
@@ -104,6 +138,11 @@
         }
 
         function displayResult() {
+            // Print results in console
+            console.log('Correct Answers:', correctAnswers);
+            console.log('Wrong Answers:', wrongAnswers);
+            
+            // Display results on the page
             document.getElementById('result').innerHTML = `
                 <h3>Quiz Result</h3>
                 <p>Correct Answers: ${correctAnswers}</p>
