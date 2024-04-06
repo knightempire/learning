@@ -676,28 +676,29 @@ app.post('/api/uploadquiz', async (req, res) => {
 });
 
 
-// POST endpoint to retrieve quiz information based on q_id in the request body
+// POST endpoint to retrieve all quiz information based on q_id in the request body
 app.post('/api/quizinfo', async (req, res) => {
     const { q_id } = req.body;
 
     try {
         console.log('API quizinfo requested for quiz ID:', q_id);
         
-        // Query the database to get quiz information based on q_id
+        // Query the database to get all quiz information based on q_id
         const [quizInfoRows] = await pool.execute('SELECT * FROM quiz_info WHERE q_id = ?', [q_id]);
 
-        // Check if quiz information exists
+        // Check if any quiz information exists
         if (quizInfoRows.length === 0) {
-            return res.status(404).json({ error: 'Quiz not found' });
+            return res.status(404).json({ error: 'No quiz information found for the provided quiz ID' });
         }
 
-        // Return the quiz information
-        res.status(200).json({ quizInfo: quizInfoRows[0] });
+        // Return the array of quiz information
+        res.status(200).json({ quizInfo: quizInfoRows });
     } catch (error) {
         console.error('Error fetching quiz information:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 // Route for adding quiz information
 app.post('/api/uploadquizinfo', async (req, res) => {
