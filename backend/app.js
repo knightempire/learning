@@ -677,7 +677,7 @@ app.post('/api/uploadquiz', async (req, res) => {
 
 
 // Route for adding quiz information
-app.post('/api/quizinfo', async (req, res) => {
+app.post('/api/uploadquizinfo', async (req, res) => {
     const { q_id, question, a, b, c, d, answer } = req.body; 
 
     try {

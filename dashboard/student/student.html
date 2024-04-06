@@ -112,7 +112,7 @@
     <p class="menu-label">General</p>
     <ul class="menu-list">
       <li class="inactive">
-        <a href="index.html">
+        <a href="./student.html">
           <span class="icon"><i class="mdi mdi-desktop-mac b"></i></span>
           <span class="menu-item-label">Dashboard</span>
         </a>
@@ -137,7 +137,7 @@
     <li class="">
       <a class="dropdown" id="quiz-dropdown">
           <span class="icon"><i class="mdi mdi-table"></i></span>
-          <span class="menu-item-label">quiz</span>
+          <span class="menu-item-label">Quiz</span>
           <span class="icon"><i class="mdi mdi-plus"></i></span>
       </a>
       <ul id="quiz-dropdown-items">
@@ -193,11 +193,13 @@
   </div>
 </aside>
 
+
+
 <section class="is-title-bar">
   <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
     <ul>
       <li id="course-name-li">course name </li>
-      <li>Lecture</li>
+      <li id="active">Dashboard</li>
     </ul>
   </div>
 </section>
@@ -298,6 +300,32 @@
 
 <script>
 
+  // Function to hide all sections
+  function hideAllSections() {
+    document.querySelector('.progress').style.display = 'none';
+    document.querySelector('.quiztest').style.display = 'none';
+    document.getElementById('video-frame').style.display = 'none';
+  }
+
+  // Function to show progress section and hide others
+  function showProgress() {
+    hideAllSections();
+    document.querySelector('.progress').style.display = 'block';
+  }
+
+  // Function to show iframe and hide others, and update title
+  function showIframe(title) {
+    hideAllSections();
+    document.getElementById('video-frame').style.display = 'block';
+    document.getElementById('video-title').textContent = title;
+  }
+
+  // Function to show quiz section and hide others, and update title
+  function showQuiz(title) {
+    hideAllSections();
+    document.querySelector('.quiztest').style.display = 'block';
+    document.getElementById('video-title').textContent = title;
+  }
 
   // Retrieve the token from local storage
   const token = localStorage.getItem('Token');
@@ -358,8 +386,8 @@
               anchor.addEventListener('click', () => {
                   // When a lecture title is clicked, set the src of the iframe to the corresponding video URL
                   document.getElementById('video-frame').src = lecture.video_url;
-                  // Hide the progress section
-                  document.querySelector('.progress').style.display = 'none';
+                  // Show the iframe and update title
+                  showIframe(lecture.title);
               });
               li.appendChild(anchor);
               lectureDropdownItems.appendChild(li);
@@ -389,6 +417,10 @@
                   const anchor = document.createElement('a');
                   anchor.href = '#';
                   anchor.textContent = quiz.title;
+                  anchor.addEventListener('click', () => {
+                      // Show the quiz section and update title
+                      showQuiz(quiz.title);
+                  });
                   li.appendChild(anchor);
                   quizDropdownItems.appendChild(li);
               });
@@ -409,6 +441,17 @@
   });
 </script>
 
+<section class="is-hero-bar">
+
+
+
+<section class="is-hero-bar">
+  <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
+      <h1 class="title" id="video-title">
+          Progress
+      </h1>
+  </div>
+</section>
 
 
 <script>
@@ -420,4 +463,24 @@
   // Redirect to index.html
   window.location.href = '../../index.html';
 }
+</script>
+
+<script>
+  // Function to handle click event on menu items
+  function handleMenuItemClick(event) {
+    // Remove "active" class from all menu items
+    const menuItems = document.querySelectorAll('.menu-item-label');
+    menuItems.forEach(item => {
+      item.classList.remove('active');
+    });
+    // Add "active" class to the clicked menu item
+    event.target.classList.add('active');
+    // Update the course name to the clicked menu item's label
+    document.getElementById('active').textContent = event.target.textContent;
+  }
+
+  // Add click event listeners to menu items
+  document.querySelectorAll('.menu-item-label').forEach(item => {
+    item.addEventListener('click', handleMenuItemClick);
+  });
 </script>
