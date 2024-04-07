@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 06, 2024 at 01:16 PM
+-- Generation Time: Apr 07, 2024 at 06:37 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -244,7 +244,8 @@ CREATE TABLE `payment` (
 CREATE TABLE `performance` (
   `s_id` int(11) NOT NULL,
   `q_id` int(11) NOT NULL,
-  `mark` decimal(5,2) DEFAULT NULL
+  `mark` decimal(5,2) DEFAULT NULL,
+  `count` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

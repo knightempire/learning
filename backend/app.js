@@ -770,21 +770,32 @@ app.post('/api/quizinfoes/upload', upload.single('excelFile'), async (req, res) 
 
 
 
-app.post('/api/performance', async (req, res) => {
-    const { s_id, q_id, mark } = req.body;
+app.post('/api/perfomance', async (req, res) => {
+    const { s_id, q_id, mark } = req.body; 
 
     try {
-        console.log('API quiz performance upload requested');
-        // Insert the quiz performance information into the database
-        await pool.execute('INSERT INTO quiz_performance (s_id, q_id, mark) VALUES (?, ?, ?)', [s_id, q_id, mark]);
+        console.log('API quiz info upload requested');
+
+        // Check if a record already exists for the given s_id and q_id
+        const [existingRecord] = await pool.execute('SELECT * FROM performance WHERE s_id = ? AND q_id = ?', [s_id, q_id]);
+
+        if (existingRecord.length === 0) {
+            // If no record exists, insert a new one with count set to 1
+            await pool.execute('INSERT INTO performance (s_id, q_id, mark, count) VALUES (?, ?, ?, 1)', [s_id, q_id, mark]);
+        } else {
+            // If a record exists, update the count by incrementing it and update the mark
+            const currentCount = existingRecord[0].count;
+            await pool.execute('UPDATE performance SET count = ?, mark = ? WHERE s_id = ? AND q_id = ?', [currentCount + 1, mark, s_id, q_id]);
+        }
 
         // Return success message
-        res.status(200).json({ message: 'Quiz performance uploaded successfully' });
+        res.status(200).json({ message: 'Quiz information uploaded successfully' });
     } catch (error) {
-        console.error('Error uploading quiz performance:', error);
+        console.error('Error uploading quiz information:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 app.listen(port, () => {
