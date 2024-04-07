@@ -374,8 +374,9 @@
 </html>
 
 
-
 <script>
+  let s_id; // Declare s_id as a global variable
+
   // Function to hide all sections
   function hideAllSections() {
       document.querySelector('.progress').style.display = 'none';
@@ -406,11 +407,6 @@
   // Retrieve the token from local storage
   const token = localStorage.getItem('Token');
 
-  // Function to get user ID from token
-  function getUserID(token) {
-      // Your logic to extract user ID from token
-  }
-
   // Send the token to the server-side API endpoint
   fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
       method: 'POST',
@@ -429,7 +425,7 @@
           // Handle the response from the server
           console.log(data);
           // Check if data contains user_id and print it
-          const s_id = data.user_id;
+          s_id = data.user_id; // Assign value to s_id
           const name = data.name;
           const userNameElement = document.querySelector('.is-user-name span');
           userNameElement.textContent = name;
@@ -455,10 +451,13 @@
 
                   // Print the c_id value of the first lecture
                   const c_id = firstLecture.c_id;
+                  const course_name = firstLecture.course_name;
+                  console.log('course_name:',course_name)
                   console.log('c_id:', c_id);
 
                   // Dynamically populate the dropdown menu with lecture titles
                   const lectureDropdownItems = document.getElementById('lecture-dropdown-items');
+                  
                   data.data.forEach(lecture => {
                       const li = document.createElement('li');
                       const anchor = document.createElement('a');
@@ -505,7 +504,6 @@
                                   fetchQuizData(quiz.q_id);
                               });
                               li.appendChild(anchor);
-
                               quizDropdownItems.appendChild(li);
                           });
                       })
@@ -615,43 +613,49 @@
       console.log('Correct Answers:', correctAnswers);
       console.log('Wrong Answers:', wrongAnswers);
 
-      // Send mark of correct answers to the performance API
-      const token = localStorage.getItem('Token');
-      const userId = getUserID(token); // Assuming you have a function to get the user ID from the token
-
-      const requestBody = {
-          s_id: userId,
-          // Assuming you have access to the current question's q_id
-          q_id: quizData[currentQuestion].q_id,
-          mark: correctAnswers
-      };
-
-      fetch('https://learning-u7aw.onrender.com/api/perfomance', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(requestBody)
-      })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok');
-          }
-          return response.json();
-      })
-      .then(data => {
-          console.log('Quiz information uploaded successfully:', data);
-      })
-      .catch(error => {
-          console.error('Error uploading quiz information:', error);
-      });
+      // Calculate mark (assuming each question carries equal marks)
+      const totalQuestions = quizData.length;
+      const maxMark = totalQuestions;
+      const mark = correctAnswers * (maxMark / totalQuestions);
 
       // Display results on the page
       document.getElementById('result').innerHTML = `
           <h3>Quiz Result</h3>
           <p>Correct Answers: ${correctAnswers}</p>
           <p>Wrong Answers: ${wrongAnswers}</p>
+          <p>Mark: ${mark}</p>
       `;
+
+      // Send the mark to the server-side API
+      sendQuizMark(quizData[0].q_id, s_id, mark);
+  }
+
+  function sendQuizMark(q_id, s_id, mark) {
+      const progressBody = {
+          s_id: s_id,
+          q_id: q_id,
+          mark: mark
+      };
+      console.log(progressBody);
+      fetch('https://learning-u7aw.onrender.com/api/performance', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(progressBody)
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok.');
+          }
+          return response.json();
+      })
+      .then(data => {
+          console.log('Quiz mark sent successfully:', data);
+      })
+      .catch(error => {
+          console.error('Error sending quiz mark:', error);
+      });
   }
 
   document.getElementById('quizForm').addEventListener('submit', function (event) {
@@ -665,6 +669,8 @@
 
   fetchQuizData();
 </script>
+
+
 
 
 
