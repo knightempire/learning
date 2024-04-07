@@ -769,9 +769,9 @@ app.post('/api/quizinfoes/upload', upload.single('excelFile'), async (req, res) 
 });
 
 
-
-app.post('/api/perfomance', async (req, res) => {
-    const { s_id, q_id, mark } = req.body; 
+// Route for quiz performance
+app.post('/api/performance', async (req, res) => {
+    const { s_id, q_id, mark } = req.body;
 
     try {
         console.log('API quiz info upload requested');
@@ -781,13 +781,23 @@ app.post('/api/perfomance', async (req, res) => {
 
         if (existingRecord.length === 0) {
             // If no record exists, insert a new one with count set to 1
-            await pool.execute('INSERT INTO performance (s_id, q_id, mark, count) VALUES (?, ?, ?, 1)', [s_id, q_id, mark]);
-        } else {
-            // If a record exists, update the count by incrementing it and update the mark
-            const currentCount = existingRecord[0].count;
-            await pool.execute('UPDATE performance SET count = ?, mark = ? WHERE s_id = ? AND q_id = ?', [currentCount + 1, mark, s_id, q_id]);
-        }
+            await pool.execute('INSERT INTO performance (s_id, q_id, mark, count, best_score) VALUES (?, ?, ?, 1, ?)', [s_id, q_id, mark, mark]);
 
+        } else {
+            // If a record exists, update the count by incrementing it
+            const currentCount = existingRecord[0].count;
+            let bestScore = existingRecord[0].best_score;
+            
+            // Check if the current mark is greater than the existing best score
+            if (mark > bestScore) {
+                bestScore = mark;
+                await pool.execute('UPDATE performance SET count = ?, mark = ?, best_score = ? WHERE s_id = ? AND q_id = ?', [currentCount + 1, mark, bestScore, s_id, q_id]);
+            } else {
+                // If mark is not greater than the existing best score, only update count and mark
+                await pool.execute('UPDATE performance SET count = ?, mark = ? WHERE s_id = ? AND q_id = ?', [currentCount + 1, mark, s_id, q_id]);
+            }
+        }
+        
         // Return success message
         res.status(200).json({ message: 'Quiz information uploaded successfully' });
     } catch (error) {
@@ -795,6 +805,41 @@ app.post('/api/perfomance', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
+// Route for viewing that performance
+app.get('/api/viewperform', async (req, res) => {
+    const { s_id, q_id } = req.query;
+
+    try {
+        console.log('API view performance requested');
+
+        let query = 'SELECT * FROM performance';
+
+        if (s_id) {
+            query += ' WHERE s_id = ?';
+            const queryParams = [s_id];
+
+            // If q_id is provided, also filter by q_id
+            if (q_id) {
+                query += ' AND q_id = ?';
+                queryParams.push(q_id);
+            }
+
+            const [performanceData] = await pool.execute(query, queryParams);
+            res.status(200).json({ performance: performanceData });
+        } else {
+            // If s_id is not provided, return an error message
+            res.status(400).json({ error: 's_id parameter is required' });
+        }
+    } catch (error) {
+        console.error('Error fetching performance data:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
 
 
 

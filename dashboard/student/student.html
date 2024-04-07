@@ -452,8 +452,11 @@
                   // Print the c_id value of the first lecture
                   const c_id = firstLecture.c_id;
                   const course_name = firstLecture.course_name;
-                  console.log('course_name:',course_name)
+                  console.log('course_name:', course_name);
                   console.log('c_id:', c_id);
+
+                  // Display course_name
+                  document.getElementById('course-name-li').textContent = `${course_name}`;
 
                   // Dynamically populate the dropdown menu with lecture titles
                   const lectureDropdownItems = document.getElementById('lecture-dropdown-items');
@@ -637,7 +640,7 @@
           mark: mark
       };
       console.log(progressBody);
-      fetch('https://learning-u7aw.onrender.com/api/performance', {
+      fetch('https://learning-u7aw.onrender.com/api/perfomance', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
