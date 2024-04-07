@@ -505,6 +505,7 @@
                                   showQuiz(quiz.title);
                                   console.log('Quiz ID:', quiz.q_id);
                                   fetchQuizData(quiz.q_id);
+                                  fetchPerformanceData(s_id, quiz.q_id); // Call the function to fetch performance data
                               });
                               li.appendChild(anchor);
                               quizDropdownItems.appendChild(li);
@@ -640,7 +641,7 @@
           mark: mark
       };
       console.log(progressBody);
-      fetch('https://learning-u7aw.onrender.com/api/perfomance', {
+      fetch('https://learning-u7aw.onrender.com/api/performance', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
@@ -661,6 +662,35 @@
       });
   }
 
+  function fetchPerformanceData(s_id, q_id) {
+      const requestBody = {
+          s_id: s_id,
+          q_id: q_id
+      };
+console.log(fetchPerformanceData)
+      fetch('https://learning-u7aw.onrender.com/api/viewperform', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok.');
+          }
+          return response.json();
+      })
+      .then(data => {
+          // Handle the response from the server
+          console.log('Performance data:', data);
+          // Extract necessary information from performance data if needed
+      })
+      .catch(error => {
+          console.error('Error fetching performance data:', error);
+      });
+  }
+
   document.getElementById('quizForm').addEventListener('submit', function (event) {
       event.preventDefault();
       displayResult();
@@ -672,6 +702,7 @@
 
   fetchQuizData();
 </script>
+
 
 
 
