@@ -406,6 +406,11 @@
   // Retrieve the token from local storage
   const token = localStorage.getItem('Token');
 
+  // Function to get user ID from token
+  function getUserID(token) {
+      // Your logic to extract user ID from token
+  }
+
   // Send the token to the server-side API endpoint
   fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
       method: 'POST',
@@ -610,6 +615,37 @@
       console.log('Correct Answers:', correctAnswers);
       console.log('Wrong Answers:', wrongAnswers);
 
+      // Send mark of correct answers to the performance API
+      const token = localStorage.getItem('Token');
+      const userId = getUserID(token); // Assuming you have a function to get the user ID from the token
+
+      const requestBody = {
+          s_id: userId,
+          // Assuming you have access to the current question's q_id
+          q_id: quizData[currentQuestion].q_id,
+          mark: correctAnswers
+      };
+
+      fetch('https://learning-u7aw.onrender.com/api/perfomance', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return response.json();
+      })
+      .then(data => {
+          console.log('Quiz information uploaded successfully:', data);
+      })
+      .catch(error => {
+          console.error('Error uploading quiz information:', error);
+      });
+
       // Display results on the page
       document.getElementById('result').innerHTML = `
           <h3>Quiz Result</h3>
@@ -629,6 +665,7 @@
 
   fetchQuizData();
 </script>
+
 
 
 
