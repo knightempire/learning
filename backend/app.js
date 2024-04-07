@@ -769,6 +769,24 @@ app.post('/api/quizinfoes/upload', upload.single('excelFile'), async (req, res) 
 });
 
 
+
+app.post('/api/performance', async (req, res) => {
+    const { s_id, q_id, mark } = req.body;
+
+    try {
+        console.log('API quiz performance upload requested');
+        // Insert the quiz performance information into the database
+        await pool.execute('INSERT INTO quiz_performance (s_id, q_id, mark) VALUES (?, ?, ?)', [s_id, q_id, mark]);
+
+        // Return success message
+        res.status(200).json({ message: 'Quiz performance uploaded successfully' });
+    } catch (error) {
+        console.error('Error uploading quiz performance:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 }).on('error', (err) => {
