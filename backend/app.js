@@ -809,7 +809,7 @@ app.post('/api/performance', async (req, res) => {
 
 // Route for viewing that performance
 app.get('/api/viewperform', async (req, res) => {
-    const { s_id, q_id } = req.query;
+    const { s_id, q_id } = req.body;
 
     try {
         console.log('API view performance requested');

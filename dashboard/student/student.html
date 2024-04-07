@@ -663,17 +663,18 @@
   }
 
   function fetchPerformanceData(s_id, q_id) {
-      const requestBody = {
+      const viewperformBody = {
           s_id: s_id,
           q_id: q_id
       };
-console.log(fetchPerformanceData)
+console.log(viewperformBody)
+
       fetch('https://learning-u7aw.onrender.com/api/viewperform', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
           },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify(viewperformBody)
       })
       .then(response => {
           if (!response.ok) {
