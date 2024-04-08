@@ -218,12 +218,13 @@
   <section class="section main-section">
    <section class="progress">
     <h2>graph</h2>
+    <div class="table" style="width: 90%;"></div>
    </section>
 
    <section class="quiztest" style="display: none;">
     <section class="quizstatus">
-<h2 class="best score"> best score </h2> 
-<h2 class="best score"> no of attempts </h2> 
+<h2 class="bestscore"> best score </h2> 
+<h2 class="count"> no of attempts </h2> 
 <h2 class="attempted">Attempted</h2>
 <h2 class="not-attempted">Not attempted</h2>
 </section>
@@ -251,6 +252,52 @@
 </section>
 
 <style>
+  /* Styling for the performance table */
+  .performance-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.performance-table th,
+.performance-table td {
+    border: 1px solid #dddddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.performance-table th {
+    background-color: #f2f2f2;
+}
+
+.performance-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+    #result {
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-top: 20px;
+        border-radius: 5px;
+    }
+
+    #result h3 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    #result p {
+        margin: 5px 0;
+    }
+
+    #result p:first-child {
+        margin-top: 0;
+    }
+
+    #result p:last-child {
+        margin-bottom: 0;
+    }
  .quizstatus {
             display: flex; /* Use flexbox */
             justify-content: space-around; /* Distribute items evenly along the main axis */
@@ -404,6 +451,41 @@
       document.getElementById('video-title').textContent = title;
   }
 
+  // Function to display performance data in a table
+  function displayPerformanceData(performanceData) {
+      const tableContainer = document.querySelector('.table');
+      const table = document.createElement('table');
+      table.classList.add('performance-table');
+
+      // Create table headers
+      const tableHeaders = `
+          <tr>
+              <th>No of Quiz</th>
+              <th>Recent Mark</th>
+              <th>Attempt Count</th>
+              <th>Best Score</th>
+          </tr>
+      `;
+      table.innerHTML = tableHeaders;
+
+      // Populate the table with performance data
+      performanceData.forEach(performance => {
+          const tableRow = `
+              <tr>
+                  <td>${performance.q_id}</td>
+                  <td>${performance.mark}</td>
+                  <td>${performance.count}</td>
+                  <td>${performance.best_score}</td>
+              </tr>
+          `;
+          table.innerHTML += tableRow;
+      });
+
+      // Append the table to the table container
+      tableContainer.innerHTML = '';
+      tableContainer.appendChild(table);
+  }
+
   // Retrieve the token from local storage
   const token = localStorage.getItem('Token');
 
@@ -429,6 +511,9 @@
           const name = data.name;
           const userNameElement = document.querySelector('.is-user-name span');
           userNameElement.textContent = name;
+
+          // Call function to view all performance data
+          viewAllPerformanceData(s_id);
 
           // Send the s_id to the /api/lecture endpoint
           fetch('https://learning-u7aw.onrender.com/api/lecture', {
@@ -460,7 +545,7 @@
 
                   // Dynamically populate the dropdown menu with lecture titles
                   const lectureDropdownItems = document.getElementById('lecture-dropdown-items');
-                  
+
                   data.data.forEach(lecture => {
                       const li = document.createElement('li');
                       const anchor = document.createElement('a');
@@ -495,6 +580,7 @@
                           console.log('Response from /api/quiz:', data);
                           // Dynamically populate the quiz dropdown menu with quiz titles
                           const quizDropdownItems = document.getElementById('quiz-dropdown-items');
+                          quizDropdownItems.innerHTML = ''; // Clear previous quiz dropdown items
                           data.data.forEach(quiz => {
                               const li = document.createElement('li');
                               const anchor = document.createElement('a');
@@ -532,6 +618,7 @@
   let wrongAnswers = 0;
 
   function fetchQuizData(quizId) {
+      resetQuizState(); // Reset quiz state before fetching new quiz data
       const requestBody = {
           q_id: quizId
       };
@@ -556,6 +643,17 @@
           .catch(error => {
               console.error('There was a problem fetching quiz data:', error);
           });
+  }
+
+  function resetQuizState() {
+      quizData = [];
+      currentQuestion = 0;
+      correctAnswers = 0;
+      wrongAnswers = 0;
+      document.getElementById('questionContainer').innerHTML = '';
+      document.getElementById('result').innerHTML = '';
+      document.getElementById('submitBtn').style.display = 'none'; // Hide submit button
+      document.getElementById('nextBtn').style.display = 'block'; // Show next button
   }
 
   function loadQuestion() {
@@ -663,34 +761,74 @@
   }
 
   function fetchPerformanceData(s_id, q_id) {
-      const viewperformBody = {
-          s_id: s_id,
-          q_id: q_id
-      };
-console.log(viewperformBody)
+    const viewperformBody = {
+        s_id: s_id,
+        q_id: q_id
+    };
 
-      fetch('https://learning-u7aw.onrender.com/api/viewperform', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(viewperformBody)
-      })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok.');
-          }
-          return response.json();
-      })
-      .then(data => {
-          // Handle the response from the server
-          console.log('Performance data:', data);
-          // Extract necessary information from performance data if needed
-      })
-      .catch(error => {
-          console.error('Error fetching performance data:', error);
-      });
-  }
+    fetch('https://learning-u7aw.onrender.com/api/viewperform', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(viewperformBody)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Handle the response from the server
+        console.log('Performance data:', data);
+
+        const performanceData = data.performance[0];
+        if (performanceData) {
+            console.log(performanceData.mark);
+            console.log(performanceData.count);
+            console.log(performanceData.best_score);
+
+            // Update HTML elements with performance data
+            const countElement = document.querySelector('.count');
+            const attemptedElement = document.querySelector('.attempted');
+            const notAttemptedElement = document.querySelector('.not-attempted');
+
+            countElement.textContent = `No of Attempts: ${performanceData.count}`;
+
+            // Check if the quiz was attempted
+            if (performanceData.count > 0) {
+                attemptedElement.style.display = 'block';
+                notAttemptedElement.style.display = 'none';
+            } else {
+                attemptedElement.style.display = 'none';
+                notAttemptedElement.style.display = 'block';
+            }
+
+            // Dynamically update the best score or display a hyphen if it's null
+            const bestScoreElement = document.querySelector('.bestscore');
+            bestScoreElement.textContent = `Best Score: ${performanceData.best_score !== null ? performanceData.best_score : '-'}`;
+        } else {
+            console.log('Performance data is empty or undefined');
+
+            // Update HTML elements with hyphens and "Not attempted"
+            const countElement = document.querySelector('.count');
+            const attemptedElement = document.querySelector('.attempted');
+            const notAttemptedElement = document.querySelector('.not-attempted');
+
+            countElement.textContent = 'No of Attempts: -';
+            attemptedElement.style.display = 'none';
+            notAttemptedElement.style.display = 'block';
+
+            // Display a hyphen for best score
+            const bestScoreElement = document.querySelector('.bestscore');
+            bestScoreElement.textContent = 'Best Score: -';
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching performance data:', error);
+    });
+}
 
   document.getElementById('quizForm').addEventListener('submit', function (event) {
       event.preventDefault();
@@ -702,7 +840,39 @@ console.log(viewperformBody)
   });
 
   fetchQuizData();
+
+  // Function to view all performance data
+  function viewAllPerformanceData(s_id) {
+      const requestBody = {
+          s_id: s_id
+      };
+
+      fetch('https://learning-u7aw.onrender.com/api/viewperform', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok.');
+          }
+          return response.json();
+      })
+      .then(data => {
+          // Handle the response from the server
+          console.log('Performance data:', data);
+
+          // Display performance data in a table
+          displayPerformanceData(data.performance);
+      })
+      .catch(error => {
+          console.error('Error fetching performance data:', error);
+      });
+  }
 </script>
+
 
 
 
