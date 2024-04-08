@@ -808,25 +808,21 @@ app.post('/api/performance', async (req, res) => {
 
 
 // Route for viewing that performance
-app.get('/api/viewperform', async (req, res) => {
+app.post('/api/viewperform', async (req, res) => {
     const { s_id, q_id } = req.body;
 
     try {
         console.log('API view performance requested');
 
-        let query = 'SELECT * FROM performance';
-
         if (s_id) {
-            query += ' WHERE s_id = ?';
-            const queryParams = [s_id];
-
-            // If q_id is provided, also filter by q_id
+            let query;
             if (q_id) {
-                query += ' AND q_id = ?';
-                queryParams.push(q_id);
+                query = `SELECT * FROM performance WHERE s_id = ${s_id} AND q_id = ${q_id}`;
+            } else {
+                query = `SELECT * FROM performance WHERE s_id = ${s_id}`;
             }
 
-            const [performanceData] = await pool.execute(query, queryParams);
+            const [performanceData] = await pool.execute(query);
             res.status(200).json({ performance: performanceData });
         } else {
             // If s_id is not provided, return an error message
@@ -837,6 +833,7 @@ app.get('/api/viewperform', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 
