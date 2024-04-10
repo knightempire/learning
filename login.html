@@ -13,13 +13,12 @@
     <img class="wave" src="https://i.imgur.com/Bds0V6Z.png">
     <div class="container">
         <div class="img">
-    
- 
         </div>
         <div class="login-content">
             <form action="#" onsubmit="login(); return false;"> <!-- Prevent default form submission -->
                 <img src="./assets/images/avatar.svg">
                 <h2 class="title" style="color: #dc91e5;">Welcome</h2>
+                <div id="loginMessage" class="popup-message"></div> <!-- Added class 'popup-message' -->
                 <div class="input-div one">
                    <div class="i">
                         <i class="fas fa-user"></i>
@@ -38,8 +37,7 @@
                         <input type="password" class="input" id="password">
                     </div>
                 </div>
-                <!-- Error message display -->
-                <div id="loginMessage"></div>
+     
                 <!-- Registration link -->
                 <div class="register"> 
                     <h5>If you don't have an account?<a href="register.html">Register here</a></h5>
@@ -71,9 +69,39 @@
                 localStorage.setItem('Token', data.token); // Store token in local storage upon successful login
                 window.location.href = './test/course_detail.html'; // Redirect to course.html upon successful login
             } else {
-                document.getElementById('loginMessage').textContent = data.error;
+                const loginMessage = document.getElementById('loginMessage');
+                loginMessage.textContent = data.error;
+                loginMessage.classList.add('show'); // Show the popup message
+                setTimeout(() => {
+                    loginMessage.classList.remove('show'); // Hide the popup message after 3 seconds
+                }, 3000);
             }
         }
     </script>
 </body>
+
+<style>
+    .popup-message {
+        display: none;
+        position: fixed;
+        top: 20px; /* Changed from bottom to top */
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        background-color: rgba(255, 0, 0, 0.7);
+        color: white;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-message.show {
+        display: block;
+    }
+</style>
+
+
 </html>
+
+
+
+

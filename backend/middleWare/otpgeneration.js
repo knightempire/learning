@@ -42,7 +42,7 @@ async function verifyOtpMiddleware(req, res, next) {
         if (verificationCheck.status === "approved") {
             res.status(200).json({ message: "OTP verified successfully" });
         } else {
-            res.status(400).json({ message: "Entered OTP is wrong" });
+            res.status(400).json({ message: "Invalid OTP" });
         }
     } catch (error) {
         console.log(error);

@@ -27,7 +27,7 @@
         function prefillPhoneNumber() {
             const phoneNumber = getUrlParameter('phoneNumber');
             if (!phoneNumber) {
-                window.location.href = './otp.html'; // Redirect to otp.html if phone number is empty
+                window.location.href = '#'; // Redirect to otp.html if phone number is empty
             } else {
                 document.getElementById('phoneNumber').value = phoneNumber;
             }

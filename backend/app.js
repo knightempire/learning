@@ -256,7 +256,7 @@ app.post('/api/generate-otp', async (req, res) => {
         }
     } catch (error) {
         console.error('Error generating OTP:', error);
-        res.status(500).json({ error: 'Failed to generate OTP' });
+        res.status(500).json({ error: 'Error in OTP' });
     }
 });
 
@@ -280,7 +280,7 @@ app.post('/api/forgotgenerate-otp', async (req, res) => {
         }
     } catch (error) {
         console.error('Error generating OTP:', error);
-        res.status(500).json({ error: 'Failed to generate OTP' });
+        res.status(500).json({ error: 'Phone number not registered' });
     }
 });
 
