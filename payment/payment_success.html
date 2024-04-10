@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/css/payment_success.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" />
+    <title>EduWell </title>
+    <link rel="icon" href="https://i.imgur.com/cZ8jeW3.png" type="image/png">
+</head>
+<body>   
+
+
+<div class="container" style="margin-top: 10%;">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="message-box _success">
+                 <i class="fa fa-check-circle" aria-hidden="true"></i>
+                <h2> Your payment was successful </h2>
+               <p> Thank you for your payment.    <br><br>
+               click button to continue</p>      
+
+               <button class="learn-more" style="margin-top: 1%;" onclick="redirectToStudentPage()">
+                <span class="circle" aria-hidden="true">
+                    <span class="icon arrow"></span>
+                </span>
+                <span class="button-text">Get started</span>
+            </button>
+            
+        </div> 
+    </div> 
+</div> 
+<hr>
+
+
+<script>
+    function redirectToStudentPage() {
+        window.location.href = '../dashboard/student/student.html';
+    }
+</script>
+
+<!-- <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="message-box _success _failed">
+                 <i class="fa fa-times-circle" aria-hidden="true"></i>
+                <h2> Your payment failed </h2>
+         <p>  Try again later </p> 
+     
+        </div> 
+    </div> 
+</div>  -->
+
+</div> 
+
+</body>
+</html>
+
