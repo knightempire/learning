@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EduWell </title>
+    <link rel="icon" href="https://i.imgur.com/cZ8jeW3.png" type="image/png">
+    <!--Google Font-->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+    <!--Stylesheet-->
+    <link rel="stylesheet" href="./assets/css/register.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Profile Form</h1>
+        <p>Please fill the form!!</p>
+
+        <form id="PatientForm">
+            <div class="row">
+                <div class="column">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" placeholder="Your name here" required>
+                </div>
+                <div class="column">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Your username here" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Your email here" required>
+                </div>
+                <div class="column">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Your phone number here" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <label for="subject">Gender</label>
+                    <select id="subject" name="subject" required>
+                        <option value="">Select a Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="column">
+                    <label for="DOB">Date of Birth</label>
+                    <input type="date" id="DOB" name="DOB" placeholder="Your Date of birth here" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <label for="pincode">Pin-code</label>
+                    <input type="text" id="pincode" name="pincode" placeholder="Your pincode here" required>
+                </div>
+                <div class="column">
+                    <label for="Country">Country</label>
+                    <input type="text" id="Country" name="Country" list="countryList" placeholder="Your country here" required>
+                    <datalist id="countryList">
+                        <!-- Country options will be added here -->
+                    </datalist>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <label for="State">State</label>
+                    <input type="text" id="State" name="State" list="stateList" placeholder="Your State here" required>
+                    <datalist id="stateList">
+                        <!-- State options will be populated by JavaScript -->
+                    </datalist>
+                </div>
+                <div class="column">
+                    <label for="District">District</label>
+                    <input type="text" id="District" name="District" list="districtList" placeholder="Your District here" required>
+                    <datalist id="districtList">
+                        <!-- District options will be populated by JavaScript -->
+                    </datalist>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <label for="address">Address</label>
+                    <textarea id="address" placeholder="Enter your address here" rows="3"></textarea>
+                </div>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const pincodeInput = document.getElementById('pincode');
+            const countryInput = document.getElementById('Country');
+            const stateInput = document.getElementById('State');
+            const districtInput = document.getElementById('District');
+
+            pincodeInput.addEventListener('input', async function () {
+                const pincode = pincodeInput.value.trim();
+                if (pincode.length === 6) {
+                    try {
+                        const url = `https://api.postalpincode.in/pincode/${pincode}`;
+                        const response = await fetch(url);
+                        const data = await response.json();
+
+                        if (Array.isArray(data) && data.length > 0 && data[0].Status === 'Success') {
+                            const locationData = data[0].PostOffice[0];
+                            countryInput.value = locationData.Country;
+                            stateInput.value = locationData.State;
+
+                            if (locationData.District) {
+                                districtInput.value = locationData.District;
+                                districtInput.readOnly = true;
+                                districtInput.removeAttribute('required');
+                            } else {
+                                districtInput.value = '';
+                                districtInput.readOnly = false;
+                                districtInput.setAttribute('required', 'true');
+                            }
+                        } else {
+                            console.error('Error: Invalid pincode');
+                        }
+                    } catch (error) {
+                        console.error('Error fetching location details:', error);
+                    }
+                } else {
+                    countryInput.value = '';
+                    stateInput.value = '';
+                    districtInput.value = '';
+                    districtInput.readOnly = false;
+                    districtInput.setAttribute('required', 'true');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

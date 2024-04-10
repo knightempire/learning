@@ -35,7 +35,10 @@
   </style>
 </head>
 <body>
+
+  
   <h2>Select a Course</h2>
+  
   <div class="button-container">
     <button class="button" onclick="redirectToPayment('HTML')">HTML</button>
     <button class="button" onclick="redirectToPayment('DBMS')">DBMS</button>
@@ -46,6 +49,7 @@
  
   <script>
     // Function to perform AJAX request to decodeToken endpoint
+    
     function decodeTokenAndLoad() {
       // Retrieve token from local storage
       const token = localStorage.getItem('Token');
