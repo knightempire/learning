@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EduWell</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/css/multi-select-tag.css">
+
+    <link rel="icon" href="https://i.imgur.com/cZ8jeW3.png" type="image/png">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="./assets/css/profile.css">
+    <!-- Custom CSS for pill style -->
+    <style>
+        .language-pill {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #333;
+            padding: 5px 15px 5px 10px;
+            margin: 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        .language-pill .close {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    </style>
+</head>
+<body>  
+    <div class="container">
+        <h1>Education Information</h1>
+        <p>Please provide your education details:</p>
+
+        <form id="EducationForm">
+            <div class="row">
+                <div class="column">
+                    <label for="education_level">Education Level</label>
+                    <select id="education_level" class="multisteps-form__input form-control" name="education_level" required>
+                        <option value="" selected disabled>Select Education Level</option>
+                        <option value="high_school">High School</option>
+                        <option value="associate_degree">Associate Degree</option>
+                        <option value="bachelor_degree">Bachelor's Degree</option>
+                        <option value="master_degree">Master's Degree</option>
+                        <option value="doctorate">Doctorate</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="column">
+                    <label for="university">University/Institution</label>
+                    <input type="text" id="university" name="university" placeholder="Your university/institution here" required>
+                </div>
+            </div>
+            <div class="row">
+          
+                <div class="column">
+                    <label for="field_of_study">Field of Study</label>
+                    <input type="text" id="field_of_study" name="field_of_study" placeholder="Your field of study here" required>
+                </div>
+
+                <div class="column">
+                    <label for="graduation_year">Year of Graduation</label>
+                    <input type="text" id="graduation_year" name="graduation_year" placeholder="Year of graduation" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <label for="grade_point_average">Grade Point Average (GPA)</label>
+                    <input type="text" id="grade_point_average" name="grade_point_average" placeholder="Your GPA here" required>
+                </div>
+              
+                <div class="column">
+                    <label for="languages">Languages</label>
+                    <select name="skills" id="skills" multiple required>
+                        <option value="React">React</option>
+                        <option value="Python">Python</option>
+                        <option value="Java">Java</option>
+                        <option value="JavaScript">JavaScript</option>
+                        <option value="Nodejs">Node.js</option>
+                        <option value="HTML">HTML</option>
+                        <option value="CSS">CSS</option>
+                        <option value="C++">C++</option>
+                        <option value="C#">C#</option>
+                        <option value="Ruby">Ruby</option>
+                        <option value="Swift">Swift</option>
+                        <option value="SQL">SQL</option>
+                        <option value="TypeScript">TypeScript</option>
+                        <option value="PHP">PHP</option>
+                        <option value="Go">Go</option>
+                        <option value="Perl">Perl</option>
+                        <option value="Kotlin">Kotlin</option>
+                        <option value="Rust">Rust</option>
+                        <option value="Scala">Scala</option>
+                        <option value="Objective-C">Objective-C</option>
+                        <option value="Assembly">Assembly</option>
+                        <option value="Bash">Bash</option>
+                        <option value="Dart">Dart</option>
+                        <option value="Elixir">Elixir</option>
+                        <option value="Haskell">Haskell</option>
+                        <option value="Lua">Lua</option>
+                        <option value="Matlab">Matlab</option>
+                        <option value="PowerShell">PowerShell</option>
+                        <option value="R">R</option>
+                        <option value="Scratch">Scratch</option>
+                        <option value="Shell">Shell</option>
+                        <option value="Vue.js">Vue.js</option>
+                        <!-- Add more options here -->
+                    </select>
+                    
+                </div>
+            </div>
+            <div class="row">
+           
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>  
+    <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/js/multi-select-tag.js"></script>
+    <script>
+        const skillsSelect = new MultiSelectTag('skills', {
+            rounded: true,
+            shadow: true,
+            placeholder: 'Search',
+            tagColor: {
+                textColor: '#327b2c',
+                borderColor: '#92e681',
+                bgColor: '#eaffe6',
+            },
+            onChange: function(values) {
+                console.log(values);
+            }
+        });
+    
+        // Handle keydown event to automatically select first suggestion on Enter press
+        skillsSelect.input.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && skillsSelect.suggestions.length > 0) {
+                skillsSelect.addTag(skillsSelect.suggestions[0]);
+                event.preventDefault();
+            }
+        });
+    </script>
+    
+ 
+</body>
+</html>
