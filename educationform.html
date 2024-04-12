@@ -57,12 +57,10 @@
                 </div>
             </div>
             <div class="row">
-          
                 <div class="column">
                     <label for="field_of_study">Field of Study</label>
                     <input type="text" id="field_of_study" name="field_of_study" placeholder="Your field of study here" required>
                 </div>
-
                 <div class="column">
                     <label for="graduation_year">Year of Graduation</label>
                     <input type="text" id="graduation_year" name="graduation_year" placeholder="Year of graduation" required>
@@ -143,9 +141,7 @@
                 event.preventDefault();
             }
         });
-    </script>
 
-     <script>
         // Function to parse URL parameters
         function getUrlParams() {
             const params = {};
@@ -156,14 +152,42 @@
             return params;
         }
 
-        // Get URL parameters
-        const params = getUrlParams();
+        // Event listener for form submission
+        document.getElementById('EducationForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+            const params = getUrlParams();
 
-        // Log parameters to console
-        console.log('Received data from educationform.html:');
-        console.log(params);
+            // Log form data to console
+            console.log('Form Data:');
+            for (const [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+
+            // Add URL parameters to form data
+            for (const key in params) {
+                formData.append(key, params[key]);
+            }
+
+            // Send form data to server-side API
+            try {
+                const response = await fetch('https://learning-u7aw.onrender.com/api/studentprofile', {
+                    method: 'POST',
+                    body: formData
+                });
+                console.log("api student called")
+                const data = await response.json();
+                console.log('Server Response:', data);
+                
+                if (response.ok) {
+                    // Redirect to ./dash.html if response is OK
+                    window.location.href = './dashboard/student/student.html';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }  
+        });
     </script>
-    
- 
 </body>
 </html>

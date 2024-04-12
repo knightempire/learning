@@ -210,7 +210,7 @@ app.post('/api/decodeToken', async (req, res) => {
 
         try {
             // Query the database to retrieve user data based on username
-            const [rows] = await connection.execute('SELECT user_id,name FROM users WHERE username = ?', [username]);
+            const [rows] = await connection.execute('SELECT user_id,name,phoneNumber,username FROM users WHERE username = ?', [username]);
 
             // Check if user exists in the database
             if (rows.length === 0) {
@@ -837,14 +837,14 @@ app.post('/api/viewperform', async (req, res) => {
 
 
 // Route for storing profile data
-app.post('/api/profile', async (req, res) => {
+app.post('/api/studentprofile', async (req, res) => {
     const { s_id, name, email, phone, pincode, district, state, DOB, skills, area_of_interest, education, college } = req.body;
 
     try {
         console.log('API profile requested');
 
         // Check if profile data already exists for the provided s_id
-        const [existingProfile] = await pool.execute('SELECT * FROM profile WHERE s_id = ?', [s_id]);
+        const [existingProfile] = await pool.execute('SELECT * FROM student_profile WHERE s_id = ?', [s_id]);
         if (existingProfile.length > 0) {
             // Profile data already exists, return a message indicating duplicate entry
             console.log('Profile data already exists for the provided s_id');
@@ -862,7 +862,7 @@ app.post('/api/profile', async (req, res) => {
 
         // Store profile data in the database
         const [result] = await pool.execute(`
-            INSERT INTO profile (s_id, name, email, phone, pincode, district, state, DOB, age, skills, area_of_interest, education, college) 
+            INSERT INTO student_profile (s_id, name, email, phone, pincode, district, state, DOB, age, skills, area_of_interest, education, college) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [s_id, name, email, phone, pincode, district, state, DOB, age, JSON.stringify(skills), area_of_interest, education, college]);
 
@@ -882,6 +882,34 @@ app.post('/api/profile', async (req, res) => {
     }
 });
 
+
+app.post('/checkstudentprofile', (req, res) => {
+    const { s_id } = req.body;
+
+    if (s_id === 0) {
+        // If s_id is 0, fetch all data from student_profile table
+        pool.query('SELECT * FROM student_profile', (error, results) => {
+            if (error) {
+                console.error('Error fetching data:', error);
+                res.status(500).json({ error: 'Internal server error' });
+            } else {
+                res.json(results);
+            }
+        });
+    } else {
+        // Otherwise, find data by s_id
+        pool.query('SELECT * FROM student_profile WHERE s_id = ?', [s_id], (error, results) => {
+            if (error) {
+                console.error('Error fetching data:', error);
+                res.status(500).json({ error: 'Internal server error' });
+            } else if (results.length > 0) {
+                res.json(results[0]);
+            } else {
+                res.status(404).json({ error: 'Student not found' });
+            }
+        });
+    }
+});
 
 
 

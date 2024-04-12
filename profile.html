@@ -141,6 +141,34 @@
 
 
 <script>
+
+const token = localStorage.getItem('Token');
+
+// Send the token to the server-side API endpoint
+fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ token: token })
+})
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Handle the response from the server
+        console.log(data);
+        // Check if data contains user_id and print it
+        s_id = data.user_id; // Assign value to s_id
+        const name = data.name;
+    })
+
+
+    
+
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('PatientForm');
 
