@@ -118,7 +118,25 @@
             <button type="submit">Submit</button>
         </form>
     </div>  
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Fetch the universities JSON data
+            const response = await fetch('./assets/universities.json');
+            const universities = await response.json();
 
+            // Sort universities alphabetically by name
+            universities.sort((a, b) => a.localeCompare(b));
+
+            // Populate the university dropdown list
+            const universitySelect = document.getElementById('university');
+            universities.forEach(university => {
+                const option = document.createElement('option');
+                option.textContent = university;
+                option.value = university;
+                universitySelect.appendChild(option);
+            });
+        });
+    </script> -->
     <script>
         document.addEventListener('DOMContentLoaded', async function () {
             const form = document.getElementById('EducationForm');

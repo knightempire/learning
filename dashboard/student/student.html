@@ -126,7 +126,7 @@
      
       <li class="">
         <a class="dropdown" id="lecture-dropdown">
-            <span class="icon"><i class="mdi mdi-table"></i></span>
+            <span class="icon"><i class="mdi mdi-video"></i></span>
             <span class="menu-item-label">Lectures</span>
             <span class="icon"><i class="mdi mdi-plus"></i></span>
         </a>
@@ -138,7 +138,7 @@
     
     <li class="">
       <a class="dropdown" id="quiz-dropdown">
-          <span class="icon"><i class="mdi mdi-table"></i></span>
+          <span class="icon"><i class="mdi mdi-pen-lock"></i></span>
           <span class="menu-item-label">Quiz</span>
           <span class="icon"><i class="mdi mdi-plus"></i></span>
       </a>
@@ -170,11 +170,16 @@
 
       <li class="--set-active-forms-html">
         <a href="#">
-            <span class="icon"><i class="mdi mdi-credit-card-outline"></i></span>
+            <span class="icon"><i class="mdi mdi-message"></i></span>
             <span class="menu-item-label">Dicussion</span>
         </a>
       </li>
-
+ <li class="--set-active-forms-html">
+        <a href="#">
+            <span class="icon"><i class="mdi mdi-code-braces"></i></span>
+            <span class="menu-item-label">Playground</span>
+        </a>
+      </li>
     </ul>
     <p class="menu-label">About</p>
     <ul class="menu-list">
@@ -883,7 +888,7 @@
       console.log(studentprofile)
 
     // Make a POST request to the API endpoint
-    fetch('https://learning-u7aw.onrender.com/api/checkstudentprofile', {
+    fetch('https://your-backend-url/api/checkstudentprofile', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -895,7 +900,7 @@
             // Check if the response status is 404 (Not Found)
             if (response.status === 404) {
                 // Redirect to profile.html
-                window.location.href = '../../profile.html';
+                window.location.href = 'profile.html';
             } else {
                 // Throw an error for other non-OK responses
                 throw new Error('Network response was not ok.');
