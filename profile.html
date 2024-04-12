@@ -16,7 +16,7 @@
         <h1>Profile Form</h1>
         <p>Please fill the form!!</p>
 
-        <form id="PatientForm">
+        <form id="PatientForm" action="./educationform.html" method="GET">
             <div class="row">
                 <div class="column">
                     <label for="name">Name</label>
@@ -138,5 +138,31 @@
             });
         });
     </script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('PatientForm');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Get form data
+            const formData = new FormData(form);
+
+            // Construct URL parameters
+            let params = '';
+            for (const pair of formData.entries()) {
+                params += encodeURIComponent(pair[0]) + '=' + encodeURIComponent(pair[1]) + '&';
+            }
+
+            // Remove the trailing '&'
+            params = params.slice(0, -1);
+
+            // Redirect to educationform.html with form data as URL parameters
+            window.location.href = 'educationform.html?' + params;
+        });
+    });
+</script>
 </body>
 </html>

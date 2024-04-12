@@ -836,6 +836,51 @@ app.post('/api/viewperform', async (req, res) => {
 
 
 
+// Route for storing profile data
+app.post('/api/profile', async (req, res) => {
+    const { s_id, name, email, phone, pincode, district, state, DOB, skills, area_of_interest, education, college } = req.body;
+
+    try {
+        console.log('API profile requested');
+
+        // Check if profile data already exists for the provided s_id
+        const [existingProfile] = await pool.execute('SELECT * FROM profile WHERE s_id = ?', [s_id]);
+        if (existingProfile.length > 0) {
+            // Profile data already exists, return a message indicating duplicate entry
+            console.log('Profile data already exists for the provided s_id');
+            return res.status(409).json({ error: 'Profile data already exists for the provided s_id' });
+        }
+
+        // Calculate age based on DOB
+        const dob = new Date(DOB);
+        const today = new Date();
+        const age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
+
+        // Store profile data in the database
+        const [result] = await pool.execute(`
+            INSERT INTO profile (s_id, name, email, phone, pincode, district, state, DOB, age, skills, area_of_interest, education, college) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [s_id, name, email, phone, pincode, district, state, DOB, age, JSON.stringify(skills), area_of_interest, education, college]);
+
+        if (result.affectedRows === 1) {
+            // Profile data stored successfully
+            console.log('Profile data stored successfully');
+            res.status(200).json({ message: 'Profile data stored successfully' });
+        } else {
+            // Error storing profile data
+            console.log('Error storing profile data');
+            res.status(500).json({ error: 'Error storing profile data' });
+        }
+    } catch (error) {
+        // Internal Server Error
+        console.error('Error storing profile data:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 

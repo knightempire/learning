@@ -144,6 +144,25 @@
             }
         });
     </script>
+
+     <script>
+        // Function to parse URL parameters
+        function getUrlParams() {
+            const params = {};
+            const urlParams = new URLSearchParams(window.location.search);
+            for (const [key, value] of urlParams) {
+                params[key] = value;
+            }
+            return params;
+        }
+
+        // Get URL parameters
+        const params = getUrlParams();
+
+        // Log parameters to console
+        console.log('Received data from educationform.html:');
+        console.log(params);
+    </script>
     
  
 </body>
