@@ -854,7 +854,7 @@ app.get('/api/universities', async (req, res) => {
 
 // Route for storing profile data
 app.post('/api/studentprofile', async (req, res) => {
-    const { s_id, name, email, phone, pincode, district, state, DOB, skills, gpa, education, college } = req.body;
+    const { s_id, name, email, phone, pincode, district, state, DOB, skills, gpa, education, college,age } = req.body;
 
     try {
         console.log('API profile requested');
@@ -867,20 +867,11 @@ app.post('/api/studentprofile', async (req, res) => {
             return res.status(409).json({ error: 'Profile data already exists for the provided s_id' });
         }
 
-        // Calculate age based on DOB
-        const dob = new Date(DOB);
-        const today = new Date();
-        const age = today.getFullYear() - dob.getFullYear();
-        const monthDiff = today.getMonth() - dob.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-            age--;
-        }
-
         // Store profile data in the database
         const [result] = await pool.execute(`
             INSERT INTO student_profile (s_id, name, email, phone, pincode, district, state, DOB, age, skills, gpa, education, college) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [s_id, name, email, phone, pincode, district, state, DOB, age, JSON.stringify(skills), gpa, education, college]);
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+        `, [s_id, name, email, phone, pincode, district, state, DOB, age, JSON.stringify(skills), gpa, education, college, age]);
 
         if (result.affectedRows === 1) {
             // Profile data stored successfully
