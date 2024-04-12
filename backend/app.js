@@ -7,6 +7,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const moment = require('moment');
+const fs = require('fs').promises;
 
 const XLSX = require('xlsx');
 const multer = require('multer');
@@ -835,6 +836,21 @@ app.post('/api/viewperform', async (req, res) => {
 });
 
 
+//list of university
+app.get('/api/universities', async (req, res) => {
+    try {
+        // Read universities JSON file
+        const universitiesData = await fs.readFile('../assets/universities.json', 'utf8');
+        const universities = JSON.parse(universitiesData);
+
+        // Send universities data as JSON response
+        res.json(universities);
+    } catch (error) {
+        // Handle errors
+        console.error('Error reading universities data:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 // Route for storing profile data
 app.post('/api/studentprofile', async (req, res) => {
