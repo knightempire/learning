@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>EduWell </title>
+    <title>EduWell</title>
     <link rel="icon" href="https://i.imgur.com/cZ8jeW3.png" type="image/png">
     <!--Google Font-->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
@@ -20,27 +20,27 @@
             <div class="row">
                 <div class="column">
                     <label for="name">Name</label>
-                    <input type="text" id="name" name="name" placeholder="Your name here" required>
+                    <input type="text" id="name" name="name" placeholder="Your name here" required readonly>
                 </div>
                 <div class="column">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Your username here" required>
+                    <input type="text" id="username" name="username" placeholder="Your username here" required readonly>
                 </div>
             </div>
             <div class="row">
                 <div class="column">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Your email here" required>
+                    <input type="email" id="email" name="email" placeholder="Your email here" required >
                 </div>
                 <div class="column">
                     <label for="phone">Phone</label>
-                    <input type="tel" id="phone" name="phone" placeholder="Your phone number here" required>
+                    <input type="tel" id="phone" name="phone" placeholder="Your phone number here" required readonly>
                 </div>
             </div>
             <div class="row">
                 <div class="column">
-                    <label for="subject">Gender</label>
-                    <select id="subject" name="subject" required>
+                    <label for="Gender">Gender</label>
+                    <select id="Gender" name="Gender" required>
                         <option value="">Select a Gender</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
@@ -51,8 +51,6 @@
                     <label for="DOB">Date of Birth</label>
                     <input type="date" id="DOB" name="DOB" placeholder="Your Date of birth here" required>
                 </div>
-                
-                
             </div>
             <div class="row">
                 <div class="column">
@@ -137,60 +135,62 @@
                 }
             });
         });
-    </script>
 
+        const token = localStorage.getItem('Token');
 
-<script>
+        // Send the token to the server-side API endpoint
+        fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ token: token })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle the response from the server
+                console.log(data);
+                // Check if data contains user_id and print it
+                s_id = data.user_id; // Assign value to s_id
+                const name = data.name;
 
-const token = localStorage.getItem('Token');
+                // Fill the 'Name' field with fetched name
+                document.getElementById('name').value = name;
+                document.getElementById('username').value = data.username;
+                document.getElementById('phone').value = data.phoneNumber;
+              
+            })
+            .catch(error => {
+                console.error('Error fetching user data:', error);
+            });
 
-// Send the token to the server-side API endpoint
-fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ token: token })
-})
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok.');
-        }
-        return response.json();
-    })
-    .then(data => {
-        // Handle the response from the server
-        console.log(data);
-        // Check if data contains user_id and print it
-        s_id = data.user_id; // Assign value to s_id
-        const name = data.name;
-    })
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('PatientForm');
 
+            form.addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent form submission
 
-    
+                // Get form data
+                const formData = new FormData(form);
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.getElementById('PatientForm');
+                // Construct object to store in localStorage
+                const formValues = {};
+                for (const pair of formData.entries()) {
+                    formValues[pair[0]] = pair[1];
+                }
 
-        form.addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevent form submission
+                // Store form data in localStorage
+                localStorage.setItem('profleform', JSON.stringify(formValues));
 
-            // Get form data
-            const formData = new FormData(form);
-
-            // Construct URL parameters
-            let params = '';
-            for (const pair of formData.entries()) {
-                params += encodeURIComponent(pair[0]) + '=' + encodeURIComponent(pair[1]) + '&';
-            }
-
-            // Remove the trailing '&'
-            params = params.slice(0, -1);
-
-            // Redirect to educationform.html with form data as URL parameters
-            window.location.href = 'educationform.html?' + params;
+                // Redirect to educationform.html
+                window.location.href = 'educationform.html';
+            });
         });
-    });
-</script>
+    </script>
 </body>
 </html>

@@ -838,7 +838,7 @@ app.post('/api/viewperform', async (req, res) => {
 
 // Route for storing profile data
 app.post('/api/studentprofile', async (req, res) => {
-    const { s_id, name, email, phone, pincode, district, state, DOB, skills, area_of_interest, education, college } = req.body;
+    const { s_id, name, email, phone, pincode, district, state, DOB, skills, gpa, education, college } = req.body;
 
     try {
         console.log('API profile requested');
@@ -862,9 +862,9 @@ app.post('/api/studentprofile', async (req, res) => {
 
         // Store profile data in the database
         const [result] = await pool.execute(`
-            INSERT INTO student_profile (s_id, name, email, phone, pincode, district, state, DOB, age, skills, area_of_interest, education, college) 
+            INSERT INTO student_profile (s_id, name, email, phone, pincode, district, state, DOB, age, skills, gpa, education, college) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [s_id, name, email, phone, pincode, district, state, DOB, age, JSON.stringify(skills), area_of_interest, education, college]);
+        `, [s_id, name, email, phone, pincode, district, state, DOB, age, JSON.stringify(skills), gpa, education, college]);
 
         if (result.affectedRows === 1) {
             // Profile data stored successfully

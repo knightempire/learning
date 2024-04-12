@@ -883,7 +883,7 @@
       console.log(studentprofile)
 
     // Make a POST request to the API endpoint
-    fetch('https://your-backend-url/api/checkstudentprofile', {
+    fetch('https://learning-u7aw.onrender.com/api/checkstudentprofile', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -895,7 +895,7 @@
             // Check if the response status is 404 (Not Found)
             if (response.status === 404) {
                 // Redirect to profile.html
-                window.location.href = 'profile.html';
+                window.location.href = '../../profile.html';
             } else {
                 // Throw an error for other non-OK responses
                 throw new Error('Network response was not ok.');

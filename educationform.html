@@ -118,6 +118,101 @@
             <button type="submit">Submit</button>
         </form>
     </div>  
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const form = document.getElementById('EducationForm');
+    
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault(); // Prevent form submission
+                
+                // Get token from local storage
+                const token = localStorage.getItem('Token');
+    
+                try {
+                    // Send token to server-side API endpoint to decode
+                    const response = await fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ token: token })
+                    });
+    
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok.');
+                    }
+    
+                    // Parse response to get data
+                    const data = await response.json();
+                    
+                    // Extract user_id from response data
+                    const s_id = data.user_id;
+    
+                    // Get form data
+                    const formData = new FormData(form);
+    
+                    // Retrieve form values
+                    const education_level = formData.get('education_level');
+                    const university = formData.get('university');
+                    const field_of_study = formData.get('field_of_study');
+                    const graduation_year = formData.get('graduation_year');
+                    const grade_point_average = formData.get('grade_point_average');
+                    const skills = Array.from(document.getElementById('skills').selectedOptions).map(option => option.value).join(',');
+    
+                    // Retrieve profile data from local storage
+                    const profileData = JSON.parse(localStorage.getItem('profleform'));
+                    const { name, email, phone, pincode, District, State, DOB,Country } = profileData;
+    
+                    // Prepare payload including s_id
+                    const payload = {
+                        s_id,
+                        education_level,
+                        university,
+                        field_of_study,
+                        graduation_year,
+                        grade_point_average,
+                        skills,
+                        name,
+                        email,
+                        phone,
+                        pincode,
+                        District,
+                        State,
+                        DOB,
+                        Country
+                    };
+    
+                    // Print payload to console
+                    console.log('Payload:', payload);
+    
+                    // Send payload to the server
+                    const profileResponse = await fetch('https://learning-u7aw.onrender.com/api/studentprofile', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+    
+                    if (profileResponse.ok) {
+                        // Redirect to success page
+                        window.location.href = './dashboard/student/student.html';
+                    } else {
+                        console.error('Error:', profileResponse.statusText);
+                    }
+    
+                    // Remove profile data from local storage
+                    localStorage.removeItem('formData');
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    </script>
+    
+    
+
     <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/js/multi-select-tag.js"></script>
     <script>
         const skillsSelect = new MultiSelectTag('skills', {
@@ -133,61 +228,7 @@
                 console.log(values);
             }
         });
-    
-        // Handle keydown event to automatically select first suggestion on Enter press
-        skillsSelect.input.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter' && skillsSelect.suggestions.length > 0) {
-                skillsSelect.addTag(skillsSelect.suggestions[0]);
-                event.preventDefault();
-            }
-        });
-
-        // Function to parse URL parameters
-        function getUrlParams() {
-            const params = {};
-            const urlParams = new URLSearchParams(window.location.search);
-            for (const [key, value] of urlParams) {
-                params[key] = value;
-            }
-            return params;
-        }
-
-        // Event listener for form submission
-        document.getElementById('EducationForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(this);
-            const params = getUrlParams();
-
-            // Log form data to console
-            console.log('Form Data:');
-            for (const [key, value] of formData.entries()) {
-                console.log(`${key}: ${value}`);
-            }
-
-            // Add URL parameters to form data
-            for (const key in params) {
-                formData.append(key, params[key]);
-            }
-
-            // Send form data to server-side API
-            try {
-                const response = await fetch('https://learning-u7aw.onrender.com/api/studentprofile', {
-                    method: 'POST',
-                    body: formData
-                });
-                console.log("api student called")
-                const data = await response.json();
-                console.log('Server Response:', data);
-                
-                if (response.ok) {
-                    // Redirect to ./dash.html if response is OK
-                    window.location.href = './dashboard/student/student.html';
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }  
-        });
     </script>
+
 </body>
 </html>
