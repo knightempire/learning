@@ -106,7 +106,7 @@ h2 {
   font-family: 'Quicksand', sans-serif;
   font-size: 1.1rem;
   font-weight: 700;
-  background:  linear-gradient(to left, #be7bcf, #f8b26a);
+  
  
 }
 
@@ -190,5 +190,25 @@ h2 {
   
 }
 .copy-btn:hover {
-  background:  linear-gradient(to left, #be7bcf, #f8b26a);
+  background: #444
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #222
+  ;
+}
+
+.dashboard-btn {
+  background: linear-gradient(to left, #be7bcf, #f8b26a);
+  color: #fff;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.dashboard-btn:hover {
+  opacity: 0.8;
 }
