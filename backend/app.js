@@ -854,7 +854,7 @@ app.get('/api/universities', async (req, res) => {
 
 // Route for storing profile data
 app.post('/api/studentprofile', async (req, res) => {
-    const { s_id, name, email, phone, pincode, district, state, DOB, skills, gpa, education, college,age } = req.body;
+    const { s_id, name, email, phone, pincode, District, State, DOB, age, skills, grade_point_average, education_level, university } = req.body;
 
     try {
         console.log('API profile requested');
@@ -869,9 +869,9 @@ app.post('/api/studentprofile', async (req, res) => {
 
         // Store profile data in the database
         const [result] = await pool.execute(`
-            INSERT INTO student_profile (s_id, name, email, phone, pincode, district, state, DOB, age, skills, gpa, education, college) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
-        `, [s_id, name, email, phone, pincode, district, state, DOB, age, JSON.stringify(skills), gpa, education, college, age]);
+            INSERT INTO student_profile (s_id, name, email, phone, pincode, district, state, DOB, age, skills, grade_point_average, education_level, university) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [s_id, name, email, phone, pincode, District, State, DOB, age, JSON.stringify(skills), grade_point_average, education_level, university]);
 
         if (result.affectedRows === 1) {
             // Profile data stored successfully
@@ -888,6 +888,8 @@ app.post('/api/studentprofile', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
 
 
 app.post('/checkstudentprofile', (req, res) => {
