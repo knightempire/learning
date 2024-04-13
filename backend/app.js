@@ -891,22 +891,11 @@ app.post('/api/studentprofile', async (req, res) => {
 
 
 
-
+// Route for viewing/checking  profile data
 app.post('/api/checkstudentprofile', (req, res) => {
     const { s_id } = req.body;
 
-    if (s_id === 0) {
-        console.log('API checkstudent all data requested');
-        // If s_id is 0, fetch all data from student_profile table
-        pool.query('SELECT * FROM student_profile', (error, results) => {
-            if (error) {
-                console.error('Error fetching data:', error);
-                res.status(500).json({ error: 'Internal server error' });
-            } else {
-                res.json(results);
-            }
-        });
-    } else {
+    try {
         // Otherwise, find data by s_id
         console.log('API checkstudent requested');
         
@@ -920,8 +909,12 @@ app.post('/api/checkstudentprofile', (req, res) => {
                 res.status(404).json({ error: 'Student not found' });
             }
         });
+    } catch (error) {
+        console.error('Error processing request:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 
 
