@@ -20,13 +20,14 @@
 				<img src="./register/images/image-1.png" alt="" class="image-1">
 				<form action="#">
 					<h3>New Account?</h3>
+					
 					<!-- Input fields for registration -->
 					<div class="form-holder">
 						<span class="lnr lnr-user"></span>
 						<input type="text" class="form-control" id="name" placeholder="Name">
 					</div>
 					<div class="form-holder">
-						<span class="lnr lnr-user"></span>
+						<span class="lnr lnr-users"></span>
 						<input type="text" class="form-control" id="username" placeholder="Username">
 					</div>
 					<div class="form-holder">
@@ -38,7 +39,7 @@
 						<!-- Disabled input field for phone number -->
 						<input type="text" class="form-control" id="phoneNumber" placeholder="Phone Number" disabled>
 					</div>
-					<p style="color: black;">Already have an account? <a href="./login.html">Login here</a></p>
+					<!-- <p style="color: black;">Already have an account? <a href="./login.html">Login here</a></p> -->
 					<button type="button" onclick="register()">Register</button>
 				</form>
 				<img src="./register/images/image-2.png" alt="" class="image-2">
@@ -48,21 +49,21 @@
 		<script>
 			// Function to get URL parameter by name
 			function getUrlParameter(name) {
-				name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-				var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-				var results = regex.exec(location.search);
-				return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-			};
-	
-			// Function to prefill phone number input field
-			function prefillPhoneNumber() {
-				const phoneNumber = getUrlParameter('phoneNumber');
-				if (!phoneNumber) {
-					window.location.href = '#'; // Redirect to otp.html if phone number is empty
-				} else {
-					document.getElementById('phoneNumber').value = phoneNumber;
-				}
-			}
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name); // Return the value of the parameter
+    }
+
+    // Function to prefill phone number input field
+    function prefillPhoneNumber() {
+        const phoneNumber = getUrlParameter('phoneNumber');
+        if (!phoneNumber) {
+            console.log("No phone number found");
+            window.location.href = '#'; // Redirect to otp.html if phone number is empty
+        } else {
+            console.log('Phone Number:', phoneNumber);
+            document.getElementById('phoneNumber').value = phoneNumber;
+        }
+    }
 	
 			// Call the prefillPhoneNumber function when the page loads
 			window.onload = prefillPhoneNumber;

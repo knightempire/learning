@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Style -->
+    <link rel="stylesheet" href="css/style.css">
+    <title>Login #7</title>
+</head>
+<body>
+<div class="content">
+  <div id="loginMessage" class="popup-message"></div> <!-- Added class 'popup-message' -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="images/undraw_remotely_2j6y.svg" alt="Image" class="img-fluid">
+            </div>
+            <div class="col-md-6 contents">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="mb-4">
+                            <h3>Verification</h3>
+                            <p class="mb-4">Enter phone number</p>
+                        </div>
+                        <form id="verificationForm" action="./forgototp_verify.html" method="post">
+                            <div class="form-group first">
+                                <label for="phone">Phone</label>
+                                <input type="text" class="form-control" id="phone" name="phone" style="height: 30px;">
+                            </div>
+                            <br>
+                            <input type="submit" value="Log In" class="btn btn-block btn-primary" style="height: 40px;">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/main.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      // Event listener for form submission
+      document.getElementById('verificationForm').addEventListener('submit', async function(event) {
+          // Prevent default form submission
+          event.preventDefault();
+
+          // Get the phone number from the form input
+          const phoneNumberInput = document.getElementById('phone');
+          const phoneNumber = phoneNumberInput.value;
+
+          // Encode the phone number using btoa
+          const encodedPhoneNumber = btoa(phoneNumber);
+
+          // Get the option from URL parameters
+          // const urlParams = new URLSearchParams(window.location.search);
+          // const option = urlParams.get('option');
+
+          // Send the phone number to the API
+          const apiUrl = 'https://learning-u7aw.onrender.com/api/forgotgenerate-otp';
+          try {
+              const response = await fetch(apiUrl, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ phoneNumber }),
+              });
+
+              if (response.ok) {
+                  // Redirect to forgototp_verify.html page with both parameters as URL parameters
+                  const redirectUrl = `./regotp_verify.html?phoneNumber=${encodedPhoneNumber}`;
+                  window.location.href = redirectUrl;
+              } else {
+                  // Get the error message from the response
+                  const { error } = await response.json(); // Extract the error message
+                  showError(error);
+              }
+          } catch (error) {
+              console.error('Error generating OTP:', error);
+              showError('Failed to generate OTP. Please try again later.');
+          }
+      });
+
+      function showError(message) {
+          const loginMessage = document.getElementById('loginMessage');
+          loginMessage.textContent = message;
+          loginMessage.classList.add('show'); // Show the popup message
+          setTimeout(() => {
+              loginMessage.classList.remove('show'); // Hide the popup message after 3 seconds
+          }, 3000);
+      }
+  });
+</script>
+
+
+</body>
+</html>
+
+
+<style>
+  .popup-message {
+      display: none;
+      position: fixed;
+      top: 20px; /* Changed from bottom to top */
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      background-color: rgba(255, 0, 0, 0.7);
+      color: white;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .popup-message.show {
+      display: block;
+  }
+</style>
