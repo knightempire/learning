@@ -26,8 +26,7 @@
                     <!-- <center> <img src="https://i.imgur.com/1q3vxG9.png" width="170px" height="100px"></center> -->
                     <i class="fa fa-lock" style="font-size:36px"></i>
                     <h4>Verify</h4>
-                    <p>Your code was sent to you via **********</p>
-    
+                    <p>Your code was sent to you via <span  id="phoneNumberPlaceholder">********** </span></p>
                     <!-- Form element with an ID for JavaScript -->
                     <form id="verificationForm" action="user_dashboard.html">
                         <div class="otp-field mb-4">
@@ -77,6 +76,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const encodedPhoneNumber = urlParams.get('phoneNumber');
         const decodedPhoneNumber = atob(encodedPhoneNumber);
+        document.getElementById('phoneNumberPlaceholder').textContent = decodedPhoneNumber;
         
         // Call the function to verify OTP
         verifyOtp(otp, decodedPhoneNumber);

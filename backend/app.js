@@ -892,7 +892,7 @@ app.post('/api/studentprofile', async (req, res) => {
 
 
 
-app.post('/checkstudentprofile', (req, res) => {
+app.post('/api/checkstudentprofile', (req, res) => {
     const { s_id } = req.body;
 
     if (s_id === 0) {

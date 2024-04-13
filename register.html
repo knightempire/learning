@@ -58,7 +58,7 @@
         const phoneNumber = getUrlParameter('phoneNumber');
         if (!phoneNumber) {
             console.log("No phone number found");
-            window.location.href = '#'; // Redirect to otp.html if phone number is empty
+            window.location.href = './otp/regotp_phone.html'; // Redirect to otp.html if phone number is empty
         } else {
             console.log('Phone Number:', phoneNumber);
             document.getElementById('phoneNumber').value = phoneNumber;

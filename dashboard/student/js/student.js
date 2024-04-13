@@ -472,7 +472,7 @@
             // Check if the response status is 404 (Not Found)
             if (response.status === 404) {
                 // Redirect to profile.html
-                window.location.href = '../../profile.html';
+                // window.location.href = '../../profile.html';
             } else {
                 // Throw an error for other non-OK responses
                 throw new Error('Network response was not ok.');
