@@ -70,7 +70,7 @@
         
             if (response.ok) {
                 localStorage.setItem('Token', data.token); // Store token in local storage upon successful login
-                window.location.href = './test/course_detail.html'; // Redirect to course.html upon successful login
+                window.location.href = './course_pay.html'; // Redirect to course.html upon successful login
             } else {
                 const loginMessage = document.getElementById('loginMessage');
                 loginMessage.textContent = data.error;
