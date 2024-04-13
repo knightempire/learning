@@ -92,7 +92,7 @@
           userNameElement.textContent = name;
 
           // Call function to view all performance data
-          checkStudentProfile(s_id)
+          checkStudentProfile(s_id);
           viewAllPerformanceData(s_id);
 
           // Send the s_id to the /api/lecture endpoint
@@ -457,7 +457,7 @@
     const studentprofile = {
         s_id: s_id
     };
-      console.log(studentprofile)
+      console.log("api checkstuent",studentprofile)
 
     // Make a POST request to the API endpoint
     fetch('https://learning-u7aw.onrender.com/api/checkstudentprofile', {
@@ -472,7 +472,7 @@
             // Check if the response status is 404 (Not Found)
             if (response.status === 404) {
                 // Redirect to profile.html
-                // window.location.href = '../../profile.html';
+                window.location.href = '../../profile.html';
             } else {
                 // Throw an error for other non-OK responses
                 throw new Error('Network response was not ok.');

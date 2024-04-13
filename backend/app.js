@@ -896,6 +896,7 @@ app.post('/api/checkstudentprofile', (req, res) => {
     const { s_id } = req.body;
 
     if (s_id === 0) {
+        console.log('API checkstudent all data requested');
         // If s_id is 0, fetch all data from student_profile table
         pool.query('SELECT * FROM student_profile', (error, results) => {
             if (error) {
@@ -907,6 +908,8 @@ app.post('/api/checkstudentprofile', (req, res) => {
         });
     } else {
         // Otherwise, find data by s_id
+        console.log('API checkstudent requested');
+        
         pool.query('SELECT * FROM student_profile WHERE s_id = ?', [s_id], (error, results) => {
             if (error) {
                 console.error('Error fetching data:', error);
