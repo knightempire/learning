@@ -482,7 +482,7 @@
     })
     .then(data => {
         // Handle the response from the server
-        console.log('Performance data:', data);
+        console.log('profile data:', data);
 
         // Assuming you have a function to display performance data
         displayPerformanceData(data.performance);
