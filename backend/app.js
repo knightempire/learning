@@ -891,30 +891,32 @@ app.post('/api/studentprofile', async (req, res) => {
 
 
 
-// Route for viewing/checking  profile data
-app.post('/api/checkstudentprofile', (req, res) => {
+
+// Route for checking student profile
+app.post('/api/checkstudentprofile', async (req, res) => {
     const { s_id } = req.body;
 
     try {
-        // Otherwise, find data by s_id
-        console.log('API checkstudent requested');
-        
-        pool.query('SELECT * FROM student_profile WHERE s_id = ?', [s_id], (error, results) => {
-            if (error) {
-                console.error('Error fetching data:', error);
-                res.status(500).json({ error: 'Internal server error' });
-            } else if (results.length > 0) {
-                res.json(results[0]);
+        console.log('API check student profile requested');
+
+        if (s_id) {
+            const query = `SELECT * FROM student_profile WHERE s_id = ${s_id}`;
+            const [studentProfileData] = await pool.execute(query);
+
+            if (studentProfileData.length > 0) {
+                res.status(200).json({ studentProfile: studentProfileData[0] });
             } else {
-                res.status(404).json({ error: 'Student not found' });
+                res.status(404).json({ error: 'Student profile not found' });
             }
-        });
+        } else {
+            // If s_id is not provided, return an error message
+            res.status(400).json({ error: 's_id parameter is required' });
+        }
     } catch (error) {
-        console.error('Error processing request:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        console.error('Error fetching student profile data:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
 
 
 
