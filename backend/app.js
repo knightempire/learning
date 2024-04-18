@@ -303,14 +303,22 @@ app.post('/api/register', async (req, res) => {
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Set default role if not provided
-        const userRole = role || 'student';
-
         // Insert the new user into the database
-        const [result] = await pool.execute('INSERT INTO users (name, username, password, phoneNumber, role) VALUES (?, ?, ?, ?, ?)', [name, username, hashedPassword, phoneNumber, userRole]);
+        const [userInsertResult] = await pool.execute('INSERT INTO users (name, username, password, phoneNumber, role) VALUES (?, ?, ?, ?, ?)', [name, username, hashedPassword, phoneNumber, role]);
         
         // Check if insertion was successful
-        if (result.affectedRows === 1) {
+        if (userInsertResult.affectedRows === 1) {
+            const userId = userInsertResult.insertId; // Get the user ID
+
+            if (role === 'mentor') {
+                // Insert user ID into mentors table
+                const [mentorInsertResult] = await pool.execute('INSERT INTO mentors (m_id) VALUES (?)', [userId]);
+                
+                if (mentorInsertResult.affectedRows !== 1) {
+                    throw new Error('Failed to insert into mentors table');
+                }
+            }
+            
             return res.status(201).json({ message: 'User registered successfully' });
         } else {
             throw new Error('Failed to register user');
