@@ -404,6 +404,9 @@ app.post('/api/login', async (req, res) => {
         // Get the role from the existingUser object
         const role = existingUser[0].role;
 
+        // Log the role
+        console.log("Role:", role);
+
         // Determine the role-specific response number
         let responseNumber;
         if (role === 'student') {
