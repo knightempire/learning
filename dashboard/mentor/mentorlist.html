@@ -390,7 +390,7 @@
 
 <script>
     async function decodeToken() {
-        const token = localStorage.getItem('Token'); // Retrieve token from local storage
+        const token = localStorage.getItem('Token');
         if (!token) {
             console.error('Token not found in local storage');
             return;
@@ -409,11 +409,27 @@
                 const data = await response.json();
                 console.log('Decoded token data:', data);
                 
-                // Extract and log user_id
                 const userId = data.user_id;
                 console.log('User ID:', userId);
 
-               
+                // Fetch list of mentors
+                const mentorResponse = await fetch('https://learning-u7aw.onrender.com/api/listmentor');
+                const mentorData = await mentorResponse.json();
+
+                // Populate table with mentor data
+                const tableBody = document.querySelector('#example tbody');
+                mentorData.forEach(mentor => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${mentor.name}</td>
+                        <td>${mentor.position}</td>
+                        <td>${mentor.office}</td>
+                        <td>${mentor.age}</td>
+                        <td>${mentor.startDate}</td>
+                        <td>${mentor.salary}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
             } else {
                 console.error('Failed to decode token:', response.statusText);
             }
@@ -422,6 +438,6 @@
         }
     }
 
-    // Call the function when the page loads
     window.onload = decodeToken;
 </script>
+

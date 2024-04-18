@@ -1032,10 +1032,14 @@ app.get('/api/liststudent', async (req, res) => {
 // Route for fetching all mentors details
 app.get('/api/listmentor', async (req, res) => {
     try {
-        // Query the database to fetch all student details
-        const [mentorDetails] = await pool.execute('SELECT * FROM mentor');
+        // Query the database to fetch all mentor details along with associated user details
+        const [mentorDetails] = await pool.execute(`
+            SELECT mentors.*, users.name AS user_name, users.username
+            FROM mentors
+            INNER JOIN users ON mentors.m_id = users.user_id
+        `);
 
-        // Send the student details as a JSON response
+        // Send the mentor details as a JSON response
         res.json(mentorDetails);
     } catch (error) {
         console.error('Error fetching mentor details:', error);
