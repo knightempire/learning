@@ -1021,7 +1021,7 @@ app.get('/api/liststudent', async (req, res) => {
         const [studentDetails] = await pool.execute(`
             SELECT student.*, users.name, users.username
             FROM student
-            INNER JOIN users ON student.user_id = users.user_id
+            INNER JOIN users ON student.s_id = users.user_id
         `);
 
         // Send the student details as a JSON response
