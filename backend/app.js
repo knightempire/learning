@@ -303,22 +303,14 @@ app.post('/api/register', async (req, res) => {
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Set default role if not provided
+        const userRole = role || 'student';
+
         // Insert the new user into the database
-        const [userInsertResult] = await pool.execute('INSERT INTO users (name, username, password, phoneNumber, role) VALUES (?, ?, ?, ?, ?)', [name, username, hashedPassword, phoneNumber, role]);
+        const [result] = await pool.execute('INSERT INTO users (name, username, password, phoneNumber, role) VALUES (?, ?, ?, ?, ?)', [name, username, hashedPassword, phoneNumber, userRole]);
         
         // Check if insertion was successful
-        if (userInsertResult.affectedRows === 1) {
-            const userId = userInsertResult.insertId; // Get the user ID
-
-            if (role === 'mentor') {
-                // Insert user ID into mentors table
-                const [mentorInsertResult] = await pool.execute('INSERT INTO mentors (m_id) VALUES (?)', [userId]);
-                
-                if (mentorInsertResult.affectedRows !== 1) {
-                    throw new Error('Failed to insert into mentors table');
-                }
-            }
-            
+        if (result.affectedRows === 1) {
             return res.status(201).json({ message: 'User registered successfully' });
         } else {
             throw new Error('Failed to register user');
@@ -329,10 +321,62 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
+//Route for mentor
+app.post('/api/registermentor', async (req, res) => {
+    const { name, username, phoneNumber, course_name, salary, role } = req.body;
+    const defaultPassword = 'mentorDefaultPassword'; // Define the default password for mentors
+
+    try {
+        console.log('API registermentor requested');
+
+        // Check if the username is already taken
+        const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
+
+        if (existingUser.length > 0) {
+            return res.status(400).json({ error: 'Username already exists' });
+        }
+
+        // Set default role as mentor if not provided
+        const userRole = role || 'mentor';
+
+        // Hash the default password
+        const hashedPassword = await bcrypt.hash(defaultPassword, 10);
+
+        // Insert the new user (mentor) into the users table
+        const [userInsertResult] = await pool.execute('INSERT INTO users (name, username, password, phoneNumber, role) VALUES (?, ?, ?, ?, ?)', [name, username, hashedPassword, phoneNumber, userRole]);
+
+        // Check if insertion was successful
+        if (userInsertResult.affectedRows === 1) {
+            const userId = userInsertResult.insertId; // Get the user ID
+
+            // Get the course ID from the course table using the course name
+            const [courseResult] = await pool.execute('SELECT c_id FROM course WHERE course_name = ?', [course_name]);
+
+            if (courseResult.length === 0) {
+                throw new Error('Course not found');
+            }
+
+            const courseId = courseResult[0].c_id;
+
+            // Insert user ID into mentors table with additional information
+            const [mentorInsertResult] = await pool.execute('INSERT INTO mentors (c_id, m_id, salary_id) VALUES (?, ?, ?)', [courseId, userId, salary]);
+
+            if (mentorInsertResult.affectedRows !== 1) {
+                throw new Error('Failed to insert into mentors table');
+            }
+
+            return res.status(201).json({ message: 'Mentor registered successfully' });
+        } else {
+            throw new Error('Failed to register mentor');
+        }
+    } catch (error) {
+        console.error('Error during mentor registration:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
-
-//Route for login
+// Route for login
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -356,11 +400,19 @@ app.post('/api/login', async (req, res) => {
             return res.status(400).json({ error: 'Invalid password' });
         }
 
+        // Determine the role-specific response number
+        let responseNumber;
+        if (existingUser[0].role === 'student') {
+            responseNumber = 1; // Response number for student
+        } else if (existingUser[0].role === 'mentor') {
+            responseNumber = 2; // Response number for mentor
+        }
+
         // User is authenticated
         const token = createtoken(req, res, existingUser); // Call the createtoken function with req and res
         console.log(token)
 
-        res.json({ isValid: true, token });
+        res.json({ isValid: true, responseNumber, token });
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).json({ error: 'Internal Server Error' });
