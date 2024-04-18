@@ -324,7 +324,7 @@ app.post('/api/register', async (req, res) => {
 //Route for mentor
 app.post('/api/registermentor', async (req, res) => {
     const { name, username, phoneNumber, course_name, salary, role } = req.body;
-    const defaultPassword = 'mentorDefaultPassword'; // Define the default password for mentors
+    const defaultPassword = 'mentor'; // Define the default password for mentors
 
     try {
         console.log('API registermentor requested');
