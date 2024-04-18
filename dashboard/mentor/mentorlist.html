@@ -302,19 +302,24 @@
                                 <h4 class="card-title">Mentors list</h4>
                             </div>
                             <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <input type="text" id="searchInput" class="form-control" placeholder="Search...">
+                                    </div>
+                                </div>
                                 <div class="table-responsive">
-                                    <table id="example" class="display" style="min-width: 845px">
-                                        <thead>
+                                    <table id="example" class="table table-striped table-bordered" style="min-width: 845px">
+                                        <thead class="thead-dark">
                                             <tr>
+                                                <th>Username</th>
                                                 <th>Name</th>
                                                 <th>Position</th>
-                                                <th>Office</th>
-                                                <th>Age</th>
-                                                <th>Start date</th>
-                                                <th>Salary</th>
+                                                <th>No. of Students</th>
+                                                <th>Profile</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody style="color: black;">
+                                            <!-- Data from API will be inserted here -->
                                         </tbody>
                                     </table>
                                 </div>
@@ -322,6 +327,9 @@
                         </div>
                     </div>
                 </div>
+                
+            
+                
                 <!-- End of existing content -->
     
                 <!-- Add mentor form -->
@@ -380,7 +388,7 @@
 
 
     <!-- Datatable -->
-    <script src="./vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <!-- <script src="./vendor/datatables/js/jquery.dataTables.min.js"></script> -->
     <script src="./js/plugins-init/datatables.init.js"></script>
 
 </body>
@@ -421,15 +429,32 @@
                 mentorData.forEach(mentor => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
+                        <td>${mentor.username}</td>
                         <td>${mentor.name}</td>
                         <td>${mentor.position}</td>
-                        <td>${mentor.office}</td>
-                        <td>${mentor.age}</td>
-                        <td>${mentor.startDate}</td>
-                        <td>${mentor.salary}</td>
+                        <td>${mentor.no_of_students}</td>
+                        <td><button class="btn btn-primary btn-sm view-btn">View</button></td>
+
                     `;
                     tableBody.appendChild(row);
                 });
+
+                // Add search functionality to the table
+                const searchInput = document.getElementById('searchInput');
+                searchInput.addEventListener('input', function() {
+                    const searchText = this.value.toLowerCase();
+                    const rows = tableBody.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        const nameColumn = row.querySelector('td:nth-child(2)'); // Select the second column (name)
+                        const name = nameColumn.textContent.toLowerCase();
+                        if (name.includes(searchText)) {
+                            row.style.display = ''; // Show the row if the name matches the search text
+                        } else {
+                            row.style.display = 'none'; // Hide the row if the name does not match
+                        }
+                    });
+                });
+
             } else {
                 console.error('Failed to decode token:', response.statusText);
             }

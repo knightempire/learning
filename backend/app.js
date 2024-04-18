@@ -1014,11 +1014,15 @@ app.post('/api/checkstudentprofile', async (req, res) => {
 });
 
 
-// Route for fetching all student details
+// Route for fetching all student details with associated user details
 app.get('/api/liststudent', async (req, res) => {
     try {
-        // Query the database to fetch all student details
-        const [studentDetails] = await pool.execute('SELECT * FROM student');
+        // Query the database to fetch all student details along with associated user details
+        const [studentDetails] = await pool.execute(`
+            SELECT students.*, users.name, users.username
+            FROM students
+            INNER JOIN users ON students.user_id = users.user_id
+        `);
 
         // Send the student details as a JSON response
         res.json(studentDetails);
@@ -1029,12 +1033,13 @@ app.get('/api/liststudent', async (req, res) => {
 });
 
 
+
 // Route for fetching all mentors details
 app.get('/api/listmentor', async (req, res) => {
     try {
         // Query the database to fetch all mentor details along with associated user details
         const [mentorDetails] = await pool.execute(`
-            SELECT mentors.*, users.name AS user_name, users.username
+            SELECT mentors.*, users.name, users.username
             FROM mentors
             INNER JOIN users ON mentors.m_id = users.user_id
         `);

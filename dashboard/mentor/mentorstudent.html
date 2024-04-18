@@ -180,12 +180,12 @@
                         class="nav-text">Dashboard</span></a></li>
                         
               
-                    <li class="nav-label">Studensts</li>
+                    <li class="nav-label">Students</li>
                     <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
                         class="icon icon-single-04"></i><span class="nav-text">Users</span></a>
                         <ul aria-expanded="false">
                             <li><a href="./app-profile.html">List of student</a></li>
-                            <li><a href="./app-profile.html">List of mentors</a></li>
+                            <li><a href="./app-profile.html">List of students</a></li>
                             
                       
                         </ul>
@@ -247,7 +247,7 @@
                     </div>
                     <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
                         <ol class="breadcrumb">
-                            <!-- <li class="breadcrumb-item"><a href="javascript:void(0)">Add mentor</a></li> -->
+                            <!-- <li class="breadcrumb-item"><a href="javascript:void(0)">Add student</a></li> -->
                         </ol>
                     </div>
                 </div>
@@ -262,7 +262,7 @@
                             </div>
                             <div class="card-body">
                               
-                                <form id="mentorForm">
+                                <form id="studentForm">
                                     <div class="form-group">
                                         <label for="name">Name</label>
                                         <input type="text" class="form-control" id="name" name="name" required>
@@ -299,22 +299,27 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Studenst list</h4>
+                                <h4 class="card-title">Students list</h4>
                             </div>
                             <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <input type="text" id="searchInput" class="form-control" placeholder="Search...">
+                                    </div>
+                                </div>
                                 <div class="table-responsive">
-                                    <table id="example" class="display" style="min-width: 845px">
-                                        <thead>
+                                    <table id="example" class="table table-striped table-bordered" style="min-width: 845px">
+                                        <thead class="thead-dark">
                                             <tr>
+                                                <th>Username</th>
                                                 <th>Name</th>
                                                 <th>Position</th>
-                                                <th>Office</th>
-                                                <th>Age</th>
-                                                <th>Start date</th>
-                                                <th>Salary</th>
+                                                <th>No. of Students</th>
+                                                <th>Profile</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody style="color: black;">
+                                            <!-- Data from API will be inserted here -->
                                         </tbody>
                                     </table>
                                 </div>
@@ -322,11 +327,14 @@
                         </div>
                     </div>
                 </div>
+                
+            
+                
                 <!-- End of existing content -->
     
-                <!-- Add mentor form -->
+                <!-- Add student form -->
              
-                <!-- End of add mentor form -->
+                <!-- End of add student form -->
             </div>
         </div>
     
@@ -380,7 +388,7 @@
 
 
     <!-- Datatable -->
-    <script src="./vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <!-- <script src="./vendor/datatables/js/jquery.dataTables.min.js"></script> -->
     <script src="./js/plugins-init/datatables.init.js"></script>
 
 </body>
@@ -389,5 +397,72 @@
 
 
 <script>
+    async function decodeToken() {
+        const token = localStorage.getItem('Token');
+        if (!token) {
+            console.error('Token not found in local storage');
+            return;
+        }
 
+        try {
+            const response = await fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Decoded token data:', data);
+                
+                const userId = data.user_id;
+                console.log('User ID:', userId);
+
+                // Fetch list of students
+                const studentResponse = await fetch('https://learning-u7aw.onrender.com/api/liststudent');
+                const studentData = await studentResponse.json();
+
+                // Populate table with student data
+                const tableBody = document.querySelector('#example tbody');
+                studentData.forEach(student => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${student.username}</td>
+                        <td>${student.user_name}</td>
+                        <td>${student.position}</td>
+                        <td>${student.no_of_students}</td>
+                        <td><button class="btn btn-primary btn-sm view-btn">View</button></td>
+
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                // Add search functionality to the table
+                const searchInput = document.getElementById('searchInput');
+                searchInput.addEventListener('input', function() {
+                    const searchText = this.value.toLowerCase();
+                    const rows = tableBody.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        const nameColumn = row.querySelector('td:nth-child(2)'); // Select the second column (user_name)
+                        const name = nameColumn.textContent.toLowerCase();
+                        if (name.includes(searchText)) {
+                            row.style.display = ''; // Show the row if the user_name matches the search text
+                        } else {
+                            row.style.display = 'none'; // Hide the row if the user_name does not match
+                        }
+                    });
+                });
+
+            } else {
+                console.error('Failed to decode token:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error decoding token:', error.message);
+        }
+    }
+
+    window.onload = decodeToken;
 </script>
+
