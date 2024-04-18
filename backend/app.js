@@ -414,7 +414,7 @@ app.post('/api/login', async (req, res) => {
         const token = createtoken(req, res, existingUser); // Call the createtoken function with req and res
         console.log(token)
 
-        res.json({ isValid: true, responseNumber, token });
+        res.json({ isValid: true, responseNumber, token }); 
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).json({ error: 'Internal Server Error' });
