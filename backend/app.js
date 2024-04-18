@@ -323,7 +323,7 @@ app.post('/api/register', async (req, res) => {
 
 //Route for mentor
 app.post('/api/registermentor', async (req, res) => {
-    const { name, username, phoneNumber, course_name, salary, role } = req.body;
+    const { name, username, phoneNumber, course_name, role } = req.body;
     const defaultPassword = 'mentor'; // Define the default password for mentors
 
     try {
@@ -359,7 +359,7 @@ app.post('/api/registermentor', async (req, res) => {
             const courseId = courseResult[0].c_id;
 
             // Insert user ID into mentors table with additional information
-            const [mentorInsertResult] = await pool.execute('INSERT INTO mentors (c_id, m_id, salary_id) VALUES (?, ?, ?)', [courseId, userId, salary]);
+            const [mentorInsertResult] = await pool.execute('INSERT INTO mentors (c_id, m_id) VALUES (?, ?)', [courseId, userId]);
 
             if (mentorInsertResult.affectedRows !== 1) {
                 throw new Error('Failed to insert into mentors table');
@@ -374,6 +374,7 @@ app.post('/api/registermentor', async (req, res) => {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 // Route for login
