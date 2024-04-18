@@ -403,9 +403,11 @@ app.post('/api/login', async (req, res) => {
         // Determine the role-specific response number
         let responseNumber;
         if (existingUser[0].role === 'student') {
-            responseNumber = 1; // Response number for student
+            // Check if the user is also in the student table
+            const [studentResult] = await pool.execute('SELECT s_id FROM student WHERE s_id = ?', [existingUser[0].user_id]);
+            responseNumber = studentResult.length > 0 ? 2 : 1; // If user is in student table, set responseNumber to 2, else 1
         } else if (existingUser[0].role === 'mentor') {
-            responseNumber = 2; // Response number for mentor
+            responseNumber = 3; // Response number for mentor
         }
 
         // User is authenticated
@@ -418,6 +420,7 @@ app.post('/api/login', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 
