@@ -1014,6 +1014,39 @@ app.post('/api/checkstudentprofile', async (req, res) => {
 });
 
 
+// Route for fetching all student details
+app.get('/api/liststudent', async (req, res) => {
+    try {
+        // Query the database to fetch all student details
+        const [studentDetails] = await pool.execute('SELECT * FROM student');
+
+        // Send the student details as a JSON response
+        res.json(studentDetails);
+    } catch (error) {
+        console.error('Error fetching student details:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+// Route for fetching all mentors details
+app.get('/api/listmentor', async (req, res) => {
+    try {
+        // Query the database to fetch all student details
+        const [mentorDetails] = await pool.execute('SELECT * FROM mentor');
+
+        // Send the student details as a JSON response
+        res.json(mentorDetails);
+    } catch (error) {
+        console.error('Error fetching mentor details:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
+
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

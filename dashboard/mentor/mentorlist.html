@@ -389,5 +389,39 @@
 
 
 <script>
+    async function decodeToken() {
+        const token = localStorage.getItem('Token'); // Retrieve token from local storage
+        if (!token) {
+            console.error('Token not found in local storage');
+            return;
+        }
 
+        try {
+            const response = await fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Decoded token data:', data);
+                
+                // Extract and log user_id
+                const userId = data.user_id;
+                console.log('User ID:', userId);
+
+               
+            } else {
+                console.error('Failed to decode token:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error decoding token:', error.message);
+        }
+    }
+
+    // Call the function when the page loads
+    window.onload = decodeToken;
 </script>
