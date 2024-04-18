@@ -412,9 +412,10 @@ app.post('/api/login', async (req, res) => {
         }
 
         // User is authenticated
+        console.log(responseNumber)
         const token = createtoken(req, res, existingUser); // Call the createtoken function with req and res
         console.log(token)
-        console.log(responseNumber)
+      
 
         res.json({ isValid: true, responseNumber, token }); 
     } catch (error) {
