@@ -154,7 +154,7 @@ const authenticateToken = async (req, res, next) => {
     }
 };
 
-//Route for login
+// Route for login
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -178,16 +178,35 @@ app.post('/api/login', async (req, res) => {
             return res.status(400).json({ error: 'Invalid password' });
         }
 
+        // Get the role from the existingUser object
+        const role = existingUser[0].role;
+
+    
+
+        // Determine the role-specific response number
+        let responseNumber;
+        if (role === 'student') {
+            // Check if the user is also in the student table
+            const [studentResult] = await pool.execute('SELECT s_id FROM student WHERE s_id = ?', [existingUser[0].user_id]);
+            responseNumber = studentResult.length > 0 ? 2 : 1; // If user is in student table, set responseNumber to 2, else 1
+        } else if (role === 'mentor') {
+            responseNumber = 3; // Response number for mentor
+        }
+
+        // Log the responseNumber
+        console.log("responseNumber:", responseNumber);
+
         // User is authenticated
         const token = createtoken(req, res, existingUser); // Call the createtoken function with req and res
-        console.log(token)
+        console.log("token:", token);
 
-        res.json({ isValid: true, token });
+        res.json({ isValid: true, responseNumber, token }); 
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 //decoding the token
