@@ -253,48 +253,77 @@
                 </div>
                 <!-- Existing content -->
 
+                
 
-                <!-- <div class="row" id="addMentorForm" style="display: none;">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">Add Mentor</h4>
-                            </div>
-                            <div class="card-body">
-                              
-                                <form id="mentorForm">
-                                    <div class="form-group">
-                                        <label for="name">Name</label>
-                                        <input type="text" class="form-control" id="name" name="name" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="position">Position</label>
-                                        <input type="text" class="form-control" id="position" name="position" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="office">Office</label>
-                                        <input type="text" class="form-control" id="office" name="office" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="age">Age</label>
-                                        <input type="number" class="form-control" id="age" name="age" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="startDate">Start date</label>
-                                        <input type="date" class="form-control" id="startDate" name="startDate" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="salary">Salary</label>
-                                        <input type="number" class="form-control" id="salary" name="salary" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </form>
-                            </div>
-                        </div>
+                <!-- Mentor Details Card -->
+<div class="card" id="mentorDetailsCard" style="display: none;">
+    <div class="card-header">
+        <h4 class="card-title">Mentor Details</h4>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Search bar -->
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search..." aria-describedby="searchIcon" value="Abi">
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
                     </div>
-                </div> -->
+                </div>
+            </div>
+            <div class="col-md-6">
+                <!-- Dropdown for filtering -->
+                <div class="form-group">
+                    <select class="form-control" id="filterDropdown">
+                        <option value="all">All Mentors</option>
+                        <option value="active">Active Mentors</option>
+                        <option value="inactive">Inactive Mentors</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <!-- Mentor details: Name -->
+                <div class="form-group">
+                    <label for="mentorName">Name:</label>
+                    <input type="text" class="form-control" id="mentorName" value="Abi" readonly>
+                </div>
+            </div>
+            <div class="col-6">
+                <!-- Mentor details: Username -->
+                <div class="form-group">
+                    <label for="mentorUsername">Username:</label>
+                    <input type="text" class="form-control" id="mentorUsername" value="Abinesh" readonly>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <!-- Mentor details: Position -->
+                <div class="form-group">
+                    <label for="mentorPosition">Position:</label>
+                    <input type="text" class="form-control" id="mentorPosition" value="Head" readonly>
+                </div>
+            </div>
+            <div class="col-6">
+                <!-- Mentor details: Number of students -->
+                <div class="form-group">
+                    <label for="numberOfStudents">Number of Students:</label>
+                    <input type="text" class="form-control" id="numberOfStudents" value="30" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                            
 
 
+
+
+                
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
@@ -306,7 +335,12 @@
                                     <div class="col-md-6">
                                         <input type="text" id="searchInput" class="form-control" placeholder="Search...">
                                     </div>
+                                    <div class="col-md-6 text-right">
+                                        <!-- Button for checking mentor -->
+                                        <button type="button" class="btn btn-primary" id="checkMentorButton">Check Mentor</button>
+                                    </div>
                                 </div>
+                                
                                 <div class="table-responsive">
                                     <table id="example" class="table table-striped table-bordered" style="min-width: 845px">
                                         <thead class="thead-dark">
@@ -394,6 +428,26 @@
 
 </html>
 
+<script>
+// Get references to the button and the mentor details card
+const checkMentorButton = document.getElementById('checkMentorButton');
+const mentorDetailsCard = document.getElementById('mentorDetailsCard');
+
+// Add event listener to the button
+checkMentorButton.addEventListener('click', function() {
+    // Toggle the display of the mentor details card
+    if (mentorDetailsCard.style.display === 'none') {
+        mentorDetailsCard.style.display = 'block';
+        checkMentorButton.textContent = 'Hide Mentor';
+    } else {
+        mentorDetailsCard.style.display = 'none';
+        checkMentorButton.textContent = 'Check Mentor';
+    }
+});
+
+
+</script>
+
 
 <script>
     let userId; // Global variable to store user ID
@@ -461,19 +515,35 @@
 
     
     async function fetchStudentsWithoutMentor(c_id) {
-        try {
-            const response = await fetch('https://learning-u7aw.onrender.com/api/studentwithoutmentor');
-            if (response.ok) {
-                const studentsWithoutMentor = await response.json();
-                console.log('Students without mentor:', studentsWithoutMentor);
-                // You can handle the data here, such as displaying it on the page
-            } else {
-                console.error('Failed to fetch students without mentor:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error fetching students without mentor:', error.message);
+    try {
+        const response = await fetch('https://learning-u7aw.onrender.com/api/studentwithoutmentor');
+        if (response.ok) {
+            const studentsWithoutMentor = await response.json();
+            console.log('Students without mentor:', studentsWithoutMentor);
+            
+            // Get a reference to the table body
+            const tableBody = document.querySelector('#example tbody');
+            
+            // Clear the table body first
+            tableBody.innerHTML = '';
+
+            // Populate the table with the fetched data
+            studentsWithoutMentor.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.username}</td>
+                    <td>${student.name}</td>
+                    <td>No mentor assigned</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } else {
+            console.error('Failed to fetch students without mentor:', response.statusText);
         }
+    } catch (error) {
+        console.error('Error fetching students without mentor:', error.message);
     }
+}
 
 
     window.onload = decodeToken;
