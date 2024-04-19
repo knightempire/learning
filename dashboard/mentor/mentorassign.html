@@ -423,27 +423,12 @@
                 console.log('User ID:', userId);
 
                 fetchMentorDashboard(userId);
-                fetchStudentsWithoutMentor(); // Fetch students without mentor after decoding token
+               // Fetch students without mentor after decoding token
             } else {
                 console.error('Failed to decode token:', response.statusText);
             }
         } catch (error) {
             console.error('Error decoding token:', error.message);
-        }
-    }
-
-    async function fetchStudentsWithoutMentor() {
-        try {
-            const response = await fetch('https://learning-u7aw.onrender.com/api/studentwithoutmentor');
-            if (response.ok) {
-                const studentsWithoutMentor = await response.json();
-                console.log('Students without mentor:', studentsWithoutMentor);
-                // You can handle the data here, such as displaying it on the page
-            } else {
-                console.error('Failed to fetch students without mentor:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error fetching students without mentor:', error.message);
         }
     }
 
@@ -464,6 +449,7 @@
                     // If mentor exists and details are available
                     c_id = mentorData.mentorDetails[0].c_id; // Assigning mentor c_id to the global variable
                     console.log("c_id:", c_id);
+                    fetchStudentsWithoutMentor(c_id); 
                 }
             } else {
                 console.error('Failed to fetch mentor dashboard:', response.statusText);
@@ -472,6 +458,23 @@
             console.error('Error fetching mentor dashboard:', error.message);
         }
     }
+
+    
+    async function fetchStudentsWithoutMentor(c_id) {
+        try {
+            const response = await fetch('https://learning-u7aw.onrender.com/api/studentwithoutmentor');
+            if (response.ok) {
+                const studentsWithoutMentor = await response.json();
+                console.log('Students without mentor:', studentsWithoutMentor);
+                // You can handle the data here, such as displaying it on the page
+            } else {
+                console.error('Failed to fetch students without mentor:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching students without mentor:', error.message);
+        }
+    }
+
 
     window.onload = decodeToken;
 </script>
