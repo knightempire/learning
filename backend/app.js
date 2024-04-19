@@ -1132,6 +1132,28 @@ app.post('/api/studentwithoutmentor', async (req, res) => {
 
 
 
+// Route for assigning a mentor to a student
+app.post('/api/assignmentor', async (req, res) => {
+    try {
+        const { student_id, mentor_id } = req.body; // Extract student_id and mentor_id from request body
+        
+        // Update the student_profile table with the mentor_id for the specified student_id
+        const updateStudentProfileQuery = 'UPDATE student_profile SET m_id = ? WHERE s_id = ?';
+        await pool.execute(updateStudentProfileQuery, [mentor_id, student_id]);
+
+        // Increment the number of students for the mentor in the mentors table
+        const incrementStudentsQuery = 'UPDATE mentors SET no_of_students = no_of_students + 1 WHERE m_id = ?';
+        await pool.execute(incrementStudentsQuery, [mentor_id]);
+
+        // Send a success response if the mentor assignment is successful
+        res.status(200).json({ message: 'Mentor assigned successfully' });
+    } catch (error) {
+        console.error('Error assigning mentor:', error);
+        // Send an error response if there's an error during mentor assignment
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 
 
