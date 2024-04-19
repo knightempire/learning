@@ -1038,49 +1038,35 @@ app.post('/api/mentordashboard', async (req, res) => {
 });
 
 
-// Route for fetching filtered student details with associated user details based on c_id
+// Route for fetching student details based on c_id
 app.post('/api/liststudent', async (req, res) => {
     try {
-        const { c_id } = req.body;
+        const { c_id } = req.body; // Extract c_id from request body
 
-        // Query to fetch student details from student table based on c_id
-        const [students] = await pool.execute(`
-            SELECT * FROM student WHERE c_id = ?;
+        // Query the database to fetch student details based on c_id
+        const [studentDetails] = await pool.execute(`
+            SELECT 
+                student.*, 
+                mentor.name AS mentor_name,
+                student_profile.m_id, 
+                users.name AS student_name, 
+                users.username AS student_username
+            FROM 
+                student
+            LEFT JOIN 
+                student_profile ON student.s_id = student_profile.s_id
+            LEFT JOIN 
+                users ON student.s_id = users.user_id
+            LEFT JOIN 
+                users AS mentor ON student_profile.m_id = mentor.user_id
+            WHERE 
+                mentor.c_id = ?; // Filter by c_id
         `, [c_id]);
 
-        // Array to store student details along with associated mentor details
-        const studentsWithMentors = [];
-
-        // Fetch student_profile details for each student based on s_id
-        for (const student of students) {
-            const { s_id } = student;
-
-            // Query to get student_profile details based on s_id
-            const [studentProfile] = await pool.execute(`
-                SELECT * FROM student_profile WHERE s_id = ?;
-            `, [s_id]);
-
-            // If student_profile is found, proceed to fetch mentor details
-            if (studentProfile.length > 0) {
-                const { m_id } = studentProfile[0];
-
-                // Query to get mentor details based on m_id
-                const [mentor] = await pool.execute(`
-                    SELECT * FROM mentors WHERE m_id = ?;
-                `, [m_id]);
-
-                // Add mentor details to the student object
-                student.mentor = mentor[0];
-            }
-
-            // Push the modified student object to the array
-            studentsWithMentors.push(student);
-        }
-
-        // Send the filtered student details along with associated mentor details as a JSON response
-        res.json(studentsWithMentors);
+        // Send the student details as a JSON response
+        res.json(studentDetails);
     } catch (error) {
-        console.error('Error fetching filtered student details:', error);
+        console.error('Error fetching student details:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
