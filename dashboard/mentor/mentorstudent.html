@@ -314,7 +314,7 @@
                                                 <th>Username</th>
                                                 <th>Name</th>
                                                 <th>Date of Joining</th>
-                                                <!-- <th>No. of Students</th> -->
+                                                <th>Mentor</th>
                                                 <th>Profile</th>
                                             </tr>
                                         </thead>
@@ -427,13 +427,17 @@
                 // Populate table with student data
                 const tableBody = document.querySelector('#example tbody');
                 studentData.forEach(student => {
+                    // Format the joining date to display only the date portion
+                    const joiningDate = new Date(student.joining_date);
+                    const formattedJoiningDate = joiningDate.toLocaleDateString('en-US');
+
+                    // Create row and populate table
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${student.username}</td>
                         <td>${student.name}</td>
-                        <td>${student.joining_date	}</td>
+                        <td>${formattedJoiningDate}</td>
                         <td><button class="btn btn-primary btn-sm view-btn">View</button></td>
-
                     `;
                     tableBody.appendChild(row);
                 });
