@@ -399,67 +399,79 @@
     let userId; // Global variable to store user ID
     let c_id; // Global variable to store mentor c_id
 
-
     async function decodeToken() {
-    const token = localStorage.getItem('Token');
-    if (!token) {
-        console.error('Token not found in local storage');
-        return;
-    }
-
-    try {
-        const response = await fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ token })
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            console.log('Decoded token data:', data);
-
-            userId = data.user_id; // Assigning user ID to the global variable
-            console.log('User ID:', userId);
-
-            fetchMentorDashboard(userId);
-        } else {
-            console.error('Failed to decode token:', response.statusText);
+        const token = localStorage.getItem('Token');
+        if (!token) {
+            console.error('Token not found in local storage');
+            return;
         }
-    } catch (error) {
-        console.error('Error decoding token:', error.message);
-    }
-}
 
-async function fetchMentorDashboard(userId) {
-    try {
-        const response = await fetch('https://learning-u7aw.onrender.com/api/mentordashboard', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ user_id: userId })
-        });
+        try {
+            const response = await fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token })
+            });
 
-        if (response.ok) {
-            const mentorData = await response.json();
-            console.log('Mentor dashboard data:', mentorData);
-            if (mentorData.mentorExists && mentorData.mentorDetails.length > 0) {
-                // If mentor exists and details are available
-                c_id = mentorData.mentorDetails[0].c_id; // Assigning mentor c_id to the global variable
-                console.log("c_id:", c_id);
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Decoded token data:', data);
+
+                userId = data.user_id; // Assigning user ID to the global variable
+                console.log('User ID:', userId);
+
+                fetchMentorDashboard(userId);
+                fetchStudentsWithoutMentor(); // Fetch students without mentor after decoding token
+            } else {
+                console.error('Failed to decode token:', response.statusText);
             }
-        } else {
-            console.error('Failed to fetch mentor dashboard:', response.statusText);
+        } catch (error) {
+            console.error('Error decoding token:', error.message);
         }
-    } catch (error) {
-        console.error('Error fetching mentor dashboard:', error.message);
     }
-}
 
+    async function fetchStudentsWithoutMentor() {
+        try {
+            const response = await fetch('https://learning-u7aw.onrender.com/api/studentwithoutmentor');
+            if (response.ok) {
+                const studentsWithoutMentor = await response.json();
+                console.log('Students without mentor:', studentsWithoutMentor);
+                // You can handle the data here, such as displaying it on the page
+            } else {
+                console.error('Failed to fetch students without mentor:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching students without mentor:', error.message);
+        }
+    }
 
+    async function fetchMentorDashboard(userId) {
+        try {
+            const response = await fetch('https://learning-u7aw.onrender.com/api/mentordashboard', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_id: userId })
+            });
 
-window.onload = decodeToken;
+            if (response.ok) {
+                const mentorData = await response.json();
+                console.log('Mentor dashboard data:', mentorData);
+                if (mentorData.mentorExists && mentorData.mentorDetails.length > 0) {
+                    // If mentor exists and details are available
+                    c_id = mentorData.mentorDetails[0].c_id; // Assigning mentor c_id to the global variable
+                    console.log("c_id:", c_id);
+                }
+            } else {
+                console.error('Failed to fetch mentor dashboard:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching mentor dashboard:', error.message);
+        }
+    }
 
+    window.onload = decodeToken;
 </script>
