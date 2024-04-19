@@ -1103,7 +1103,10 @@ app.get('/api/studentwithoutmentor', async (req, res) => {
     try {
         // Query the database to fetch student profiles where m_id is null or empty
         const [studentsWithoutMentor] = await pool.execute(`
-            SELECT * FROM student WHERE s_id IN (SELECT s_id FROM student_profile WHERE m_id IS NULL OR m_id = '');
+            SELECT student.*, user.username, user.name 
+            FROM student 
+            LEFT JOIN user ON student.s_id = user.user_id 
+            WHERE student.s_id IN (SELECT s_id FROM student_profile WHERE m_id IS NULL OR m_id = '');
         `);
 
         // Send the student details as a JSON response
@@ -1113,8 +1116,6 @@ app.get('/api/studentwithoutmentor', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
-
 
 
 
