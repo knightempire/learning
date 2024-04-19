@@ -1119,14 +1119,15 @@ app.get('/api/studentwithoutmentor', async (req, res) => {
             // Send the student details as a JSON response
             res.json(students);
         } else {
-            // If no student profiles with m_id as null are found, return an empty array
-            res.json([]);
+            // If no student profiles with m_id as null are found, return a message indicating that all students have mentors
+            res.json({ message: 'All students have mentors' });
         }
     } catch (error) {
         console.error('Error fetching student profiles without mentor:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 
