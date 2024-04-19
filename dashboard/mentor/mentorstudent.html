@@ -462,14 +462,14 @@
     }
 }
 
-async function fetchStudentList(cId) {
+async function fetchStudentList(c_id) {
     try {
         const response = await fetch('https://learning-u7aw.onrender.com/api/liststudent', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ c_id: cId }) // Sending c_id to fetch student list
+            body: JSON.stringify({ c_id: c_id }) // Sending c_id to fetch student list
         });
 
         if (response.ok) {
