@@ -1038,51 +1038,19 @@ app.post('/api/mentordashboard', async (req, res) => {
 });
 
 
-// Route for fetching student details based on c_id
-app.post('/api/liststudent', async (req, res) => {
+// Route for fetching mentors details based on c_id
+app.post('/api/listmentor', async (req, res) => {
     try {
         const { c_id } = req.body; // Extract c_id from request body
 
-        // Query the database to fetch student details based on c_id
-        const [studentDetails] = await pool.execute(`
-            SELECT 
-                student.*, 
-                mentors.name AS mentor_name,
-                student_profile.m_id, 
-                users.name AS student_name, 
-                users.username AS student_username
-            FROM 
-                student
-            LEFT JOIN 
-                student_profile ON student.s_id = student_profile.s_id
-            LEFT JOIN 
-                users ON student.s_id = users.user_id
-            LEFT JOIN 
-                users AS mentors ON student_profile.m_id = mentors.user_id
-            WHERE 
-                mentors.c_id = ?; 
-        `, [c_id]);
-
-        // Send the student details as a JSON response
-        res.json(studentDetails);
-    } catch (error) {
-        console.error('Error fetching student details:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-
-
-
-// Route for fetching all mentors details
-app.get('/api/listmentor', async (req, res) => {
-    try {
-        // Query the database to fetch all mentor details along with associated user details
+        // Query the database to fetch mentors details based on c_id
         const [mentorDetails] = await pool.execute(`
             SELECT mentors.*, users.name, users.username
             FROM mentors
             INNER JOIN users ON mentors.m_id = users.user_id
-        `);
+            INNER JOIN student_profile ON mentors.m_id = student_profile.m_id
+            WHERE student_profile.c_id = ?
+        `, [c_id]);
 
         // Send the mentor details as a JSON response
         res.json(mentorDetails);
@@ -1091,6 +1059,30 @@ app.get('/api/listmentor', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
+
+// Route for fetching mentors details based on c_id
+app.post('/api/listmentor', async (req, res) => {
+    try {
+        const { c_id } = req.body; // Extract c_id from request body
+
+        // Query the database to fetch mentors details based on c_id
+        const [mentorDetails] = await pool.execute(`
+            SELECT mentors.*, users.name, users.username
+            FROM mentors
+            INNER JOIN users ON mentors.m_id = users.user_id
+            WHERE mentors.c_id = ?
+        `, [c_id]);
+
+        // Send the mentor details as a JSON response
+        res.json(mentorDetails);
+    } catch (error) {
+        console.error('Error fetching mentor details:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 
 
