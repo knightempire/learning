@@ -1098,18 +1098,18 @@ app.post('/api/listmentor', async (req, res) => {
 
 
 
-// Route for fetching student details with m_id as null
-app.get('/api/studentprofile', async (req, res) => {
+// Route for fetching student details without a mentor
+app.get('/api/studentwithoutmentor', async (req, res) => {
     try {
-        // Query the database to fetch student details where m_id is null
-        const [studentProfile] = await pool.execute(`
+        // Query the database to fetch student profiles where m_id is null
+        const [studentsWithoutMentor] = await pool.execute(`
             SELECT * FROM student_profile WHERE m_id IS NULL;
         `);
 
         // If student profiles are found with m_id as null
-        if (studentProfile.length > 0) {
+        if (studentsWithoutMentor.length > 0) {
             // Extract s_id from the student profiles
-            const sIds = studentProfile.map(profile => profile.s_id);
+            const sIds = studentsWithoutMentor.map(profile => profile.s_id);
             
             // Query the student table to fetch student details based on s_id
             const [students] = await pool.execute(`
@@ -1123,10 +1123,11 @@ app.get('/api/studentprofile', async (req, res) => {
             res.json([]);
         }
     } catch (error) {
-        console.error('Error fetching student profiles:', error);
+        console.error('Error fetching student profiles without mentor:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 
