@@ -1019,11 +1019,21 @@ app.get('/api/liststudent', async (req, res) => {
     try {
         // Query the database to fetch all student details along with associated user details
         const [studentDetails] = await pool.execute(`
-        SELECT student.*, users.name, users.username, student_profile.m_id
-        FROM student
-        INNER JOIN users ON student.s_id = users.user_id
-        INNER JOIN student_profile ON student.s_id = student_profile.s_id
-        
+        SELECT 
+        student.*, 
+        mentor.name AS mentor_name,
+        student_profile.m_id, 
+        users.name AS student_name, 
+        users.username AS student_username
+    FROM 
+        student
+    LEFT JOIN 
+        student_profile ON student.s_id = student_profile.s_id
+    LEFT JOIN 
+        users ON student.s_id = users.user_id
+    LEFT JOIN 
+        users AS mentor ON student_profile.m_id = mentor.user_id;
+    
         `);
 
         // Send the student details as a JSON response
