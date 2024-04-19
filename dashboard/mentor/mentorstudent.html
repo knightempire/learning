@@ -475,7 +475,44 @@ async function fetchStudentList(cId) {
         if (response.ok) {
             const studentList = await response.json();
             console.log('Student list:', studentList);
-            // Handle student list data
+            
+            // Clear existing table rows
+            const tableBody = document.querySelector('#example tbody');
+            tableBody.innerHTML = '';
+
+            // Populate table with student data
+            studentList.forEach(student => {
+                // Format the joining date to display only the date portion
+                const joiningDate = new Date(student.joining_date);
+                const formattedJoiningDate = joiningDate.toLocaleDateString('en-US');
+
+                // Create row and populate table
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.username}</td>
+                    <td>${student.name}</td>
+                    <td>${student.m}</td>
+                    <td>${formattedJoiningDate}</td>
+                    <td><button class="btn btn-primary btn-sm view-btn">View</button></td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Add search functionality to the table
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                const searchText = this.value.toLowerCase();
+                const rows = tableBody.querySelectorAll('tr');
+                rows.forEach(row => {
+                    const nameColumn = row.querySelector('td:nth-child(2)'); // Select the second column (user_name)
+                    const name = nameColumn.textContent.toLowerCase();
+                    if (name.includes(searchText)) {
+                        row.style.display = ''; // Show the row if the user_name matches the search text
+                    } else {
+                        row.style.display = 'none'; // Hide the row if the user_name does not match
+                    }
+                });
+            });
         } else {
             console.error('Failed to fetch student list:', response.statusText);
         }

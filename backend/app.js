@@ -1060,7 +1060,7 @@ app.post('/api/liststudent', async (req, res) => {
             LEFT JOIN 
                 users AS mentor ON student_profile.m_id = mentor.user_id
             WHERE 
-                mentor.c_id = ?; // Filter by c_id
+                mentor.c_id = ?; 
         `, [c_id]);
 
         // Send the student details as a JSON response
