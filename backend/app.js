@@ -1058,9 +1058,9 @@ app.post('/api/liststudent', async (req, res) => {
             LEFT JOIN 
                 users ON student.s_id = users.user_id
             LEFT JOIN 
-                users AS mentor ON student_profile.m_id = mentor.user_id
+                users AS mentors ON student_profile.m_id = mentors.user_id
             WHERE 
-                mentor.c_id = ?; 
+                mentors.c_id = ?; 
         `, [c_id]);
 
         // Send the student details as a JSON response
