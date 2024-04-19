@@ -420,6 +420,34 @@
                 const userId = data.user_id;
                 console.log('User ID:', userId);
 
+                fetchMentorDashboard(userId);
+                
+
+
+                async function fetchMentorDashboard(userId) {
+    try {
+        const response = await fetch('https://learning-u7aw.onrender.com/api/mentordashboard', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ user_id: userId })
+        });
+
+        if (response.ok) {
+            const mentorData = await response.json();
+            console.log('Mentor dashboard data:', mentorData);
+            const c_id = mentorData.c_id
+            console.log("c_id:", c_id)
+            // Handle mentor dashboard data
+        } else {
+            console.error('Failed to fetch mentor dashboard:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error fetching mentor dashboard:', error.message);
+    }
+}
+
                 // Fetch list of students
                 const studentResponse = await fetch('https://learning-u7aw.onrender.com/api/liststudent');
                 const studentData = await studentResponse.json();
