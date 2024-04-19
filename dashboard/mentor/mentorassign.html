@@ -9,7 +9,7 @@
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon.png">
     <!-- Datatable -->
-    <link href="./vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+    <!-- <link href="./vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet"> -->
     <!-- Custom Stylesheet -->
     <link href="./css/style.css" rel="stylesheet">
 
@@ -275,9 +275,7 @@
                 <!-- Dropdown for filtering -->
                 <div class="form-group">
                     <select class="form-control" id="filterDropdown">
-                        <option value="all">All Mentors</option>
-                        <option value="active">Active Mentors</option>
-                        <option value="inactive">Inactive Mentors</option>
+                     <!-- mentor name -->
                     </select>
                 </div>
             </div>
@@ -288,14 +286,14 @@
                 <!-- Mentor details: Name -->
                 <div class="form-group">
                     <label for="mentorName">Name:</label>
-                    <input type="text" class="form-control" id="mentorName" value="Abi" readonly>
+                    <input type="text" class="form-control" id="mentorName"  readonly>
                 </div>
             </div>
             <div class="col-6">
                 <!-- Mentor details: Username -->
                 <div class="form-group">
                     <label for="mentorUsername">Username:</label>
-                    <input type="text" class="form-control" id="mentorUsername" value="Abinesh" readonly>
+                    <input type="text" class="form-control" id="mentorUsername"  readonly>
                 </div>
             </div>
         </div>
@@ -305,14 +303,14 @@
                 <!-- Mentor details: Position -->
                 <div class="form-group">
                     <label for="mentorPosition">Position:</label>
-                    <input type="text" class="form-control" id="mentorPosition" value="Head" readonly>
+                    <input type="text" class="form-control" id="mentorPosition"  readonly>
                 </div>
             </div>
             <div class="col-6">
                 <!-- Mentor details: Number of students -->
                 <div class="form-group">
                     <label for="numberOfStudents">Number of Students:</label>
-                    <input type="text" class="form-control" id="numberOfStudents" value="30" readonly>
+                    <input type="text" class="form-control" id="numberOfStudents"  readonly>
                 </div>
             </div>
         </div>
@@ -478,7 +476,6 @@ checkMentorButton.addEventListener('click', function() {
                 console.log('User ID:', userId);
 
                 fetchMentorDashboard(userId);
-               // Fetch students without mentor after decoding token
             } else {
                 console.error('Failed to decode token:', response.statusText);
             }
@@ -504,8 +501,8 @@ checkMentorButton.addEventListener('click', function() {
                     // If mentor exists and details are available
                     c_id = mentorData.mentorDetails[0].c_id; // Assigning mentor c_id to the global variable
                     console.log("c_id:", c_id);
+                    fetchMentorListDropdown(c_id);
                     fetchStudentsWithoutMentor(c_id);
-                    fetchMentorList(c_id) 
                 }
             } else {
                 console.error('Failed to fetch mentor dashboard:', response.statusText);
@@ -514,7 +511,6 @@ checkMentorButton.addEventListener('click', function() {
             console.error('Error fetching mentor dashboard:', error.message);
         }
     }
-
     
     async function fetchStudentsWithoutMentor(c_id) {
     try {
@@ -540,26 +536,24 @@ checkMentorButton.addEventListener('click', function() {
             // Populate the table with the fetched data
             studentsWithoutMentor.forEach(student => {
                 const row = document.createElement('tr');
+                const mentorDropdownCell = document.createElement('td');
+                const dropdown = document.createElement('select');
+                dropdown.classList.add('form-control');
+                dropdown.id = `mentorDropdown_${student.student_id}`; // Unique ID for each dropdown
+                mentorDropdownCell.appendChild(dropdown);
                 row.innerHTML = `
                     <td>${student.student_username}</td>
                     <td>${student.student_name}</td>
+                    <td></td>
                     <td>
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="assignMentorDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Assign Mentor
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="assignMentorDropdown">
-                                <a class="dropdown-item" href="#">Abinesh</a>
-                                <a class="dropdown-item" href="#">Sathish</a>
-                                <!-- Add more mentors here -->
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <button class="btn btn-primary" onclick="updateMentor(${student.student_id})">Update</button>
+                        <button class="btn btn-primary">Update</button>
                     </td>
                 `;
+                row.querySelector('td:nth-child(3)').appendChild(mentorDropdownCell);
                 tableBody.appendChild(row);
+                
+                // Populate the mentor dropdown
+                fetchMentorDropdown(c_id, `mentorDropdown_${student.student_id}`);
             });
         } else {
             console.error('Failed to fetch students without mentor:', response.statusText);
@@ -569,44 +563,38 @@ checkMentorButton.addEventListener('click', function() {
     }
 }
 
-// Function to update mentor assignment
-async function updateMentor(studentId) {
-    try {
-        const mentorId = prompt("Enter mentor ID:");
-        if (!mentorId) return;
-
-        const response = await fetch('https://learning-u7aw.onrender.com/api/assignmentor', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ student_id: studentId, mentor_id: mentorId })
-        });
-
-        if (response.ok) {
-            console.log('Mentor assigned successfully');
-            // You can handle UI updates here if needed
-        } else {
-            console.error('Failed to assign mentor:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error assigning mentor:', error.message);
-    }
-}
-
-async function fetchMentorList(c_id) {
+async function fetchMentorDropdown(c_id, dropdownId) {
     try {
         const response = await fetch('https://learning-u7aw.onrender.com/api/listmentor', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ c_id: c_id })
+            body: JSON.stringify({ c_id })
         });
         if (response.ok) {
             const mentorList = await response.json();
             console.log('Mentor list:', mentorList);
-            // You can handle the mentor list data here as needed
+            
+            // Get a reference to the dropdown
+            const dropdown = document.getElementById(dropdownId);
+            
+            // Clear previous dropdown options
+            dropdown.innerHTML = '';
+
+            // Add the default "Select" option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = ''; // Empty value
+            defaultOption.textContent = 'Select';
+            dropdown.appendChild(defaultOption);
+
+            // Populate dropdown with mentor names
+            mentorList.forEach(mentor => {
+                const option = document.createElement('option');
+                option.value = mentor.id; // Assuming mentor id is used as value
+                option.textContent = mentor.name;
+                dropdown.appendChild(option);
+            });
         } else {
             console.error('Failed to fetch mentor list:', response.statusText);
         }
@@ -617,5 +605,75 @@ async function fetchMentorList(c_id) {
 
 
 
-    window.onload = decodeToken;
+async function fetchMentorListDropdown(c_id) {
+    try {
+        const mentorListResponse = await fetch('https://learning-u7aw.onrender.com/api/listmentor', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ c_id })
+        });
+
+        if (!mentorListResponse.ok) {
+            throw new Error('Failed to fetch mentor list');
+        }
+
+        const mentorList = await mentorListResponse.json();
+        console.log('Mentor list:', mentorList);
+
+        // Get a reference to the dropdown
+        const filterDropdown = document.getElementById('filterDropdown');
+        
+        // Clear previous dropdown options
+        filterDropdown.innerHTML = '';
+
+        // Create and append the default option
+        const defaultOption = document.createElement('option');
+        defaultOption.value = ''; // Empty value
+        defaultOption.textContent = 'Select mentor';
+        filterDropdown.appendChild(defaultOption);
+
+        // Populate dropdown with mentor names
+        mentorList.forEach(mentor => {
+            const option = document.createElement('option');
+            option.value = mentor.m_id; // Assuming mentor id is used as value
+            option.textContent = mentor.name;
+            filterDropdown.appendChild(option);
+        });
+
+        // Add event listener to the dropdown
+filterDropdown.addEventListener('change', async (event) => {
+    const selectedMentorId = parseInt(event.target.value); // Parse the selected mentor ID to an integer
+    console.log('Selected mentor id:', selectedMentorId);
+    if (selectedMentorId) {
+        // Find the selected mentor in the mentorList
+        const selectedMentor = mentorList.find(mentor => mentor.m_id === selectedMentorId);
+        if (selectedMentor) {
+            // Update mentor details card with the selected mentor's details
+            document.getElementById('mentorName').value = selectedMentor.name;
+            document.getElementById('mentorUsername').value = selectedMentor.username;
+            document.getElementById('mentorPosition').value = selectedMentor.position;
+            document.getElementById('numberOfStudents').value = selectedMentor.no_of_students;
+
+            // Display mentor details card
+            document.getElementById('mentorDetailsCard').style.display = 'block';
+        } else {
+            console.error('Selected mentor not found in mentor list');
+        }
+    } else {
+        // Hide mentor details card if no mentor selected
+        document.getElementById('mentorDetailsCard').style.display = 'none';
+    }
+});
+
+    } catch (error) {
+        console.error('Error fetching mentor list:', error.message);
+    }
+}
+
+   
+   
+   window.onload = decodeToken;
 </script>
+
