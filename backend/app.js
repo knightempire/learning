@@ -1176,7 +1176,7 @@ app.put('/api/assignmentor', (req, res) => {
             }
 
             // Successfully updated the mentor ID for the student and the mentor's number of students
-            res.status(200).json({ message: 'Mentor assigned successfully' });
+            return res.status(200).json({ message: 'Mentor assigned successfully' });
         });
     });
 });
