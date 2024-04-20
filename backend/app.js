@@ -1157,45 +1157,52 @@ app.put('/api/assignmentor', async (req, res) => {
         }
 
         // Update student's mentor ID in the database
-        const updateStudentPromise = new Promise((resolve, reject) => {
-            pool.query('UPDATE student_profile SET m_id = ? WHERE s_id = ?', [m_id, s_id], (error, studentResults) => {
-                if (error) {
-                    console.error('Error updating mentor for student:', error);
-                    return reject({ status: 500, error: 'Internal Server Error' });
-                }
-
-                if (studentResults.affectedRows === 0) {
-                    // If no rows were affected, it means the student ID doesn't exist
-                    return reject({ status: 404, error: 'Student ID not found' });
-                }
-
-                resolve(); // Resolve the promise if the update is successful
-            });
-        });
+        const updateStudent = await updateStudentMentor(s_id, m_id);
 
         // Update the mentor's number of students
-        const updateMentorPromise = new Promise((resolve, reject) => {
-            pool.query('UPDATE mentors SET no_of_students = no_of_students + 1 WHERE m_id = ?', [m_id], (error, mentorResults) => {
-                if (error) {
-                    console.error('Error updating mentor student count:', error);
-                    return reject({ status: 500, error: 'Internal Server Error' });
-                }
-
-                resolve(); // Resolve the promise if the update is successful
-            });
-        });
-
-        // Execute both promises
-        await Promise.all([updateStudentPromise, updateMentorPromise]);
+        const updateMentor = await updateMentorStudentCount(m_id);
 
         // Successfully updated the mentor ID for the student and the mentor's number of students
         return res.status(200).json({ message: 'Mentor assigned successfully' });
     } catch (error) {
         // Handle any errors that occur during the database operation
-        console.error('Error assigning mentor:', error.error);
-        return res.status(error.status).json({ error: error.error });
+        console.error('Error assigning mentor:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+// Function to update student's mentor ID in the database
+async function updateStudentMentor(studentId, mentorId) {
+    return new Promise((resolve, reject) => {
+        pool.query('UPDATE student_profile SET m_id = ? WHERE s_id = ?', [mentorId, studentId], (error, studentResults) => {
+            if (error) {
+                console.error('Error updating mentor for student:', error);
+                reject(error);
+            } else {
+                if (studentResults.affectedRows === 0) {
+                    // If no rows were affected, it means the student ID doesn't exist
+                    reject({ status: 404, error: 'Student ID not found' });
+                } else {
+                    resolve();
+                }
+            }
+        });
+    });
+}
+
+// Function to update the mentor's number of students
+async function updateMentorStudentCount(mentorId) {
+    return new Promise((resolve, reject) => {
+        pool.query('UPDATE mentors SET no_of_students = no_of_students + 1 WHERE m_id = ?', [mentorId], (error, mentorResults) => {
+            if (error) {
+                console.error('Error updating mentor student count:', error);
+                reject(error);
+            } else {
+                resolve();
+            }
+        });
+    });
+}
 
 
 
