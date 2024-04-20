@@ -276,15 +276,7 @@
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-md-6">
-                <!-- Search bar -->
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" id="searchInput" placeholder="Search..." aria-describedby="searchIcon" >
-                    <div class="input-group-append">
-                        <span class="input-group-text" id="searchIcon"><i class="bi bi-search"></i></span>
-                    </div>
-                </div>
-            </div>
+    
             <div class="col-md-6">
                 <!-- Dropdown for filtering -->
                 <div class="form-group">
@@ -292,6 +284,11 @@
                      <!-- mentor name -->
                     </select>
                 </div>
+            </div>
+            <div class="col-md-6 text-right">
+                <!-- Button for checking mentor -->
+                <!-- <button type="button" class="btn  btn-square btn-primary">Primary</button> -->
+                <button type="button" class="btn  btn-square btn-tumblr" id="hideMentorButton">Hide Mentor</button>
             </div>
         </div>
 
@@ -454,11 +451,22 @@ checkMentorButton.addEventListener('click', function() {
     // Toggle the display of the mentor details card
     if (mentorDetailsCard.style.display === 'none') {
         mentorDetailsCard.style.display = 'block';
-        checkMentorButton.textContent = 'Hide Mentor';
-    } else {
+        // checkMentorButton.textContent = 'Hide Mentor';
+    } 
+    // else {
+    //     mentorDetailsCard.style.display = 'none';
+    //     checkMentorButton.textContent = 'Check Mentor';
+    // }
+});
+
+
+hideMentorButton.addEventListener('click', function() {
+    // Toggle the display of the mentor details card
+    if (mentorDetailsCard.style.display === 'block') {
         mentorDetailsCard.style.display = 'none';
-        checkMentorButton.textContent = 'Check Mentor';
-    }
+        // checkMentorButton.textContent = 'Hide Mentor';
+    } 
+   
 });
 
 
