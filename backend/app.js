@@ -1141,61 +1141,40 @@ app.post('/api/studentwithoutmentor', async (req, res) => {
 
 
 // Route for assigning a mentor to a student
-app.post('/api/assignmentor', async (req, res) => {
+app.put('/api/assignmentor', async (req, res) => {
     console.log('API assign mentor requested');
     const { s_id, m_id } = req.body; // Extract s_id and m_id from request body
 
     try {
         // Validate request body
-        if (!s_id) {
-            return res.status(400).json({ error: 's_id is required' });
-        }
-
-        // Check if m_id is null or empty
-        if (!m_id) {
-            return res.status(400).json({ error: 'Please select a mentor' });
+        if (!s_id || !m_id) {
+            return res.status(400).json({ error: 's_id and m_id are required' });
         }
 
         // Update student's mentor ID in the database
-        const updateStudentPromise = new Promise((resolve, reject) => {
-            pool.query('UPDATE student_profile SET m_id = ? WHERE s_id = ?', [m_id, s_id], (error, studentResults) => {
-                if (error) {
-                    console.error('Error updating mentor for student:', error);
-                    return reject({ status: 500, error: 'Internal Server Error' });
-                }
+        await updateStudentMentor(s_id, m_id);
 
-                if (studentResults.affectedRows === 0) {
-                    // If no rows were affected, it means the student ID doesn't exist
-                    return reject({ status: 404, error: 'Student ID not found' });
-                }
-
-                resolve(); // Resolve the promise if the update is successful
-            });
-        });
-
-        // Update the mentor's number of students
-        const updateMentorPromise = new Promise((resolve, reject) => {
-            pool.query('UPDATE mentors SET no_of_students = no_of_students + 1 WHERE m_id = ?', [m_id], (error, mentorResults) => {
-                if (error) {
-                    console.error('Error updating mentor student count:', error);
-                    return reject({ status: 500, error: 'Internal Server Error' });
-                }
-
-                resolve(); // Resolve the promise if the update is successful
-            });
-        });
-
-        // Execute both promises
-        await Promise.all([updateStudentPromise, updateMentorPromise]);
-
-        // Successfully updated the mentor ID for the student and the mentor's number of students
+        // Successfully updated the mentor ID for the student
         return res.status(200).json({ message: 'Mentor assigned successfully' });
     } catch (error) {
         // Handle any errors that occur during the database operation
-        console.error('Error assigning mentor:', error.error);
-        return res.status(error.status).json({ error: error.error });
+        console.error('Error assigning mentor:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+// Function to update student's mentor ID in the database
+async function updateStudentMentor(s_id, m_id) {
+    return new Promise((resolve, reject) => {
+        pool.query('UPDATE student_profile SET m_id = ? WHERE s_id = ?', [m_id, s_id], (error, results) => {
+            if (error) {
+                console.error('Error updating mentor for student:', error);
+                return reject(error);
+            }
+            resolve();
+        });
+    });
+}
 
 
 
