@@ -1155,6 +1155,44 @@ app.post('/api/assignmentor', async (req, res) => {
 });
 
 
+// Route for assigning a mentor to a student
+app.put('/api/assignmentor', (req, res) => {
+    const { s_id, m_id } = req.body; // Extract s_id and m_id from request body
+
+    // Validate request body
+    if (!s_id) {
+        return res.status(400).json({ error: 's_id is required' });
+    }
+
+    // Check if m_id is null or empty
+    if (!m_id) {
+        return res.status(400).json({ error: 'Please select a mentor' });
+    }
+
+    // Update student's mentor ID in the database
+    pool.query('UPDATE student_profile SET m_id = ? WHERE s_id = ?', [m_id, s_id], (error, results) => {
+        if (error) {
+            console.error('Error updating mentor for student:', error);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        if (results.affectedRows === 0) {
+            // If no rows were affected, it means the student ID doesn't exist
+            return res.status(404).json({ error: 'Student ID not found' });
+        }
+
+        // Successfully updated the mentor ID for the student
+        // Now, update the mentor's number of students
+        pool.query('UPDATE mentors SET no_of_students = no_of_students + 1 WHERE m_id = ?', [m_id], (error, results) => {
+            if (error) {
+                console.error('Error updating mentor student count:', error);
+                // You might want to handle this error differently, depending on your requirements
+            }
+        });
+
+        res.json({ message: 'Mentor assigned successfully' });
+    });
+});
 
 
 

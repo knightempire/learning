@@ -546,7 +546,7 @@ checkMentorButton.addEventListener('click', function() {
                     <td>${student.student_name}</td>
                     <td></td>
                     <td>
-                        <button class="btn btn-primary">Update</button>
+                        <button class="btn btn-primary update-btn" data-sid="${student.s_id}">Update</button>
                     </td>
                 `;
                 row.querySelector('td:nth-child(3)').appendChild(mentorDropdownCell);
@@ -555,6 +555,17 @@ checkMentorButton.addEventListener('click', function() {
                 // Populate the mentor dropdown
                 fetchMentorDropdown(c_id, `mentorDropdown_${student.student_id}`);
             });
+
+            // Add event listeners to the update buttons
+            document.querySelectorAll('.update-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const dropdownId = button.closest('tr').querySelector('select').id;
+                    const selectedMentorId = document.getElementById(dropdownId).value;
+                    const studentId = button.dataset.sid; // Retrieve student ID from data attribute
+                    console.log('Selected Mentor ID:', selectedMentorId);
+                    console.log('Student ID:', studentId);
+                });
+            });
         } else {
             console.error('Failed to fetch students without mentor:', response.statusText);
         }
@@ -562,6 +573,7 @@ checkMentorButton.addEventListener('click', function() {
         console.error('Error fetching students without mentor:', error.message);
     }
 }
+
 
 async function fetchMentorDropdown(c_id, dropdownId) {
     try {
@@ -591,9 +603,15 @@ async function fetchMentorDropdown(c_id, dropdownId) {
             // Populate dropdown with mentor names
             mentorList.forEach(mentor => {
                 const option = document.createElement('option');
-                option.value = mentor.id; // Assuming mentor id is used as value
+                option.value = mentor.m_id; // Assuming mentor id is used as value
                 option.textContent = mentor.name;
                 dropdown.appendChild(option);
+
+                // Add event listener to the dropdown
+                // dropdown.addEventListener('change', () => {
+                //     // Log the selected mentor ID to the console
+                //     console.log('Selected Mentor ID:', dropdown.value);
+                // });
             });
         } else {
             console.error('Failed to fetch mentor list:', response.statusText);
@@ -664,7 +682,7 @@ filterDropdown.addEventListener('change', async (event) => {
     } else {
         // Hide mentor details card if no mentor selected
         document.getElementById('mentorDetailsCard').style.display = 'none';
-    }
+    } 
 });
 
     } catch (error) {
