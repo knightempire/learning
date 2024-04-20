@@ -627,6 +627,7 @@ checkMentorButton.addEventListener('click', function() {
     }
 
 
+
     async function assignMentorToStudent(studentId, selectedMentorId) {
     try {
         const response = await fetch('https://learning-u7aw.onrender.com/api/assignmentor', {
@@ -636,14 +637,13 @@ checkMentorButton.addEventListener('click', function() {
             },
             body: JSON.stringify({ s_id: studentId, m_id: selectedMentorId })
         });
-
+        console.log('Full response:', response);
         if (response.ok) {
             // If response is successful, log the message
-            console.log("mentor updated .. ");
+            console.log("mentor updated .. ")
             const responseData = await response.json();
             console.log('Server Response:', responseData.message);
-            // Call fetchStudentsWithoutMentor again to update the list
-            fetchStudentsWithoutMentor(c_id);
+         
         } else {
             // If response is not successful, log the error
             const errorData = await response.json();
@@ -653,7 +653,8 @@ checkMentorButton.addEventListener('click', function() {
         console.error('Error assigning mentor:', error.message);
     }
 }
-    
+
+        
     async function fetchMentorListDropdown(c_id) {
         try {
             const mentorListResponse = await fetch('https://learning-u7aw.onrender.com/api/listmentor', {
@@ -723,3 +724,4 @@ checkMentorButton.addEventListener('click', function() {
 
     window.onload = decodeToken;
 </script>
+
