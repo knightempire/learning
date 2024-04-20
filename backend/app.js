@@ -1172,10 +1172,11 @@ app.put('/api/assignmentor', (req, res) => {
             if (error) {
                 console.error('Error updating mentor student count:', error);
                 // You might want to handle this error differently, depending on your requirements
+                return res.status(500).json({ error: 'Internal Server Error' });
             }
 
             // Successfully updated the mentor ID for the student and the mentor's number of students
-            res.json({ message: 'Mentor assigned successfully' });
+            res.status(200).json({ message: 'Mentor assigned successfully' });
         });
     });
 });
