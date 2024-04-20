@@ -533,63 +533,72 @@ app.get('/api/paymentcall', (req, res) => {
 });
 
 
-//payment 
-app.post('/api/payment', async (req, res) => {
-    const { user_id, amount, course_name } = req.body;
+app.post('/api/assignmentor', async (req, res) => {
+    const { s_id, m_id } = req.body;
 
     try {
-        console.log('api payment requested');
+        console.log('API assign mentor requested');
+
+        // Validate request body
+        if (!s_id) {
+            return res.status(400).json({ error: 's_id is required' });
+        }
+
+        if (!m_id) {
+            return res.status(400).json({ error: 'Please select a mentor' });
+        }
+
         // Get connection from the pool
         const connection = await pool.getConnection();
 
-        // Query to select c_id from the course table based on the course name
-        const selectCourseIdQuery = 'SELECT c_id FROM course WHERE course_name = ?';
+        // Update student's mentor ID in the database
+        const updateStudentPromise = new Promise((resolve, reject) => {
+            const updateStudentSql = 'UPDATE student_profile SET m_id = ? WHERE s_id = ?';
+            connection.query(updateStudentSql, [m_id, s_id], (error, studentResults) => {
+                if (error) {
+                    console.error('Error updating mentor for student:', error);
+                    connection.release();
+                    return reject({ status: 500, error: 'Internal Server Error' });
+                }
 
-        // Execute the query to get the c_id
-        const [rows] = await connection.execute(selectCourseIdQuery, [course_name]);
+                if (studentResults.affectedRows === 0) {
+                    // If no rows were affected, it means the student ID doesn't exist
+                    connection.release();
+                    return reject({ status: 404, error: 'Student ID not found' });
+                }
 
-        if (rows.length === 0) {
-            return res.status(404).json({ error: 'Course not found' });
-        }
+                resolve(); // Resolve the promise if the update is successful
+            });
+        });
 
-        const c_id = rows[0].c_id;
+        // Increment the mentor's number of students
+        const incrementStudentsPromise = new Promise((resolve, reject) => {
+            const incrementStudentsSql = 'UPDATE mentors SET no_of_students = no_of_students + 1 WHERE m_id = ?';
+            connection.query(incrementStudentsSql, [m_id], (error, mentorResults) => {
+                if (error) {
+                    console.error('Error updating mentor student count:', error);
+                    connection.release();
+                    return reject({ status: 500, error: 'Internal Server Error' });
+                }
 
-        // Format payment date properly
-        const payment_date = new Date().toISOString().slice(0, 19).replace('T', ' '); // Get payment date in UTC format
-        const payment_status = 'completed';
+                resolve(); // Resolve the promise if the update is successful
+            });
+        });
 
-        // Insert payment details into the payment table
-        const sql = 'INSERT INTO payment (user_id, amount, payment_date, payment_status, c_id) VALUES (?, ?, ?, ?, ?)';
-        const [paymentResult] = await connection.execute(sql, [user_id, amount, payment_date, payment_status, c_id]);
-        const p_id = paymentResult.insertId; // Get the inserted payment_id
+        // Execute both promises
+        await Promise.all([updateStudentPromise, incrementStudentsPromise]);
 
-        // Check if the student record already exists based on s_id
-        const checkStudentSql = 'SELECT * FROM student WHERE s_id = ?';
-        const [existingStudentRows] = await connection.execute(checkStudentSql, [user_id]);
-
-        if (existingStudentRows.length === 0) {
-            // Insert into the student table
-            const joining_date = new Date().toISOString().slice(0, 10);
-            const studentSql = 'INSERT INTO student (s_id, c_id, p_id, joining_date) VALUES (?, ?, ?, ?)';
-            await connection.execute(studentSql, [user_id, c_id, p_id, joining_date]);
-            console.log('New student record inserted successfully');
-        } else {
-            // Update the existing student record with new c_id, p_id, and joining_date
-            const updateStudentSql = 'UPDATE student SET c_id = ?, p_id = ?, joining_date = ? WHERE s_id = ?';
-            await connection.execute(updateStudentSql, [c_id, p_id, new Date().toISOString().slice(0, 10), user_id]);
-            console.log('Existing student record updated successfully');
-        }
-
-        console.log('Payment details inserted successfully');
-        res.status(200).json({ message: 'Payment details inserted successfully' });
+        console.log('Mentor assigned successfully');
+        res.status(200).json({ message: 'Mentor assigned successfully' });
 
         // Release the connection
         connection.release();
     } catch (error) {
-        console.error('Error in payment route:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        console.error('Error assigning mentor:', error.error);
+        return res.status(error.status).json({ error: error.error });
     }
 });
+
 
 
 
