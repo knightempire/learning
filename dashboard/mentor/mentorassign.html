@@ -619,6 +619,33 @@ checkMentorButton.addEventListener('click', function() {
     }
 
 
+    async function assignMentorToStudent(studentId, selectedMentorId) {
+        try {
+            const response = await fetch('https://learning-u7aw.onrender.com/api/assignmentor', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ s_id: studentId, m_id: selectedMentorId })
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log('Mentor assigned successfully:', responseData);
+                // If necessary, you can update the UI or display a success message here
+            } else {
+                console.error('Failed to assign mentor:', response.statusText);
+                // Handle the error condition appropriately
+            }
+        } catch (error) {
+            console.error('Error assigning mentor:', error.message);
+            // Handle the error condition appropriately
+        }
+    }
+
+
+
+
 
     async function fetchMentorListDropdown(c_id) {
         try {
@@ -688,30 +715,6 @@ checkMentorButton.addEventListener('click', function() {
     }
 
 
-    async function assignMentorToStudent(studentId, selectedMentorId) {
-        try {
-            const response = await fetch('https://learning-u7aw.onrender.com/api/assignmentor', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ s_id: studentId, m_id: selectedMentorId })
-            });
-
-            if (response.ok) {
-                const responseData = await response.json();
-                console.log('Mentor assigned successfully:', responseData);
-                // If necessary, you can update the UI or display a success message here
-            } else {
-                console.error('Failed to assign mentor:', response.statusText);
-                // Handle the error condition appropriately
-            }
-        } catch (error) {
-            console.error('Error assigning mentor:', error.message);
-            // Handle the error condition appropriately
-        }
-    }
-
-
+ 
     window.onload = decodeToken;
 </script>
