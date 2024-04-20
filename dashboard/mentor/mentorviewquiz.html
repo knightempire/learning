@@ -167,7 +167,7 @@
         <!--**********************************
             Sidebar start
         ***********************************-->
-     <div class="quixnav">
+        <div class="quixnav">
             <div class="quixnav-scroll">
                 <ul class="metismenu" id="menu">
                     <li class="nav-label first">Main Menu</li>
@@ -246,7 +246,7 @@
                 <div class="row page-titles mx-0">
                     <div class="col-sm-6 p-md-0">
                         <div class="welcome-text">
-                            <h4>Hi, welcome back!</h4>
+                            <h4 id='welcome'>Hi, welcome back   name  !</h4>
                             <span class="ml-1">Accordion</span>
                         </div>
                     </div>
@@ -424,6 +424,8 @@
                 console.log('Decoded token data:', data);
                 user_id = data.user_id; // Assign user ID to the global variable
                 console.log('User ID:', user_id);
+                const welcomeMessage = document.getElementById('welcome');
+                welcomeMessage.textContent = `Hi, welcome back ${data.name}!`;
                 // Fetch list of mentors
                 fetchMentorDashboard(user_id)
             } else {

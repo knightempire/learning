@@ -247,7 +247,7 @@
                 <div class="row page-titles mx-0">
                     <div class="col-sm-6 p-md-0">
                         <div class="welcome-text">
-                            <h4>Hi, welcome back!</h4>
+                            <h4 id='welcome'>Hi, welcome back   name  !</h4>
                             <span class="ml-1">Datatable</span>
                         </div>
                     </div>
@@ -431,6 +431,8 @@ async function decodeToken() {
 
             userId = data.user_id; // Assigning user ID to the global variable
             console.log('User ID:', userId);
+            const welcomeMessage = document.getElementById('welcome');
+                welcomeMessage.textContent = `Hi, welcome back ${data.name}!`;
 
             fetchMentorDashboard(userId);
         } else {
