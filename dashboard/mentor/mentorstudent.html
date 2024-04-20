@@ -432,7 +432,7 @@ async function decodeToken() {
             userId = data.user_id; // Assigning user ID to the global variable
             console.log('User ID:', userId);
             const welcomeMessage = document.getElementById('welcome');
-                welcomeMessage.textContent = `Hi, welcome back ${data.name}!`;
+                welcomeMessage.textContent = `Hi, ${data.name}  !`;
 
             fetchMentorDashboard(userId);
         } else {
