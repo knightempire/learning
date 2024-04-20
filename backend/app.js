@@ -1137,6 +1137,32 @@ async function updateStudentMentor(s_id, m_id) {
 
 
 
+// Route for retrieving lecture data using POST method
+app.post('/api/getlecture', async (req, res) => {
+    const { c_id } = req.body; // Assuming c_id is passed in the request body
+
+    try {
+        console.log('API getlecture requested');
+
+        // Query the database to retrieve lecture data for the provided course ID (c_id)
+        const [lectureData] = await pool.execute(`
+            SELECT * FROM lecture WHERE c_id = ?
+        `, [c_id]);
+
+        // Check if any lecture data is found for the provided course ID
+        if (lectureData.length === 0) {
+            // If no lecture data is found, return an error
+            console.log("No lectures found for the provided course ID")
+            return res.status(404).json({ error: 'No lectures found for the provided course ID' });
+        }
+
+        // Lecture data found, return it
+        res.status(200).json({ data: lectureData });
+    } catch (error) {
+        console.error('Error retrieving lecture data:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 
