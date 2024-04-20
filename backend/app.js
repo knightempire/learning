@@ -533,71 +533,6 @@ app.get('/api/paymentcall', (req, res) => {
 });
 
 
-app.post('/api/assignmentor', async (req, res) => {
-    const { s_id, m_id } = req.body;
-
-    try {
-        console.log('API assign mentor requested');
-
-        // Validate request body
-        if (!s_id) {
-            return res.status(400).json({ error: 's_id is required' });
-        }
-
-        if (!m_id) {
-            return res.status(400).json({ error: 'Please select a mentor' });
-        }
-
-        // Get connection from the pool
-        const connection = await pool.getConnection();
-
-        // Update student's mentor ID in the database
-        const updateStudentPromise = new Promise((resolve, reject) => {
-            const updateStudentSql = 'UPDATE student_profile SET m_id = ? WHERE s_id = ?';
-            connection.query(updateStudentSql, [m_id, s_id], (error, studentResults) => {
-                if (error) {
-                    console.error('Error updating mentor for student:', error);
-                    connection.release();
-                    return reject({ status: 500, error: 'Internal Server Error' });
-                }
-
-                if (studentResults.affectedRows === 0) {
-                    // If no rows were affected, it means the student ID doesn't exist
-                    connection.release();
-                    return reject({ status: 404, error: 'Student ID not found' });
-                }
-
-                resolve(); // Resolve the promise if the update is successful
-            });
-        });
-
-        // Increment the mentor's number of students
-        const incrementStudentsPromise = new Promise((resolve, reject) => {
-            const incrementStudentsSql = 'UPDATE mentors SET no_of_students = no_of_students + 1 WHERE m_id = ?';
-            connection.query(incrementStudentsSql, [m_id], (error, mentorResults) => {
-                if (error) {
-                    console.error('Error updating mentor student count:', error);
-                    connection.release();
-                    return reject({ status: 500, error: 'Internal Server Error' });
-                }
-
-                resolve(); // Resolve the promise if the update is successful
-            });
-        });
-
-        // Execute both promises
-        await Promise.all([updateStudentPromise, incrementStudentsPromise]);
-
-        console.log('Mentor assigned successfully');
-        res.status(200).json({ message: 'Mentor assigned successfully' });
-
-        // Release the connection
-        connection.release();
-    } catch (error) {
-        console.error('Error assigning mentor:', error.error);
-        return res.status(error.status).json({ error: error.error });
-    }
-});
 
 
 
@@ -1148,29 +1083,44 @@ app.post('/api/studentwithoutmentor', async (req, res) => {
 
 
 
-
-// Route for assigning a mentor to a student
-app.put('/api/assignmentor', async (req, res) => {
-    console.log('API assign mentor requested');
-    const { s_id, m_id } = req.body; // Extract s_id and m_id from request body
+// Route for updating mentor assignment for a student
+app.post('/api/assignmentor', async (req, res) => {
+    const { s_id, m_id } = req.body;
 
     try {
-        // Validate request body
+        console.log('API mentor assignment requested');
+
+        // Check if both s_id and m_id are provided
         if (!s_id || !m_id) {
-            return res.status(400).json({ error: 's_id and m_id are required' });
+            return res.status(400).json({ error: 'Both s_id and m_id are required' });
         }
 
-        // Update student's mentor ID in the database
-        await updateStudentMentor(s_id, m_id);
+        // Get connection from the pool
+        const connection = await pool.getConnection();
 
-        // Successfully updated the mentor ID for the student
+        // Update the student's mentor ID in the database
+        const updateStudentQuery = 'UPDATE student_profile SET m_id = ? WHERE s_id = ?';
+        const studentUpdateResult = await connection.execute(updateStudentQuery, [m_id, s_id]);
+
+        if (studentUpdateResult[0].affectedRows === 0) {
+            connection.release();
+            return res.status(404).json({ error: 'Student ID not found' });
+        }
+
+        // Update the mentor's number of assigned students
+        const updateMentorQuery = 'UPDATE mentors SET no_of_students = no_of_students + 1 WHERE m_id = ?';
+        await connection.execute(updateMentorQuery, [m_id]);
+
+        // Successfully updated the mentor assignment for the student
+        connection.release();
         return res.status(200).json({ message: 'Mentor assigned successfully' });
     } catch (error) {
-        // Handle any errors that occur during the database operation
         console.error('Error assigning mentor:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
 
 // Function to update student's mentor ID in the database
 async function updateStudentMentor(s_id, m_id) {
