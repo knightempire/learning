@@ -235,6 +235,38 @@
         <!--**********************************
             Content body start
         ***********************************-->
+
+        <div id="popupMessage" class="popup-message"></div>
+
+<style>
+    .popup-message {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.popup-message.show {
+    display: block;
+}
+
+.popup-message.success {
+    background-color: rgba(0, 255, 0, 0.7);
+    color: white;
+}
+
+.popup-message.error {
+    background-color: rgba(255, 0, 0, 0.7);
+    color: white;
+}
+
+</style>
+
+
         
         <div class="content-body">
             <div class="container-fluid">
@@ -629,23 +661,39 @@ checkMentorButton.addEventListener('click', function() {
                 body: JSON.stringify({ s_id: studentId, m_id: selectedMentorId })
             });
 
+            let message;
+            let className;
+
             if (response.ok) {
                 const responseData = await response.json();
-                console.log('Mentor assigned successfully:', responseData);
-                // If necessary, you can update the UI or display a success message here
+                message = 'Mentor assigned successfully';
+                className = 'success';
             } else {
-                console.error('Failed to assign mentor:', response.statusText);
-                // Handle the error condition appropriately
+                const errorData = await response.json();
+                message = errorData.error || 'Failed to assign mentor';
+                className = 'error';
             }
+
+            // Show message in popup
+            showMessagePopup(message, className);
+
         } catch (error) {
             console.error('Error assigning mentor:', error.message);
-            // Handle the error condition appropriately
+            // Show error message in popup
+            showMessagePopup('Error assigning mentor', 'error');
         }
     }
 
+    function showMessagePopup(message, className) {
+        const popupMessage = document.getElementById('popupMessage');
+        popupMessage.textContent = message;
+        popupMessage.className = `popup-message ${className} show`;
 
-
-
+        // Hide the popup after 3 seconds
+        setTimeout(() => {
+            popupMessage.classList.remove('show');
+        }, 3000);
+    }
 
     async function fetchMentorListDropdown(c_id) {
         try {
@@ -714,7 +762,5 @@ checkMentorButton.addEventListener('click', function() {
         }
     }
 
-
- 
     window.onload = decodeToken;
 </script>
