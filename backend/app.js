@@ -537,7 +537,7 @@ app.get('/api/paymentcall', (req, res) => {
 
 // Route for processing payment
 app.post('/api/payment', async (req, res) => {
-    const { user_id, amount, course_name } = req.body;
+    const { user_id, amount, course_name, payment_date } = req.body;
 
     try {
         console.log('API payment requested');
@@ -552,9 +552,6 @@ app.post('/api/payment', async (req, res) => {
         }
 
         const c_id = courseData[0].c_id;
-
-        // Get the current system date and time
-        const payment_date = new Date().toISOString();
 
         // Set payment status to completed
         const payment_status = 'completed';
@@ -574,6 +571,7 @@ app.post('/api/payment', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 // Route for checking student
