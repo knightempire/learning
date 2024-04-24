@@ -1185,8 +1185,7 @@ app.post('/api/chat', async (req, res) => {
         const abuseData = await fs.readFile('../assets/en.json');
         const abusiveWords = JSON.parse(abuseData);
 
-        console.log('Abusive words:', abusiveWords); // Log the abusive words for debugging
-
+   
         if (!Array.isArray(abusiveWords)) {
             throw new Error('Abusive words data is not an array');
         }
