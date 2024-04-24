@@ -1185,6 +1185,8 @@ app.post('/api/chat', async (req, res) => {
         const abuseData = await fs.readFile('../assets/en.json');
         const abusiveWords = JSON.parse(abuseData);
 
+        console.log('Abusive words:', abusiveWords); // Log the abusive words for debugging
+
         if (!Array.isArray(abusiveWords)) {
             throw new Error('Abusive words data is not an array');
         }
@@ -1202,10 +1204,11 @@ app.post('/api/chat', async (req, res) => {
         const preprocessPhrase = phrase => phrase.replace(/\W/g, '').toLowerCase();
 
         // Check if the message contains abusive language
+        const preprocessedMsg = preprocessPhrase(msg);
+        console.log('Preprocessed message:', preprocessedMsg);
+
         const abusiveMatches = abusiveWords.filter(word => {
-            const preprocessedMsg = preprocessPhrase(msg);
             const preprocessedAbusive = preprocessPhrase(word.match);
-            console.log('Preprocessed message:', preprocessedMsg);
             console.log('Preprocessed abusive phrase:', preprocessedAbusive);
             const regex = new RegExp(preprocessedAbusive, 'i');
             const matchFound = regex.test(preprocessedMsg);
