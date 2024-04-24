@@ -255,62 +255,69 @@
                 <!-- row -->
                 <!-- Row starts -->
 
-                <div class="col-xl-8" data-select2-id="102">
-                    <div class="card" data-select2-id="101">
-                        <div class="card-body" data-select2-id="100">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-body">
                             <div class="mb-4">
-                                <h4 class="card-title">Select Quiz title</h4>
-                                <p>Choose a quiz name </p>
+                                <h4>Choose a quiz name</h4>
                             </div>
-                
-                            <div class="col-sm-12 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
-                                <!-- Dropdown with Select2 -->
-                                <select id="dropdown" class="form-control ml-2">
-                                    <!-- quiz title -->
-                                </select>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <!-- Dropdown with Select2 -->
+                                    <select id="dropdown" class="form-control">
+                                        <!-- quiz title -->
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <h5 class="bestscore">Best Score</h5>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h5 class="count">No of Attempts</h5>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h5 class="attempted">Attempted</h5>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h5 class="not-attempted">Not Attempted</h5>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                
+    
 
-                <div class="col-lg-12">
+                <div id="quizFormContainer" class="col-lg-12" style="display: none;">
                     <div class="card">
                         <div class="card-header d-block">
                             <h4 class="card-title" id="quiztitle">No quiz has been selected</h4>
                         </div>
                         <div class="card-body">
+                            <div class="progress">
+                                <div id="progressBar" class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            
                             <div class="container mt-5">
-                               
+                                
                                 <form id="quizForm">
                                     <div id="questionContainer">
                                         <!-- Questions will be dynamically added here -->
                                     </div>
                                     <div class="text-center mt-3">
                                         <button type="button" id="nextBtn" class="btn btn-primary">Next</button>
-                                        <button type="submit" id="submitBtn" class="btn btn-primary" style="display: none;">Submit</button>
+                                        <button type="button" id="submitBtn" class="btn btn-primary" style="display: none;">Submit</button>
                                     </div>
                                 </form>
                                 <div id="result" class="mt-3 text-center"></div>
                             </div>
-                            <section class="quizstatus mt-5">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <h2 class="bestscore">Best Score</h2>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <h2 class="count">No of Attempts</h2>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <h2 class="attempted">Attempted</h2>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <h2 class="not-attempted">Not Attempted</h2>
-                                    </div>
-                                </div>
-                            </section>
                         </div>
                     </div>
                 </div>
+                
                 
                 <!-- Row ends -->
             </div>
@@ -396,6 +403,7 @@
    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 
 <script>
     let c_id; // Global variable to store mentor c_id
@@ -557,6 +565,11 @@ async function fetchQuizData(c_id) {
             if (Array.isArray(quizInfoData.quizInfo)) {
                 quizData = quizInfoData.quizInfo; // Assign fetched quiz data to quizData variable
                 loadQuestion(); // Load the first question
+                 // Display the quiz form container
+                 document.getElementById('quizFormContainer').style.display = 'block';
+
+// Add event listener to next button
+document.getElementById('nextBtn').addEventListener('click', selectOption);
             } else {
                 console.error('Quiz data is not in the expected format:', quizInfoData);
             }
@@ -566,6 +579,8 @@ async function fetchQuizData(c_id) {
     } catch (error) {
         console.error('Error fetching quiz info:', error.message);
     }
+
+
 }
 
 
@@ -576,7 +591,7 @@ function resetQuizState() {
       wrongAnswers = 0;
       document.getElementById('questionContainer').innerHTML = '';
       document.getElementById('result').innerHTML = '';
-      document.getElementById('submitBtn').style.display = 'none'; // Hide submit button
+      
       document.getElementById('nextBtn').style.display = 'block'; // Show next button
   }
 
@@ -626,23 +641,82 @@ let quizData = [];
   }
 
   function selectOption() {
-      const selectedOption = document.querySelector('input[name="option"]:checked').value;
-      if (selectedOption === quizData[currentQuestion].answer) {
-          correctAnswers++;
-      } else {
-          wrongAnswers++;
-      }
+        const selectedOption = document.querySelector('input[name="option"]:checked').value;
+        const correctAnswer = quizData[currentQuestion].answer;
 
-      if (currentQuestion < quizData.length - 1) {
-          currentQuestion++;
-          loadQuestion();
-      } else {
-          document.getElementById('nextBtn').style.display = 'none';
-          document.getElementById('submitBtn').style.display = 'block';
-      }
-  }
+        console.log(`Selected Option: ${selectedOption}`);
+        console.log(`Correct Answer: ${correctAnswer}`);
 
-    window.onload = function() {
+        if (selectedOption === correctAnswer) {
+            console.log('Selected option is CORRECT.');
+            correctAnswers++;
+        } else {
+            console.log('Selected option is WRONG.');
+            wrongAnswers++;
+        }
+
+        
+        if (currentQuestion < quizData.length - 1) {
+            currentQuestion++;
+            loadQuestion();
+        } else {
+            // If it's the last question, hide the Next button and show the Submit button
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'block';
+        }
+
+        // Calculate and print the mark for each question
+        const totalQuestions = quizData.length;
+        const maxMark = totalQuestions;
+        const mark = correctAnswers * (maxMark / totalQuestions);
+        console.log('Mark for current question:', mark);
+        const progressPercentage = ((currentQuestion + 1) / totalQuestions) * 100;
+         updateProgressBar(progressPercentage);
+    }
+
+    // Add event listener to the Submit button
+    document.getElementById('submitBtn').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default button behavior
+        displayResult(); // Display quiz results
+        hideForm(); // Hide the form
+    });
+
+    function hideForm() {
+        document.getElementById('quizForm').style.display = 'none'; // Hide the form
+        document.getElementById('result').style.display = 'block'; // Show the result container
+    }
+
+    function updateProgressBar(progressPercentage) {
+    const progressBar = document.getElementById('progressBar');
+    progressBar.style.width = `${progressPercentage}%`;
+    progressBar.setAttribute('aria-valuenow', progressPercentage);
+
+}
+
+function displayResult() {
+            // Print results in console
+            console.log('Correct Answers:', correctAnswers);
+            console.log('Wrong Answers:', wrongAnswers);
+
+            // Calculate mark (assuming each question carries equal marks)
+            const totalQuestions = quizData.length;
+            const maxMark = totalQuestions;
+            const mark = correctAnswers * (maxMark / totalQuestions);
+
+    document.getElementById('result').innerHTML = `
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">Quiz Result</h3>
+            <p class="card-text">Correct Answers: ${correctAnswers}</p>
+            <p class="card-text">Wrong Answers: ${wrongAnswers}</p>
+            <p class="card-text">Mark: ${mark}</p>
+        </div>
+    </div>
+`;
+
+        }
+
+        window.onload = function() {
         decodeToken();
         
         // Initialize the Select2 dropdown
@@ -651,8 +725,10 @@ let quizData = [];
             placeholder: 'Search...',
             allowClear: true // Allow clearing the selection
         });
-        document.getElementById('nextBtn').addEventListener('click', selectOption);
+
+   
     };
+
 </script>
 
 
