@@ -71,14 +71,17 @@
             if (response.ok) {
                 localStorage.setItem('Token', data.token); // Store token in local storage upon successful login
                 
-                // Redirect based on responseNumber
-                if (data.responseNumber === 2) {
-                    window.location.href = './dashboard/student/student.html'; // Redirect to student.html for responseNumber 2
-                } else if (data.responseNumber === 3) {
-                    window.location.href = './dashboard/mentor/mentorindex.html'; // Redirect to mentor.html for responseNumber 3
-                } else {
-                    window.location.href = './course_pay.html'; // Redirect to course_pay.html for responseNumber 1
-                }
+            // Redirect based on responseNumber
+if (data.responseNumber === 1) {
+    window.location.href = './course_pay.html'; // Redirect to course_pay.html for responseNumber 1
+} else if (data.responseNumber === 2) {
+    window.location.href = './dashboard/student/student.html'; // Redirect to student.html for responseNumber 2
+} else if (data.responseNumber === 3 || data.responseNumber === 4) {
+    window.location.href = './dashboard/mentor/mentorindex.html'; // Redirect to mentorindex.html for responseNumber 3 or 4
+} else {
+    window.location.href = './login.html'; // Redirect to login.html for any other responseNumber
+}
+
             } 
             else {
                 const loginMessage = document.getElementById('loginMessage');

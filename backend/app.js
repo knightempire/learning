@@ -189,9 +189,30 @@ app.post('/api/login', async (req, res) => {
             // Check if the user is also in the student table
             const [studentResult] = await pool.execute('SELECT s_id FROM student WHERE s_id = ?', [existingUser[0].user_id]);
             responseNumber = studentResult.length > 0 ? 2 : 1; // If user is in student table, set responseNumber to 2, else 1
-        } else if (role === 'mentor') {
-            responseNumber = 3; // Response number for mentor
+        } 
+        else if (role === 'mentor') {
+            // Query the mentors table to get mentor details based on user_id
+            const [mentorResult] = await pool.execute('SELECT position FROM mentors WHERE m_id = ?', [existingUser[0].user_id]);
+            
+            if (mentorResult.length === 0) {
+                // If mentor data is not found, return an error
+                console.log("Mentor data not found");
+                return res.status(400).json({ error: 'Mentor data not found' });
+            }
+        
+            const mentorPosition = mentorResult[0].position;
+            
+            if (mentorPosition === 'handling') {
+                responseNumber = 4; // Response number for handling mentor
+            } else if (mentorPosition === 'head') {
+                responseNumber = 3; // Response number for head mentor
+            } else {
+                // If the mentor position is neither 'handling' nor 'head', return an error
+                console.log("Invalid mentor position");
+                return res.status(400).json({ error: 'Invalid mentor position' });
+            }
         }
+        
 
         // Log the responseNumber
         console.log("responseNumber:", responseNumber);
@@ -859,72 +880,6 @@ app.post('/api/quizinfoes/upload', upload.single('excelFile'), async (req, res) 
     } catch (error) {
         console.error('Error inserting quiz information:', error);
         res.status(500).json({ message: 'Error inserting quiz information into database' });
-    }
-});
-
-
-// Route for quiz performance
-app.post('/api/performance', async (req, res) => {
-    const { s_id, q_id, mark } = req.body;
-
-    try {
-        console.log('API quiz info upload requested');
-
-        // Check if a record already exists for the given s_id and q_id
-        const [existingRecord] = await pool.execute('SELECT * FROM performance WHERE s_id = ? AND q_id = ?', [s_id, q_id]);
-
-        if (existingRecord.length === 0) {
-            // If no record exists, insert a new one with count set to 1
-            await pool.execute('INSERT INTO performance (s_id, q_id, mark, count, best_score) VALUES (?, ?, ?, 1, ?)', [s_id, q_id, mark, mark]);
-
-        } else {
-            // If a record exists, update the count by incrementing it
-            const currentCount = existingRecord[0].count;
-            let bestScore = existingRecord[0].best_score;
-            
-            // Check if the current mark is greater than the existing best score
-            if (mark > bestScore) {
-                bestScore = mark;
-                await pool.execute('UPDATE performance SET count = ?, mark = ?, best_score = ? WHERE s_id = ? AND q_id = ?', [currentCount + 1, mark, bestScore, s_id, q_id]);
-            } else {
-                // If mark is not greater than the existing best score, only update count and mark
-                await pool.execute('UPDATE performance SET count = ?, mark = ? WHERE s_id = ? AND q_id = ?', [currentCount + 1, mark, s_id, q_id]);
-            }
-        }
-        
-        // Return success message
-        res.status(200).json({ message: 'Quiz information uploaded successfully' });
-    } catch (error) {
-        console.error('Error uploading quiz information:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-
-// Route for viewing that performance
-app.post('/api/viewperform', async (req, res) => {
-    const { s_id, q_id } = req.body;
-
-    try {
-        console.log('API view performance requested');
-
-        if (s_id) {
-            let query;
-            if (q_id) {
-                query = `SELECT * FROM performance WHERE s_id = ${s_id} AND q_id = ${q_id}`;
-            } else {
-                query = `SELECT * FROM performance WHERE s_id = ${s_id}`;
-            }
-
-            const [performanceData] = await pool.execute(query);
-            res.status(200).json({ performance: performanceData });
-        } else {
-            // If s_id is not provided, return an error message
-            res.status(400).json({ error: 's_id parameter is required' });
-        }
-    } catch (error) {
-        console.error('Error fetching performance data:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
