@@ -1174,7 +1174,6 @@ app.post('/api/getlecture', async (req, res) => {
 
 
 
-// Route for inserting chat messages
 app.post('/api/chat', async (req, res) => {
     const { s_id, msg } = req.body;
 
@@ -1201,12 +1200,16 @@ app.post('/api/chat', async (req, res) => {
         }
 
         // Check if the message contains abusive language
-        const containsAbusiveWord = abusiveWords.some(word => typeof word.match === 'string' && msg.toLowerCase().includes(word.match.toLowerCase()));
+        const abusiveMatches = abusiveWords.filter(word => {
+            const regex = new RegExp(word.match, 'i');
+            return regex.test(msg);
+        });
 
-        if (containsAbusiveWord) {
+        if (abusiveMatches.length > 0) {
             // If the message contains abusive language, return an error
-            console.log("Abusive language detected");
-            return res.status(400).json({ error: 'Message contains abusive language' });
+            console.log("Abusive language detected:", abusiveMatches);
+            const abusiveWordsFound = abusiveMatches.map(match => match.id).join(', ');
+            return res.status(400).json({ error: `This message contains abusive language like ${abusiveWordsFound}` });
         }
 
         // Insert the message into the chat table
