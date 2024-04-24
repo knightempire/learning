@@ -1174,6 +1174,63 @@ app.post('/api/getlecture', async (req, res) => {
 
 
 
+// Route for inserting chat messages
+app.post('/api/chat', async (req, res) => {
+    const { s_id, msg } = req.body;
+
+    try {
+        console.log('API chat requested');
+
+        // Read the abusive words from the JSON file
+        const abuseData = fs.readFileSync('../assets/en.json');
+        const abusiveWords = JSON.parse(abuseData);
+
+        // Read the emojis from the JSON file
+        const emojiData = fs.readFileSync('../assets/emoji.json');
+        const emojis = JSON.parse(emojiData);
+
+        // Check if the provided student ID exists
+        const [existingStudent] = await pool.execute('SELECT * FROM student WHERE s_id = ?', [s_id]);
+
+        if (existingStudent.length === 0) {
+            // If the student ID doesn't exist, return an error
+            console.log("Student not found");
+            return res.status(404).json({ error: 'Student not found' });
+        }
+
+        // Check if the message contains abusive language
+        const containsAbusiveWord = abusiveWords.some(word => msg.toLowerCase().includes(word.toLowerCase()));
+
+        if (containsAbusiveWord) {
+            // If the message contains abusive language, return an error
+            console.log("Abusive language detected");
+            return res.status(400).json({ error: 'Message contains abusive language' });
+        }
+
+        // Check if the message contains emoji
+        const containsEmoji = emojis.some(emoji => msg.includes(emoji));
+
+        if (containsEmoji) {
+            // If the message contains emoji, return an error
+            console.log("Emoji detected");
+            return res.status(400).json({ error: 'Message contains emoji' });
+        }
+
+        // Insert the message into the chat table
+        await pool.execute('INSERT INTO chat (s_id, msg) VALUES (?, ?)', [s_id, msg]);
+
+        // Message inserted successfully
+        console.log('Message inserted successfully');
+        res.status(200).json({ message: 'Message inserted successfully' });
+    } catch (error) {
+        console.error('Error during chat message insertion:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 }).on('error', (err) => {
