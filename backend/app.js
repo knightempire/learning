@@ -1181,12 +1181,12 @@ app.post('/api/chat', async (req, res) => {
     try {
         console.log('API chat requested');
 
-        // Read the abusive words from the JSON file
-        const abuseData = fs.readFileSync('../assets/en.json');
+        // Read the abusive words from the JSON file asynchronously
+        const abuseData = await fs.readFile('../assets/en.json');
         const abusiveWords = JSON.parse(abuseData);
 
-        // Read the emojis from the JSON file
-        const emojiData = fs.readFileSync('../assets/emoji.json');
+        // Read the emojis from the JSON file asynchronously
+        const emojiData = await fs.readFile('../assets/emoji.json');
         const emojis = JSON.parse(emojiData);
 
         // Check if the provided student ID exists
@@ -1213,7 +1213,7 @@ app.post('/api/chat', async (req, res) => {
         if (containsEmoji) {
             // If the message contains emoji, return an error
             console.log("Emoji detected");
-            return res.status(400).json({ error: 'Message contains abusive emoji' });
+            return res.status(400).json({ error: 'Message contains emoji' });
         }
 
         // Insert the message into the chat table
@@ -1227,7 +1227,6 @@ app.post('/api/chat', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
 
 
 
