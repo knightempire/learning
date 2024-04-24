@@ -1174,6 +1174,7 @@ app.post('/api/getlecture', async (req, res) => {
 
 
 
+// Route for inserting chat messages
 app.post('/api/chat', async (req, res) => {
     const { s_id, msg } = req.body;
 
@@ -1199,10 +1200,13 @@ app.post('/api/chat', async (req, res) => {
             return res.status(404).json({ error: 'Student not found' });
         }
 
+        // Function to preprocess abusive phrase for comparison
+        const preprocessPhrase = phrase => phrase.replace(/\W/g, '').toLowerCase();
+
         // Check if the message contains abusive language
         const abusiveMatches = abusiveWords.filter(word => {
-            const regex = new RegExp(word.match, 'i');
-            return regex.test(msg);
+            const regex = new RegExp(preprocessPhrase(word.match), 'i');
+            return regex.test(preprocessPhrase(msg));
         });
 
         if (abusiveMatches.length > 0) {
