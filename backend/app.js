@@ -1185,11 +1185,11 @@ app.post('/api/chat', async (req, res) => {
         const abuseData = await fs.readFile('../assets/en.json');
         const abusiveWords = JSON.parse(abuseData);
 
+        console.log('Abusive words:', abusiveWords); // Log the abusive words for debugging
+
         if (!Array.isArray(abusiveWords)) {
             throw new Error('Abusive words data is not an array');
         }
-
-        console.log('Abusive words loaded:', abusiveWords);
 
         // Check if the provided student ID exists
         const [existingStudent] = await pool.execute('SELECT * FROM student WHERE s_id = ?', [s_id]);
@@ -1201,9 +1201,7 @@ app.post('/api/chat', async (req, res) => {
         }
 
         // Check if the message contains abusive language
-        const containsAbusiveWord = abusiveWords.some(word => typeof word === 'string' && typeof msg === 'string' && msg.toLowerCase().includes(word.toLowerCase()));
-
-        console.log('Contains abusive word:', containsAbusiveWord);
+        const containsAbusiveWord = abusiveWords.some(word => typeof word.match === 'string' && msg.toLowerCase().includes(word.match.toLowerCase()));
 
         if (containsAbusiveWord) {
             // If the message contains abusive language, return an error
@@ -1222,6 +1220,7 @@ app.post('/api/chat', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 
