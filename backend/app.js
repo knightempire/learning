@@ -1200,27 +1200,21 @@ app.post('/api/chat', async (req, res) => {
             return res.status(404).json({ error: 'Student not found' });
         }
 
-        // Function to preprocess abusive phrase for comparison
-        const preprocessPhrase = phrase => phrase.replace(/\W/g, '').toLowerCase();
-
         // Check if the message contains abusive language
-        const preprocessedMsg = preprocessPhrase(msg);
-        console.log('Preprocessed message:', preprocessedMsg);
-
-        const abusiveMatches = abusiveWords.filter(word => {
-            const preprocessedAbusive = preprocessPhrase(word.match);
-            console.log('Preprocessed abusive phrase:', preprocessedAbusive);
-            const regex = new RegExp(preprocessedAbusive, 'i');
-            const matchFound = regex.test(preprocessedMsg);
-            console.log('Match found:', matchFound);
-            return matchFound;
+        const containsAbusiveWord = abusiveWords.some(word => {
+            const matchWord = word.match.toLowerCase();
+            const lowerMsg = msg.toLowerCase();
+            console.log('Checking for abusive word:', matchWord);
+            console.log('Message:', lowerMsg);
+            const isAbusive = lowerMsg.includes(matchWord);
+            console.log('Is abusive:', isAbusive);
+            return isAbusive;
         });
 
-        if (abusiveMatches.length > 0) {
+        if (containsAbusiveWord) {
             // If the message contains abusive language, return an error
-            console.log("Abusive language detected:", abusiveMatches);
-            const abusiveWordsFound = abusiveMatches.map(match => match.id).join(', ');
-            return res.status(400).json({ error: `This message contains abusive language like ${abusiveWordsFound}` });
+            console.log("Abusive language detected");
+            return res.status(400).json({ error: 'Message contains abusive language' });
         }
 
         // Insert the message into the chat table
@@ -1238,7 +1232,29 @@ app.post('/api/chat', async (req, res) => {
 
 
 
+//route for performace, quiz mark
+app.post('/api/performance', async (req, res) => {
+    const { s_id, q_id, m_id } = req.body;
 
+    try {
+        console.log('API performance requested');
+
+        // Update or insert performance data
+        const [result] = await pool.execute('UPDATE performance SET mark = JSON_ARRAY_APPEND(COALESCE(mark, \'[]\'), \'$\', CAST(? AS JSON)) WHERE s_id = ? AND q_id = ?', [m_id, s_id, q_id]);
+
+        if (result.affectedRows === 0) {
+            // If no rows were updated, insert a new row
+            await pool.execute('INSERT INTO performance (s_id, q_id, mark) VALUES (?, ?, JSON_ARRAY(?))', [s_id, q_id, m_id]);
+        }
+
+        // Performance data updated/inserted successfully
+        console.log('Performance data updated/inserted successfully');
+        res.status(200).json({ message: 'Performance data updated/inserted successfully' });
+    } catch (error) {
+        console.error('Error during performance data update/insert:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 app.listen(port, () => {
