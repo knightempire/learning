@@ -1185,9 +1185,9 @@ app.post('/api/chat', async (req, res) => {
         const abuseData = await fs.readFile('../assets/en.json');
         const abusiveWords = JSON.parse(abuseData);
 
-        // Read the emojis from the JSON file asynchronously
-        const emojiData = await fs.readFile('../assets/emoji.json');
-        const emojis = JSON.parse(emojiData);
+        if (!Array.isArray(abusiveWords)) {
+            throw new Error('Abusive words data is not an array');
+        }
 
         // Check if the provided student ID exists
         const [existingStudent] = await pool.execute('SELECT * FROM student WHERE s_id = ?', [s_id]);
@@ -1199,21 +1199,12 @@ app.post('/api/chat', async (req, res) => {
         }
 
         // Check if the message contains abusive language
-        const containsAbusiveWord = abusiveWords.some(word => msg.toLowerCase().includes(word.toLowerCase()));
+        const containsAbusiveWord = abusiveWords.some(word => typeof word === 'string' && typeof msg === 'string' && msg.toLowerCase().includes(word.toLowerCase()));
 
         if (containsAbusiveWord) {
             // If the message contains abusive language, return an error
             console.log("Abusive language detected");
             return res.status(400).json({ error: 'Message contains abusive language' });
-        }
-
-        // Check if the message contains emoji
-        const containsEmoji = emojis.some(emoji => msg.includes(emoji));
-
-        if (containsEmoji) {
-            // If the message contains emoji, return an error
-            console.log("Emoji detected");
-            return res.status(400).json({ error: 'Message contains emoji' });
         }
 
         // Insert the message into the chat table
@@ -1227,6 +1218,7 @@ app.post('/api/chat', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 
