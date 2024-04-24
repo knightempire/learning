@@ -557,13 +557,27 @@ app.post('/api/payment', async (req, res) => {
         const payment_status = 'completed';
 
         // Insert payment details into the payment table
-        const [result] = await pool.execute('INSERT INTO payment (user_id, amount, payment_date, payment_status, c_id) VALUES (?, ?, ?, ?, ?)', [user_id, amount, payment_date, payment_status, c_id]);
+        const [paymentResult] = await pool.execute('INSERT INTO payment (user_id, amount, payment_date, payment_status, c_id) VALUES (?, ?, ?, ?, ?)', [user_id, amount, payment_date, payment_status, c_id]);
 
-        if (result.affectedRows === 1) {
-            // If insertion was successful, return a success message
-            return res.status(201).json({ message: 'Payment successful' });
+        if (paymentResult.affectedRows === 1) {
+            // If insertion was successful, get the auto-generated p_id
+            const p_id = paymentResult.insertId;
+
+            // Get the current date for joining_date
+            const joining_date = new Date().toISOString().slice(0, 10); // Keep only date
+
+            // Insert student details into the student table
+            const [studentResult] = await pool.execute('INSERT INTO student (s_id, c_id, p_id, joining_date) VALUES (?, ?, ?, ?)', [user_id, c_id, p_id, joining_date]);
+
+            if (studentResult.affectedRows === 1) {
+                // If insertion was successful, return a success message
+                return res.status(201).json({ message: 'Payment and student registration successful' });
+            } else {
+                // If insertion failed, return an error
+                throw new Error('Failed to register student');
+            }
         } else {
-            // If insertion failed, return an error
+            // If payment insertion failed, return an error
             throw new Error('Failed to process payment');
         }
     } catch (error) {
