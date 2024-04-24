@@ -1181,17 +1181,12 @@ app.post('/api/chat', async (req, res) => {
     try {
         console.log('API chat requested');
 
-
         // Read the abusive words from the JSON file
-        const abusiveWords = require('../assets/en.json');
-
-
-
-
+        const abuseData = fs.readFileSync('../assets/en.json');
         const abusiveWords = JSON.parse(abuseData);
 
-       // Read the emojis from the JSON file
-        const emojis = require('../assets/emoji.json');
+        // Read the emojis from the JSON file
+        const emojiData = fs.readFileSync('../assets/emoji.json');
         const emojis = JSON.parse(emojiData);
 
         // Check if the provided student ID exists
@@ -1218,7 +1213,7 @@ app.post('/api/chat', async (req, res) => {
         if (containsEmoji) {
             // If the message contains emoji, return an error
             console.log("Emoji detected");
-            return res.status(400).json({ error: 'Message contains emoji' });
+            return res.status(400).json({ error: 'Message contains abusive emoji' });
         }
 
         // Insert the message into the chat table
