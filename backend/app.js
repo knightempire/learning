@@ -1185,8 +1185,7 @@ app.post('/api/chat', async (req, res) => {
         const abuseData = await fs.readFile('../assets/en.json');
         const abusiveWords = JSON.parse(abuseData);
 
-        console.log('Abusive words:', abusiveWords); // Log the abusive words for debugging
-
+ 
         if (!Array.isArray(abusiveWords)) {
             throw new Error('Abusive words data is not an array');
         }
@@ -1201,15 +1200,15 @@ app.post('/api/chat', async (req, res) => {
         }
 
         // Check if the message contains abusive language
-        const containsAbusiveWord = abusiveWords.some(word => {
-            const matchWord = word.match.toLowerCase();
-            const lowerMsg = msg.toLowerCase();
-            console.log('Checking for abusive word:', matchWord);
-            console.log('Message:', lowerMsg);
-            const isAbusive = lowerMsg.includes(matchWord);
-            console.log('Is abusive:', isAbusive);
-            return isAbusive;
-        });
+
+const containsAbusiveWord = abusiveWords.some(word => {
+    const matchWord = word.match.toLowerCase();
+    const regex = new RegExp('\\b' + matchWord + '\\b', 'i'); // Case-insensitive match for whole word
+    const isAbusive = regex.test(msg.toLowerCase());
+
+    return isAbusive;
+});
+//work
 
         if (containsAbusiveWord) {
             // If the message contains abusive language, return an error
