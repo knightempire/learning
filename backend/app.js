@@ -535,6 +535,45 @@ app.get('/api/paymentcall', (req, res) => {
 
 
 
+// Route for processing payment
+app.post('/api/payment', async (req, res) => {
+    const { user_id, amount, course_name } = req.body;
+
+    try {
+        console.log('API payment requested');
+
+        // Get the c_id from the course table based on the provided course_name
+        const [courseData] = await pool.execute('SELECT c_id FROM course WHERE course_name = ?', [course_name]);
+
+        if (courseData.length === 0) {
+            // If the course doesn't exist, return an error
+            console.log("Course not found")
+            return res.status(404).json({ error: 'Course not found' });
+        }
+
+        const c_id = courseData[0].c_id;
+
+        // Get the current system date and time
+        const payment_date = new Date().toISOString();
+
+        // Set payment status to completed
+        const payment_status = 'completed';
+
+        // Insert payment details into the payment table
+        const [result] = await pool.execute('INSERT INTO payment (user_id, amount, payment_date, payment_status, c_id) VALUES (?, ?, ?, ?, ?)', [user_id, amount, payment_date, payment_status, c_id]);
+
+        if (result.affectedRows === 1) {
+            // If insertion was successful, return a success message
+            return res.status(201).json({ message: 'Payment successful' });
+        } else {
+            // If insertion failed, return an error
+            throw new Error('Failed to process payment');
+        }
+    } catch (error) {
+        console.error('Error during payment processing:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 // Route for checking student
@@ -559,6 +598,8 @@ app.post('/api/checkstudent', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
 
 
 // Route for retrieving course data by c_id for a student

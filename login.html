@@ -79,7 +79,8 @@
                 } else {
                     window.location.href = './course_pay.html'; // Redirect to course_pay.html for responseNumber 1
                 }
-            } else {
+            } 
+            else {
                 const loginMessage = document.getElementById('loginMessage');
                 loginMessage.textContent = data.error;
                 loginMessage.classList.add('show'); // Show the popup message
