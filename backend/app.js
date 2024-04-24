@@ -1185,7 +1185,6 @@ app.post('/api/chat', async (req, res) => {
         const abuseData = await fs.readFile('../assets/en.json');
         const abusiveWords = JSON.parse(abuseData);
 
-   
         if (!Array.isArray(abusiveWords)) {
             throw new Error('Abusive words data is not an array');
         }
@@ -1204,8 +1203,14 @@ app.post('/api/chat', async (req, res) => {
 
         // Check if the message contains abusive language
         const abusiveMatches = abusiveWords.filter(word => {
-            const regex = new RegExp(preprocessPhrase(word.match), 'i');
-            return regex.test(preprocessPhrase(msg));
+            const preprocessedMsg = preprocessPhrase(msg);
+            const preprocessedAbusive = preprocessPhrase(word.match);
+            console.log('Preprocessed message:', preprocessedMsg);
+            console.log('Preprocessed abusive phrase:', preprocessedAbusive);
+            const regex = new RegExp(preprocessedAbusive, 'i');
+            const matchFound = regex.test(preprocessedMsg);
+            console.log('Match found:', matchFound);
+            return matchFound;
         });
 
         if (abusiveMatches.length > 0) {
@@ -1226,6 +1231,7 @@ app.post('/api/chat', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 
