@@ -266,11 +266,16 @@
                             <h4 class="card-title">Accordion active background</h4>
                      
                         </div>
-                        <div class="card-body">
-                            <div id="accordion-nine" class="accordion accordion-active-header">
-                             
-                            </div>
-                        </div>
+                    <div class="card-body">
+    <div id="accordion-nine" class="accordion accordion-active-header">
+        <!-- Chat messages will be displayed here -->
+    </div>
+    <div class="input-group mt-3">
+        <input type="text" class="form-control" id="chatInput" placeholder="Type your message here" aria-label="Type your message here" aria-describedby="sendButton">
+        <button class="btn btn-primary" type="button" id="sendButton">Send</button>
+    </div>
+</div>
+
                     </div>
                 </div>
                 <!-- Row ends -->
@@ -360,7 +365,7 @@
                 welcomeMessage.textContent = `Hi, ${data.name}  !`;
                 // Fetch list of mentors
                 checkStudent(user_id);
-                studentLecture(user_id);
+           
             } else {
                 console.error('Failed to decode token:', response.statusText);
             }
@@ -396,70 +401,6 @@
         console.error('Error checking student status:', error.message);
     }
 }
-
-async function  studentLecture(s_id) {
-        try {
-            const response = await fetch('https://learning-u7aw.onrender.com/api/lecture', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ s_id })
-            });
-
-            if (response.ok) {
-                const lectureData = await response.json();
-                console.log('Lecture data:', lectureData);
-                // Print lecture names in the accordion
-                printLectureNames(lectureData.data);
-            } else {
-                console.error('Failed to fetch lecture data:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error fetching lecture data:', error.message);
-        }
-    }
-
-    function printLectureNames(lectures) {
-        const accordionParent = document.getElementById('accordion-nine');
-        lectures.forEach((lecture, index) => {
-            // Create accordion item container
-            const accordionItem = document.createElement('div');
-            accordionItem.classList.add('accordion__item');
-
-            // Create accordion header
-            const accordionHeader = document.createElement('div');
-            accordionHeader.classList.add('accordion__header');
-            accordionHeader.classList.add('collapsed'); // Initially collapsed
-            accordionHeader.setAttribute('data-toggle', 'collapse');
-            accordionHeader.setAttribute('data-target', `#active-header_collapse_${index + 1}`); // Unique ID for each accordion header
-            accordionHeader.innerHTML = `
-                <span class="accordion__header--icon"></span>
-                <span class="accordion__header--text">${lecture.title}</span>
-                <span class="accordion__header--indicator"></span>
-            `;
-
-            // Create accordion body
-            const accordionBody = document.createElement('div');
-            accordionBody.classList.add('collapse');
-            accordionBody.classList.add('accordion__body');
-            accordionBody.setAttribute('id', `active-header_collapse_${index + 1}`); // Unique ID for each accordion body
-            accordionBody.setAttribute('data-parent', '#accordion-nine');
-            accordionBody.innerHTML = `
-                <div class="accordion__body--text">
-                    <!-- Content of ${lecture.title} -->
-                    <iframe width="100%" height="550" src="${lecture.video_url}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                </div>
-            `;
-
-            // Append accordion header and body to the accordion item
-            accordionItem.appendChild(accordionHeader);
-            accordionItem.appendChild(accordionBody);
-
-            // Append accordion item to the parent element
-            accordionParent.appendChild(accordionItem);
-        });
-    }
 
 
     window.onload = decodeToken;

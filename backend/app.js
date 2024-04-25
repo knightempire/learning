@@ -1315,6 +1315,32 @@ app.post('/api/viewperformance', async (req, res) => {
 });
 
 
+// Route for viewing chat messages along with user names
+app.get('/api/viewchat', async (req, res) => {
+    try {
+        // Retrieve all chat messages along with user names
+        const [chatData] = await pool.execute(
+            `SELECT chat.s_id, chat.msg, users.name 
+             FROM chat 
+             JOIN users ON chat.s_id = users.user_id`
+        );
+
+        // Check if chat messages are found
+        if (chatData.length === 0) {
+            console.log('No chat messages found');
+            return res.status(404).json({ error: 'No chat messages found' });
+        }
+
+        // Return chat messages along with user names
+        console.log('Chat messages retrieved successfully');
+        res.status(200).json({ chat: chatData });
+    } catch (error) {
+        console.error('Error retrieving chat messages:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
