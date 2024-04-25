@@ -1176,7 +1176,7 @@ app.post('/api/getlecture', async (req, res) => {
 
 // Route for inserting chat messages
 app.post('/api/chat', async (req, res) => {
-    const { s_id, msg } = req.body;
+    const { s_id, msg, c_id } = req.body;
 
     try {
         console.log('API chat requested');
@@ -1185,7 +1185,6 @@ app.post('/api/chat', async (req, res) => {
         const abuseData = await fs.readFile('../assets/en.json');
         const abusiveWords = JSON.parse(abuseData);
 
- 
         if (!Array.isArray(abusiveWords)) {
             throw new Error('Abusive words data is not an array');
         }
@@ -1200,15 +1199,12 @@ app.post('/api/chat', async (req, res) => {
         }
 
         // Check if the message contains abusive language
-
-const containsAbusiveWord = abusiveWords.some(word => {
-    const matchWord = word.match.toLowerCase();
-    const regex = new RegExp('\\b' + matchWord + '\\b', 'i'); // Case-insensitive match for whole word
-    const isAbusive = regex.test(msg.toLowerCase());
-
-    return isAbusive;
-});
-
+        const containsAbusiveWord = abusiveWords.some(word => {
+            const matchWord = word.match.toLowerCase();
+            const regex = new RegExp('\\b' + matchWord + '\\b', 'i'); // Case-insensitive match for whole word
+            const isAbusive = regex.test(msg.toLowerCase());
+            return isAbusive;
+        });
 
         if (containsAbusiveWord) {
             // If the message contains abusive language, return an error
@@ -1217,7 +1213,7 @@ const containsAbusiveWord = abusiveWords.some(word => {
         }
 
         // Insert the message into the chat table
-        await pool.execute('INSERT INTO chat (s_id, msg) VALUES (?, ?)', [s_id, msg]);
+        await pool.execute('INSERT INTO chat (s_id, msg, c_id) VALUES (?, ?, ?)', [s_id, msg, c_id]);
 
         // Message inserted successfully
         console.log('Message inserted successfully');
@@ -1227,6 +1223,7 @@ const containsAbusiveWord = abusiveWords.some(word => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 
@@ -1316,14 +1313,25 @@ app.post('/api/viewperformance', async (req, res) => {
 
 
 // Route for viewing chat messages along with user names
-app.get('/api/viewchat', async (req, res) => {
+app.post('/api/viewchat', async (req, res) => {
+    const { c_id } = req.body;
+
     try {
-        // Retrieve all chat messages along with user names
-        const [chatData] = await pool.execute(
-            `SELECT chat.s_id, chat.msg, users.name 
-             FROM chat 
-             JOIN users ON chat.s_id = users.user_id`
-        );
+        // Check if c_id is provided
+        if (!c_id) {
+            // If c_id is missing, return an error
+            console.log("c_id is missing");
+            return res.status(400).json({ error: 'c_id is required' });
+        }
+
+        // Retrieve chat messages for a specific c_id
+        const query = `SELECT chat.s_id, chat.msg, users.name 
+                       FROM chat 
+                       JOIN users ON chat.s_id = users.user_id
+                       WHERE chat.c_id = ?`;
+
+        // Execute the query
+        const [chatData] = await pool.execute(query, [c_id]);
 
         // Check if chat messages are found
         if (chatData.length === 0) {
@@ -1339,6 +1347,7 @@ app.get('/api/viewchat', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 
