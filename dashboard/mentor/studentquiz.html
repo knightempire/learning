@@ -535,9 +535,10 @@ async function fetchQuizData(c_id) {
                 if (selectedQuiz) {
                     // Print selected title and q_id
                     console.log('Selected Title:', selectedTitle);
+                    console.log(user_id)
                     q_id=selectedQuiz.q_id
                     console.log('q_id:', q_id);
-
+                    viewPerformance(user_id, q_id);
                     fetchQuizInfo(q_id)
                     
                 } else {
@@ -750,6 +751,36 @@ async function displayResult() {
     }
 }
 
+
+
+
+async function viewPerformance(user_id, q_id) {
+    try {
+        const response = await fetch('https://learning-u7aw.onrender.com/api/viewperformance', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ s_id: user_id, q_id })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to retrieve performance data');
+        }
+
+        const data = await response.json();
+
+        // Print performance data and statistics to the console
+        console.log('Performance Data:', data.performance);
+        console.log('Statistics:', data.statistics);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+
+
+
         window.onload = function() {
         decodeToken();
         
@@ -762,6 +793,9 @@ async function displayResult() {
 
    
     };
+
+
+    
 
 </script>
 

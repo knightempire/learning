@@ -1258,7 +1258,7 @@ app.post('/api/performance', async (req, res) => {
 
 
 // Route for viewing performance data by student ID and optional quiz ID
-app.post('/api/performance', async (req, res) => {
+app.post('/api/viewperformance', async (req, res) => {
     const { s_id, q_id } = req.body;
 
     try {
