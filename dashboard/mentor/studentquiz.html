@@ -701,28 +701,54 @@ let quizData = [];
 
 }
 
-function displayResult() { 
-            // Print results in console
-            console.log('Correct Answers:', correctAnswers);
-            console.log('Wrong Answers:', wrongAnswers);
+async function displayResult() {
+    // Print results in console
+    console.log('Correct Answers:', correctAnswers);
+    console.log('Wrong Answers:', wrongAnswers);
 
-            // Calculate mark (assuming each question carries equal marks)
-            const totalQuestions = quizData.length;
-            const maxMark = totalQuestions;
-            const mark = correctAnswers * (maxMark / totalQuestions);
+    // Calculate mark (assuming each question carries equal marks)
+    const totalQuestions = quizData.length;
+    const maxMark = totalQuestions;
+    const mark = correctAnswers * (maxMark / totalQuestions);
 
+    // Display result in the UI
     document.getElementById('result').innerHTML = `
-    <div class="card">
-        <div class="card-body">
-            <h3 class="card-title">Quiz Result</h3>
-            <p class="card-text">Correct Answers: ${correctAnswers}</p>
-            <p class="card-text">Wrong Answers: ${wrongAnswers}</p>
-            <p class="card-text">Mark: ${mark}</p>
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Quiz Result</h3>
+                <p class="card-text">Correct Answers: ${correctAnswers}</p>
+                <p class="card-text">Wrong Answers: ${wrongAnswers}</p>
+                <p class="card-text">Mark: ${mark}</p>
+            </div>
         </div>
-    </div>
-`;
+    `;
 
+    try {
+        // Call the /api/performance endpoint
+        const response = await fetch('https://learning-u7aw.onrender.com/api/performance', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                s_id: user_id, // Assuming user_id holds the student ID
+                q_id: q_id, // Assuming q_id holds the quiz ID
+                mark: mark
+            })
+        });
+
+        if (response.ok) {
+            console.log('Performance data sent successfully.');
+            // Handle success response if needed
+        } else {
+            console.error('Failed to send performance data:', response.statusText);
+            // Handle error response if needed
         }
+    } catch (error) {
+        console.error('Error sending performance data:', error.message);
+        // Handle fetch error if needed
+    }
+}
 
         window.onload = function() {
         decodeToken();

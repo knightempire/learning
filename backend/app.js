@@ -1231,7 +1231,7 @@ const containsAbusiveWord = abusiveWords.some(word => {
 
 
 
-//route for performace, quiz mark
+// Route for performance, quiz mark
 app.post('/api/performance', async (req, res) => {
     const { s_id, q_id, mark } = req.body;
 
@@ -1239,11 +1239,11 @@ app.post('/api/performance', async (req, res) => {
         console.log('API performance requested');
 
         // Update or insert performance data
-        const [result] = await pool.execute('UPDATE performance SET mark = JSON_ARRAY_APPEND(COALESCE(mark, \'[]\'), \'$\', CAST(? AS JSON)) WHERE s_id = ? AND q_id = ?', [m_id, s_id, q_id]);
+        const [result] = await pool.execute('UPDATE performance SET mark = JSON_ARRAY_APPEND(COALESCE(mark, \'[]\'), \'$\', CAST(? AS JSON)) WHERE s_id = ? AND q_id = ?', [mark, s_id, q_id]);
 
         if (result.affectedRows === 0) {
             // If no rows were updated, insert a new row
-            await pool.execute('INSERT INTO performance (s_id, q_id, mark) VALUES (?, ?, JSON_ARRAY(?))', [s_id, q_id, m_id]);
+            await pool.execute('INSERT INTO performance (s_id, q_id, mark) VALUES (?, ?, JSON_ARRAY(?))', [s_id, q_id, mark]);
         }
 
         // Performance data updated/inserted successfully
@@ -1254,6 +1254,8 @@ app.post('/api/performance', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
 
 
 app.listen(port, () => {
