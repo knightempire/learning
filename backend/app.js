@@ -1282,26 +1282,32 @@ app.post('/api/viewperformance', async (req, res) => {
             return res.status(200).json({ message: 'No performance data found' });
         }
 
-        // Extract and parse marks from performance data
-        const marks = performanceData.map(row => JSON.parse(row.mark)).flat(); // Flatten the array of marks
+        // Initialize an object to store statistics for each quiz
+        const statsByQuiz = {};
 
-        // Calculate maximum, minimum, average, and count of marks
-        const maxMark = Math.max(...marks);
-        const minMark = Math.min(...marks);
-        const avgMark = marks.reduce((acc, mark) => acc + mark, 0) / marks.length;
-        const markCount = marks.length;
+        // Loop through each performance data
+        performanceData.forEach(row => {
+            const { q_id, mark } = row;
+            const marks = JSON.parse(mark);
+            
+            // Calculate statistics for each quiz
+            const maxMark = Math.max(...marks);
+            const minMark = Math.min(...marks);
+            const avgMark = marks.reduce((acc, mark) => acc + mark, 0) / marks.length;
+            const markCount = marks.length;
 
-        // Return performance data along with calculated statistics
-        console.log('Performance data retrieved successfully for student ID:', s_id);
-        res.status(200).json({ 
-            performance: performanceData,
-            statistics: {
+            // Store statistics in the statsByQuiz object
+            statsByQuiz[q_id] = {
                 maxMark,
                 minMark,
                 avgMark,
                 markCount
-            }
+            };
         });
+
+        // Return performance data along with statistics for each quiz
+        console.log('Performance data retrieved successfully for student ID:', s_id);
+        res.status(200).json({ performance: performanceData, stats2: statsByQuiz });
     } catch (error) {
         console.error('Error retrieving performance data:', error);
         res.status(500).json({ error: 'Internal Server Error' });
