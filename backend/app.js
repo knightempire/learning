@@ -1257,6 +1257,57 @@ app.post('/api/performance', async (req, res) => {
 
 
 
+// Route for viewing performance data by student ID and optional quiz ID
+app.post('/api/performance', async (req, res) => {
+    const { s_id, q_id } = req.body;
+
+    try {
+        console.log('API performance data requested for student ID:', s_id);
+
+        // Construct the SQL query based on the provided parameters
+        let query = 'SELECT * FROM performance WHERE s_id = ?';
+        const queryParams = [s_id];
+
+        if (q_id) {
+            query += ' AND q_id = ?';
+            queryParams.push(q_id);
+        }
+
+        // Retrieve performance data for the given student ID and optional quiz ID
+        const [performanceData] = await pool.execute(query, queryParams);
+
+        // Check if performance data is found
+        if (performanceData.length === 0) {
+            console.log('Performance data not found for student ID:', s_id);
+            return res.status(404).json({ error: 'Performance data not found' });
+        }
+
+        // Extract marks from performance data
+        const marks = performanceData.map(row => JSON.parse(row.mark));
+
+        // Calculate maximum, minimum, average, and count of marks
+        const maxMark = Math.max(...marks);
+        const minMark = Math.min(...marks);
+        const avgMark = marks.reduce((acc, mark) => acc + mark, 0) / marks.length;
+        const markCount = marks.length;
+
+        // Return performance data along with calculated statistics
+        console.log('Performance data retrieved successfully for student ID:', s_id);
+        res.status(200).json({ 
+            performance: performanceData,
+            statistics: {
+                maxMark,
+                minMark,
+                avgMark,
+                markCount
+            }
+        });
+    } catch (error) {
+        console.error('Error retrieving performance data:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

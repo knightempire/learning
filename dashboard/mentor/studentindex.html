@@ -890,3 +890,73 @@
 </body>
 
 </html>
+
+
+<script>
+    let c_id; // Global variable to store mentor c_id
+    let user_id; // Global variable to store user ID
+
+    async function decodeToken() {
+        const token = localStorage.getItem('Token');
+        if (!token) {
+            console.error('Token not found in local storage');
+            return;
+        }
+
+        try {
+            const response = await fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Decoded token data:', data);
+                user_id = data.user_id; // Assign user ID to the global variable
+                console.log('User ID:', user_id);
+                const welcomeMessage = document.getElementById('welcome');
+                welcomeMessage.textContent = `Hi, ${data.name}  !`;
+                // Fetch list of mentors
+                checkStudent(user_id);
+            } else {
+                console.error('Failed to decode token:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error decoding token:', error.message);
+        }
+    }
+
+    async function checkStudent(s_id) {
+    try {
+        const response = await fetch('https://learning-u7aw.onrender.com/api/checkstudent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ s_id })
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Student data:', responseData);
+            
+            // Access the c_id directly from the data object
+            const c_id = responseData.data.c_id;
+            console.log('c_id:', c_id);
+
+
+            // Process student data as needed
+        } else {
+            console.error('Failed to check student status:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error checking student status:', error.message);
+    }
+}
+
+
+window.onload = decodeToken;
+</script>
