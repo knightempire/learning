@@ -1279,11 +1279,11 @@ app.post('/api/viewperformance', async (req, res) => {
         // Check if performance data is found
         if (performanceData.length === 0) {
             console.log('Performance data not found for student ID:', s_id);
-            return res.status(404).json({ error: 'Performance data not found' });
+            return res.status(200).json({ message: 'No performance data found' });
         }
 
-        // Extract marks from performance data
-        const marks = performanceData.map(row => JSON.parse(row.mark));
+        // Extract and parse marks from performance data
+        const marks = performanceData.map(row => JSON.parse(row.mark)).flat(); // Flatten the array of marks
 
         // Calculate maximum, minimum, average, and count of marks
         const maxMark = Math.max(...marks);
@@ -1307,6 +1307,7 @@ app.post('/api/viewperformance', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 app.listen(port, () => {
