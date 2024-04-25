@@ -1208,7 +1208,7 @@ const containsAbusiveWord = abusiveWords.some(word => {
 
     return isAbusive;
 });
-//work
+
 
         if (containsAbusiveWord) {
             // If the message contains abusive language, return an error
@@ -1233,7 +1233,7 @@ const containsAbusiveWord = abusiveWords.some(word => {
 
 //route for performace, quiz mark
 app.post('/api/performance', async (req, res) => {
-    const { s_id, q_id, m_id } = req.body;
+    const { s_id, q_id, mark } = req.body;
 
     try {
         console.log('API performance requested');
