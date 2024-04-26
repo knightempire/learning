@@ -1616,6 +1616,38 @@ app.post('/api/subdiscussion', async (req, res) => {
 
 
 
+// Route for viewing subdiscussions
+app.post('/api/viewsubdiscussion', async (req, res) => {
+    const { discussion_id } = req.body;
+
+    try {
+        console.log('API view subdiscussion requested');
+
+        // Check if discussion_id is provided
+        if (!discussion_id) {
+            return res.status(400).json({ error: 'discussion_id is required' });
+        }
+
+        // Retrieve subdiscussion data from the database based on the provided discussion_id
+        const [subdiscussionData] = await pool.execute(
+            'SELECT * FROM subdiscussion WHERE discussion_id = ?',
+            [discussion_id]
+        );
+
+        // Check if subdiscussions were found
+        if (subdiscussionData.length === 0) {
+            return res.status(404).json({ error: 'No subdiscussions found for the provided discussion_id' });
+        }
+
+        // Return the retrieved subdiscussions
+        return res.status(200).json({ subdiscussions: subdiscussionData });
+    } catch (error) {
+        console.error('Error fetching subdiscussions:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 // Route for updating subdiscussion likes
 app.post('/api/subdiscussionlike', async (req, res) => {
     const { s_id, subdiscussion_id } = req.body;
