@@ -1131,17 +1131,17 @@ app.post('/api/assignmentor', async (req, res) => {
 
 
 // Function to update student's mentor ID in the database
-async function updateStudentMentor(s_id, m_id) {
-    return new Promise((resolve, reject) => {
-        pool.query('UPDATE student_profile SET m_id = ? WHERE s_id = ?', [m_id, s_id], (error, results) => {
-            if (error) {
-                console.error('Error updating mentor for student:', error);
-                return reject(error);
-            }
-            resolve();
-        });
-    });
-}
+// async function updateStudentMentor(s_id, m_id) {
+//     return new Promise((resolve, reject) => {
+//         pool.query('UPDATE student_profile SET m_id = ? WHERE s_id = ?', [m_id, s_id], (error, results) => {
+//             if (error) {
+//                 console.error('Error updating mentor for student:', error);
+//                 return reject(error);
+//             }
+//             resolve();
+//         });
+//     });
+// }
 
 
 
@@ -1348,6 +1348,302 @@ app.post('/api/viewchat', async (req, res) => {
     }
 });
 
+
+// Route for creating discussion data using POST method
+app.post('/api/discussion', async (req, res) => {
+    const { s_id, c_id, lecture_id, question } = req.body; // Assuming s_id, c_id, lecture_id, and question are passed in the request body
+
+    try {
+        console.log('API discussion requested');
+
+        // Insert discussion data into the database
+        const [result] = await pool.execute(`
+            INSERT INTO discussion (s_id, c_id, lecture_id, question) VALUES (?, ?, ?, ?)
+        `, [s_id, c_id, lecture_id, question]);
+
+        // Check if the discussion data was inserted successfully
+        if (result.affectedRows !== 1) {
+            console.log("Failed to create discussion");
+            return res.status(500).json({ error: 'Failed to create discussion' });
+        }
+
+        // Discussion data inserted successfully
+        res.status(201).json({ message: 'Discussion created successfully' });
+    } catch (error) {
+        console.error('Error creating discussion:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+// Route for fetching discussions based on mentor ID
+app.post('/api/showdiscussion', async (req, res) => {
+    const { m_id } = req.body;
+
+    try {
+        console.log('API showdiscussion requested');
+
+        // Check if mentor ID is provided
+        if (!m_id) {
+            return res.status(400).json({ error: 'Mentor ID is required' });
+        }
+
+        // Get connection from the pool
+        const connection = await pool.getConnection();
+
+        // Retrieve the course ID associated with the mentor
+        const [courseResult] = await connection.execute(
+            'SELECT c_id FROM mentors WHERE m_id = ?',
+            [m_id]
+        );
+
+        if (courseResult.length === 0) {
+            connection.release();
+            return res.status(404).json({ error: 'Mentor not found' });
+        }
+
+        const { c_id } = courseResult[0];
+
+        // Retrieve discussions based on the course ID
+        const [discussionResult] = await connection.execute(
+            'SELECT * FROM discussion WHERE c_id = ?',
+            [c_id]
+        );
+
+        connection.release();
+
+        return res.status(200).json({ discussions: discussionResult });
+    } catch (error) {
+        console.error('Error fetching discussions:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+// Route for updating discussion likes
+app.post('/api/discussionlike', async (req, res) => {
+    const { s_id, discussion_id } = req.body;
+
+    try {
+        console.log('API discussion like requested');
+
+        // Check if s_id and discussion_id are provided
+        if (!s_id || !discussion_id) {
+            return res.status(400).json({ error: 'Both s_id and discussion_id are required' });
+        }
+
+        // Get connection from the pool
+        const connection = await pool.getConnection();
+
+        // Check if the user has already liked the discussion
+        const [likedByResult] = await connection.execute(
+            'SELECT liked_by FROM discussion WHERE discussion_id = ?',
+            [discussion_id]
+        );
+
+        const likedBy = likedByResult[0].liked_by;
+
+        if (likedBy && likedBy.includes(s_id)) {
+            // If the user has already liked the discussion, remove their like
+            const updatedLikedBy = likedBy.filter(id => id !== s_id);
+            const updateDiscussionQuery = `
+                UPDATE discussion
+                SET likes = likes - 1,
+                    liked_by = ?
+                WHERE discussion_id = ?
+            `;
+            await connection.execute(updateDiscussionQuery, [JSON.stringify(updatedLikedBy), discussion_id]);
+        } else {
+            // If the user has not liked the discussion, add their like
+            const updateDiscussionQuery = `
+                UPDATE discussion
+                SET likes = likes + 1,
+                    liked_by = JSON_ARRAY_APPEND(IFNULL(liked_by, JSON_ARRAY()), '$', ?)
+                WHERE discussion_id = ?
+            `;
+            await connection.execute(updateDiscussionQuery, [s_id, discussion_id]);
+        }
+
+        // Successfully updated the discussion likes
+        connection.release();
+        return res.status(200).json({ message: 'Discussion liked successfully' });
+    } catch (error) {
+        console.error('Error liking discussion:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+// Route for inserting an answer into the Answer table
+app.post('/api/answer', async (req, res) => {
+    const { discussion_id, m_id, answer } = req.body;
+
+    try {
+        console.log('API answer requested');
+
+        // Check if all required fields are provided
+        if (!discussion_id || !m_id || !answer) {
+            return res.status(400).json({ error: 'discussion_id, m_id, and answer are required' });
+        }
+
+        // Get connection from the pool
+        const connection = await pool.getConnection();
+
+        // Insert the answer into the Answer table
+        const [insertResult] = await connection.execute(
+            'INSERT INTO answer (discussion_id, m_id, answer) VALUES (?, ?, ?)',
+            [discussion_id, m_id, answer]
+        );
+
+        connection.release();
+
+        return res.status(200).json({ message: 'Answer inserted successfully', answer_id: insertResult.insertId });
+    } catch (error) {
+        console.error('Error inserting answer:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+// Route for updating answer likes
+app.post('/api/answerlike', async (req, res) => {
+    const { s_id, answer_id } = req.body;
+
+    try {
+        console.log('API answer like requested');
+
+        // Check if s_id and answer_id are provided
+        if (!s_id || !answer_id) {
+            return res.status(400).json({ error: 'Both s_id and answer_id are required' });
+        }
+
+        // Get connection from the pool
+        const connection = await pool.getConnection();
+
+        // Check if the user has already liked the answer
+        const [likedByResult] = await connection.execute(
+            'SELECT liked_by FROM answer WHERE answer_id = ?',
+            [answer_id]
+        );
+
+        const likedBy = likedByResult[0].liked_by;
+
+        if (likedBy && likedBy.includes(s_id)) {
+            // If the user has already liked the answer, remove their like
+            const updatedLikedBy = likedBy.filter(id => id !== s_id);
+            const updateAnswerQuery = `
+                UPDATE answer
+                SET likes = likes - 1,
+                    liked_by = ?
+                WHERE answer_id = ?
+            `;
+            await connection.execute(updateAnswerQuery, [JSON.stringify(updatedLikedBy), answer_id]);
+        } else {
+            // If the user has not liked the answer, add their like
+            const updateAnswerQuery = `
+                UPDATE answer
+                SET likes = likes + 1,
+                    liked_by = JSON_ARRAY_APPEND(IFNULL(liked_by, JSON_ARRAY()), '$', ?)
+                WHERE answer_id = ?
+            `;
+            await connection.execute(updateAnswerQuery, [s_id, answer_id]);
+        }
+
+        // Successfully updated the answer likes
+        connection.release();
+        return res.status(200).json({ message: 'Answer liked successfully' });
+    } catch (error) {
+        console.error('Error liking answer:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
+// Route for inserting a subdiscussion into the Subdiscussion table
+app.post('/api/subdiscussion', async (req, res) => {
+    const { discussion_id, user_id, subdiscussion_text } = req.body;
+
+    try {
+        console.log('API subdiscussion requested');
+
+        // Check if all required fields are provided
+        if (!discussion_id || !user_id || !subdiscussion_text) {
+            return res.status(400).json({ error: 'discussion_id, user_id, and subdiscussion_text are required' });
+        }
+
+        // Get connection from the pool
+        const connection = await pool.getConnection();
+
+        // Insert the subdiscussion into the Subdiscussion table
+        const [insertResult] = await connection.execute(
+            'INSERT INTO subdiscussion (discussion_id, user_id, subdiscussion_text) VALUES (?, ?, ?)',
+            [discussion_id, user_id, subdiscussion_text]
+        );
+
+        connection.release();
+
+        return res.status(200).json({ message: 'Subdiscussion inserted successfully', subdiscussion_id: insertResult.insertId });
+    } catch (error) {
+        console.error('Error inserting subdiscussion:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
+// Route for updating subdiscussion likes
+app.post('/api/subdiscussionlike', async (req, res) => {
+    const { s_id, subdiscussion_id } = req.body;
+
+    try {
+        console.log('API subdiscussion like requested');
+
+        // Check if s_id and subdiscussion_id are provided
+        if (!s_id || !subdiscussion_id) {
+            return res.status(400).json({ error: 'Both s_id and subdiscussion_id are required' });
+        }
+
+        // Get connection from the pool
+        const connection = await pool.getConnection();
+
+        // Check if the user has already liked the subdiscussion
+        const [likedByResult] = await connection.execute(
+            'SELECT liked_by FROM subdiscussion WHERE subdiscussion_id = ?',
+            [subdiscussion_id]
+        );
+
+        const likedBy = likedByResult[0].liked_by;
+
+        if (likedBy && likedBy.includes(s_id)) {
+            // If the user has already liked the subdiscussion, remove their like
+            const updatedLikedBy = likedBy.filter(id => id !== s_id);
+            const updateSubdiscussionQuery = `
+                UPDATE subdiscussion
+                SET likes = likes - 1,
+                    liked_by = ?
+                WHERE subdiscussion_id = ?
+            `;
+            await connection.execute(updateSubdiscussionQuery, [JSON.stringify(updatedLikedBy), subdiscussion_id]);
+        } else {
+            // If the user has not liked the subdiscussion, add their like
+            const updateSubdiscussionQuery = `
+                UPDATE subdiscussion
+                SET likes = likes + 1,
+                    liked_by = JSON_ARRAY_APPEND(IFNULL(liked_by, JSON_ARRAY()), '$', ?)
+                WHERE subdiscussion_id = ?
+            `;
+            await connection.execute(updateSubdiscussionQuery, [s_id, subdiscussion_id]);
+        }
+
+        // Successfully updated the subdiscussion likes
+        connection.release();
+        return res.status(200).json({ message: 'Subdiscussion liked successfully' });
+    } catch (error) {
+        console.error('Error liking subdiscussion:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 
