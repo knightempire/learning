@@ -1630,7 +1630,10 @@ app.post('/api/viewsubdiscussion', async (req, res) => {
 
         // Retrieve subdiscussion data from the database based on the provided discussion_id
         const [subdiscussionData] = await pool.execute(
-            'SELECT * FROM subdiscussion WHERE discussion_id = ?',
+            `SELECT sd.*, u.name AS user_name, u.role AS user_role
+            FROM subdiscussion sd 
+            JOIN users u ON sd.user_id = u.user_id
+            WHERE sd.discussion_id = ?`,
             [discussion_id]
         );
 
@@ -1639,7 +1642,7 @@ app.post('/api/viewsubdiscussion', async (req, res) => {
             return res.status(404).json({ error: 'No subdiscussions found for the provided discussion_id' });
         }
 
-        // Return the retrieved subdiscussions
+        // Return the retrieved subdiscussions with user names and roles
         return res.status(200).json({ subdiscussions: subdiscussionData });
     } catch (error) {
         console.error('Error fetching subdiscussions:', error);
