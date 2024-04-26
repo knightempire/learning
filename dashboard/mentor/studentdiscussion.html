@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Focus - Bootstrap Admin Dashboard </title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon.png">
+    <link href="./css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div class="nav-header">
+            <a href="index.html" class="brand-logo">
+                <img src="https://i.imgur.com/cJD1uRx.png" alt="">
+            </a>
+
+            <div class="nav-control">
+                <div class="hamburger">
+                    <span class="line"></span><span class="line"></span><span class="line"></span>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div class="header">
+            <div class="header-content">
+                <nav class="navbar navbar-expand">
+                    <div class="collapse navbar-collapse justify-content-between">
+                        <div class="header-left">
+                            <div class="search_bar dropdown">
+                                <span class="search_icon p-3 c-pointer" data-toggle="dropdown">
+                                    <i class="mdi mdi-magnify"></i>
+                                </span>
+                                <div class="dropdown-menu p-0 m-0">
+                                    <form>
+                                        <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul class="navbar-nav header-right">
+                            <li class="nav-item dropdown notification_dropdown">
+                                <a class="nav-link" href="#" role="button" data-toggle="dropdown">
+                                    <i class="mdi mdi-bell"></i>
+                                    <div class="pulse-css"></div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <ul class="list-unstyled">
+                                        <li class="media dropdown-item">
+                                            <span class="success"><i class="ti-user"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Martin</strong> has added a <strong>customer</strong> Successfully
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="primary"><i class="ti-shopping-cart"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Jennifer</strong> purchased Light Dashboard 2.0.</p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="danger"><i class="ti-bookmark"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Robin</strong> marked a <strong>ticket</strong> as unsolved.
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="primary"><i class="ti-heart"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>David</strong> purchased Light Dashboard 1.0.</p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="success"><i class="ti-image"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong> James.</strong> has added a<strong>customer</strong> Successfully
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                    </ul>
+                                    <a class="all-notification" href="#">See all notifications <i
+                                            class="ti-arrow-right"></i></a>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown header-profile">
+                                <a class="nav-link" href="#" role="button" data-toggle="dropdown">
+                                    <i class="mdi mdi-account"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a href="./app-profile.html" class="dropdown-item">
+                                        <i class="icon-user"></i>
+                                        <span class="ml-2">Profile </span>
+                                    </a>
+                                    <a href="./email-inbox.html" class="dropdown-item">
+                                        <i class="icon-envelope-open"></i>
+                                        <span class="ml-2">Inbox </span>
+                                    </a>
+                                    <a href="./page-login.html" class="dropdown-item">
+                                        <i class="icon-key"></i>
+                                        <span class="ml-2">Logout </span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+        <div class="quixnav">
+            <div class="quixnav-scroll">
+                <ul class="metismenu" id="menu">
+                    <li class="nav-label first">Main Menu</li>
+                    
+                     
+                    <li><a href="./studentindex.html" aria-expanded="false"><i  class="icon icon-chart-bar-33"></i><span
+                        class="nav-text">Dashboard</span></a></li>
+                        
+              
+                    <li class="nav-label">Materials</li>
+               
+
+     
+
+                        <li><a href="./studentlecture.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-camera-reels" viewBox="0 0 16 16">
+                            <path d="M6 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0M1 3a2 2 0 1 0 4 0 2 2 0 0 0-4 0"/>
+                            <path d="M9 6h.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 7.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 16H2a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm6 8.73V7.27l-3.5 1.555v4.35zM1 8v6a1 1 0 0 0 1 1h7.5a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1"/>
+                            <path d="M9 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6M7 3a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
+                          </svg></i>
+                          <span class="nav-text">Lecture</span></a></li>
+    
+                          <li><a href="./studentquiz.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                          </svg></i><span
+                            class="nav-text">Quiz</span></a></li>
+
+                      
+              
+                    <li class="nav-label"> Components</li>
+
+
+                    <!-- <li><a href="./app-calender.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-date" viewBox="0 0 16 16">
+                        <path d="M6.445 11.688V6.354h-.633A13 13 0 0 0 4.5 7.16v.695c.375-.257.969-.62 1.258-.777h.012v4.61zm1.188-1.305c.047.64.594 1.406 1.703 1.406 1.258 0 2-1.066 2-2.871 0-1.934-.781-2.668-1.953-2.668-.926 0-1.797.672-1.797 1.809 0 1.16.824 1.77 1.676 1.77.746 0 1.23-.376 1.383-.79h.027c-.004 1.316-.461 2.164-1.305 2.164-.664 0-1.008-.45-1.05-.82zm2.953-2.317c0 .696-.559 1.18-1.184 1.18-.601 0-1.144-.383-1.144-1.2 0-.823.582-1.21 1.168-1.21.633 0 1.16.398 1.16 1.23"/>
+                        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                      </svg></i><span
+                        class="nav-text">Calendar</span></a></li> -->
+
+                        <li><a href="./studentcode.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-code-slash" viewBox="0 0 16 16">
+                            <path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0m6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0"/>
+                          </svg></i><span
+                            class="nav-text">HTML</span></a></li>
+
+                            <li><a href="./studentcode2.html" aria-expanded="false"><i  class="icon icon"> 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-braces" viewBox="0 0 16 16">
+                                    <path d="M2.114 8.063V7.9c1.005-.102 1.497-.615 1.497-1.6V4.503c0-1.094.39-1.538 1.354-1.538h.273V2h-.376C3.25 2 2.49 2.759 2.49 4.352v1.524c0 1.094-.376 1.456-1.49 1.456v1.299c1.114 0 1.49.362 1.49 1.456v1.524c0 1.593.759 2.352 2.372 2.352h.376v-.964h-.273c-.964 0-1.354-.444-1.354-1.538V9.663c0-.984-.492-1.497-1.497-1.6M13.886 7.9v.163c-1.005.103-1.497.616-1.497 1.6v1.798c0 1.094-.39 1.538-1.354 1.538h-.273v.964h.376c1.613 0 2.372-.759 2.372-2.352v-1.524c0-1.094.376-1.456 1.49-1.456V7.332c-1.114 0-1.49-.362-1.49-1.456V4.352C13.51 2.759 12.75 2 11.138 2h-.376v.964h.273c.964 0 1.354.444 1.354 1.538V6.3c0 .984.492 1.497 1.497 1.6"/>
+                                  </svg>
+                            </i><span
+                                class="nav-text">Playground</span></a></li>
+                     
+
+
+                                
+                            <li><a href="./studentchat.html" aria-expanded="false"><i  class="icon icon"> 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-text" viewBox="0 0 16 16">
+                                    <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                    <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
+                                  </svg>
+                 
+                            </i><span
+                                class="nav-text">Community</span></a></li>
+                     
+                          
+
+                    <li><a href="widget-basic.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                      </svg></i><span
+                        class="nav-text">Profile</span></a></li>
+
+                  
+      <!-- <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Email</a>
+                                <ul aria-expanded="false">
+                                    <li><a href="./email-compose.html">Compose</a></li>
+                                    <li><a href="./email-inbox.html">Inbox</a></li>
+                                    <li><a href="./email-read.html">Read</a></li>
+                                </ul>
+                            </li> -->
+                      
+                                
+                   
+                </ul>
+            </div>
+
+
+        </div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+            <!-- container-fluid starts -->
+            <div class="container-fluid">
+                <div class="row page-titles mx-0">
+                    <div class="col-sm-6 p-md-0">
+                        <div class="welcome-text">
+                            <h4 id='welcome'>Hi, welcome back   name  !</h4>  
+                            <span class="ml-1">Accordion</span>
+                        </div>
+                    </div>
+             
+                </div>
+                <!-- row -->
+                <!-- Row starts -->
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="card-title">Accordion with icon</h4>
+                                <p class="m-0 subtitle">Add <code>accordion-with-icon</code> class with <code>accordion</code></p>
+                            </div>
+                            <button id="addDiscussionBtn" class="btn btn-primary" data-toggle="modal" data-target="#discussionModal">Add Discussion</button>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div id="accordion-six" class="accordion accordion-with-icon">
+                                <div class="accordion__item">
+                                    <div class="accordion__header collapsed" data-toggle="collapse" data-target="#with-icon_collapseOne" aria-expanded="false">
+                                        <span class="accordion__header--icon"></span>
+                                        <span class="accordion__header--text">Accordion Header One</span>
+                                        <span class="accordion__header--indicator indicator_bordered"></span>
+                                    </div>
+                                    <div id="with-icon_collapseOne" class="accordion__body collapse" data-parent="#accordion-six" style="">
+                                        <div class="accordion__body--text">
+                                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion__item">
+                                    <div class="accordion__header collapsed" data-toggle="collapse" data-target="#with-icon_collapseTwo">
+                                        <span class="accordion__header--icon"></span>
+                                        <span class="accordion__header--text">Accordion Header Two</span>
+                                        <span class="accordion__header--indicator indicator_bordered"></span>
+                                    </div>
+                                    <div id="with-icon_collapseTwo" class="collapse accordion__body" data-parent="#accordion-six">
+                                        <div class="accordion__body--text">
+                                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion__item">
+                                    <div class="accordion__header collapsed" data-toggle="collapse" data-target="#with-icon_collapseThree">
+                                        <span class="accordion__header--icon"></span>
+                                        <span class="accordion__header--text">Accordion Header Three</span>
+                                        <span class="accordion__header--indicator indicator_bordered"></span>
+                                    </div>
+                                    <div id="with-icon_collapseThree" class="collapse accordion__body" data-parent="#accordion-six">
+                                        <div class="accordion__body--text">
+                                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Discussion Modal -->
+                <div class="modal fade" id="discussionModal" tabindex="-1" role="dialog" aria-labelledby="discussionModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="discussionModalLabel">Add Discussion</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="discussionForm">
+                                    <div class="form-group">
+                                        <label for="lectureSelect">Select Lecture:</label>
+                                        <select class="form-control" id="lectureSelect" name="lecture">
+
+                                            <!-- Add more options as needed -->
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="questionTextarea">Question:</label>
+                                        <textarea class="form-control" id="questionTextarea" name="question" rows="3"></textarea>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" onclick="submitDiscussion()">Submit</button>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Row ends -->
+
+
+            </div>
+            <!-- container-fluid ends -->
+        </div>
+        
+   
+        div class="modal fade" id="discussionModal" tabindex="-1" role="dialog" aria-labelledby="discussionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="discussionModalLabel">Add Discussion</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Your form content goes here -->
+                <form>
+                    <div class="form-group">
+                        <label for="lectureSelect">Select Lecture:</label>
+                        <select class="form-control" id="lectureSelect">
+                            <option value="lecture1">Lecture 1</option>
+                            <option value="lecture2">Lecture 2</option>
+                            <!-- Add options dynamically if needed -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="questionTextarea">Question:</label>
+                        <textarea class="form-control" id="questionTextarea" rows="3"></textarea>
+                    </div>
+                    <!-- Add more form fields as needed -->
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+        
+        <!--**********************************
+                Content body end
+            ***********************************-->
+
+
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                <p>Copyright © Designed &amp; Developed by <a href="#" target="_blank">Eduwell </a> 2024</p>
+            </div>
+        </div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+
+        <!--**********************************
+           Support ticket button start
+        ***********************************-->
+
+        <!--**********************************
+           Support ticket button end
+        ***********************************-->
+
+        
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="./vendor/global/global.min.js"></script>
+    <script src="./js/quixnav-init.js"></script>
+    <script src="./js/custom.min.js"></script>
+    
+
+
+
+</body>
+
+</html>
+
+<script>
+    let c_id; // Global variable to store mentor c_id
+    let user_id; // Global variable to store user ID
+
+    async function decodeToken() {
+        const token = localStorage.getItem('Token');
+        if (!token) {
+            console.error('Token not found in local storage');
+            return;
+        }
+
+        try {
+            const response = await fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Decoded token data:', data);
+                user_id = data.user_id; // Assign user ID to the global variable
+                console.log('User ID:', user_id);
+                const welcomeMessage = document.getElementById('welcome');
+                welcomeMessage.textContent = `Hi, ${data.name}  !`;
+                // Fetch list of mentors
+                checkStudent(user_id);
+                studentLecture(user_id);
+            } else {
+                console.error('Failed to decode token:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error decoding token:', error.message);
+        }
+    }
+
+    async function checkStudent(s_id) {
+        try {
+            const response = await fetch('https://learning-u7aw.onrender.com/api/checkstudent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ s_id })
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log('Student data:', responseData);
+                
+                // Access the c_id directly from the data object
+                c_id = responseData.data.c_id;
+                console.log('c_id:', c_id);
+
+
+                // Process student data as needed
+            } else {
+                console.error('Failed to check student status:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error checking student status:', error.message);
+        }
+    }
+
+    async function studentLecture(s_id) {
+        try {
+            const response = await fetch('https://learning-u7aw.onrender.com/api/lecture', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ s_id })
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+                const lectureData = responseData.data; // Access the array of lectures
+                console.log('Lecture data:', lectureData);
+                const lectureSelect = document.getElementById('lectureSelect');
+
+                // Add an initial option prompting the user to select a lecture
+                const initialOption = document.createElement('option');
+                initialOption.value = ''; // Set value as empty string
+                initialOption.textContent = 'Select a Lecture';
+                lectureSelect.appendChild(initialOption);
+
+                // Populate the dropdown with lecture options
+                lectureData.forEach(lecture => {
+                    const option = document.createElement('option');
+                    option.value = lecture.lecture_id;
+                    option.textContent = lecture.title;
+                    lectureSelect.appendChild(option);
+                });
+            } else {
+                console.error('Failed to fetch lecture data:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching lecture data:', error.message);
+        }
+    }
+
+    async function submitDiscussion() {
+    const lectureSelect = document.getElementById('lectureSelect');
+    const selectedLectureId = lectureSelect.value;
+    if (!selectedLectureId) {
+        console.error('Please select a lecture');
+        return;
+    }
+
+    // Get other form data
+    const questionTextarea = document.getElementById('questionTextarea');
+    const question = questionTextarea.value.trim();
+
+    if (!question) {
+        console.error('Please enter a question');
+        return;
+    }
+
+    const discussionData = {
+        s_id: user_id,
+        c_id: c_id,
+        lecture_id: selectedLectureId,
+        question: question
+    };
+
+    // Print the data before sending
+    console.log('Discussion data:', discussionData);
+
+    try {
+        const response = await fetch('https://learning-u7aw.onrender.com/api/discussion', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(discussionData)
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Discussion submitted successfully:', responseData);
+            // Optionally, reset the form
+            questionTextarea.value = '';
+            // Provide feedback to the user
+            alert('Discussion submitted successfully');
+        } else {
+            console.error('Failed to submit discussion:', response.statusText);
+            // Provide feedback to the user
+            alert('Failed to submit discussion. Please try again later.');
+        }
+    } catch (error) {
+        console.error('Error submitting discussion:', error.message);
+        // Provide feedback to the user
+        alert('An error occurred while submitting the discussion. Please try again later.');
+    }
+}
+
+    window.onload = decodeToken;
+</script>
