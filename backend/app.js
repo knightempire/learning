@@ -1483,6 +1483,10 @@ app.post('/api/discussionlike', async (req, res) => {
                 WHERE discussion_id = ?
             `;
             await connection.execute(updateDiscussionQuery, [JSON.stringify(updatedLikedBy), discussion_id]);
+
+            // Successfully updated the discussion likes
+            connection.release();
+            return res.status(200).json({ message: 'Discussion disliked', liked: false, discussion_id });
         } else {
             // If the user has not liked the discussion, add their like
             const updateDiscussionQuery = `
@@ -1492,16 +1496,17 @@ app.post('/api/discussionlike', async (req, res) => {
                 WHERE discussion_id = ?
             `;
             await connection.execute(updateDiscussionQuery, [s_id, discussion_id]);
-        }
 
-        // Successfully updated the discussion likes
-        connection.release();
-        return res.status(200).json({ message: 'Discussion liked successfully' });
+            // Successfully updated the discussion likes
+            connection.release();
+            return res.status(200).json({ message: 'Discussion liked', liked: true, discussion_id });
+        }
     } catch (error) {
-        console.error('Error liking discussion:', error);
+        console.error('Error liking/disliking discussion:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 
@@ -1566,6 +1571,10 @@ app.post('/api/answerlike', async (req, res) => {
                 WHERE answer_id = ?
             `;
             await connection.execute(updateAnswerQuery, [JSON.stringify(updatedLikedBy), answer_id]);
+
+            // Successfully updated the answer likes
+            connection.release();
+            return res.status(200).json({ message: 'Answer disliked', liked: false, answer_id });
         } else {
             // If the user has not liked the answer, add their like
             const updateAnswerQuery = `
@@ -1575,42 +1584,73 @@ app.post('/api/answerlike', async (req, res) => {
                 WHERE answer_id = ?
             `;
             await connection.execute(updateAnswerQuery, [s_id, answer_id]);
-        }
 
-        // Successfully updated the answer likes
-        connection.release();
-        return res.status(200).json({ message: 'Answer liked successfully' });
+            // Successfully updated the answer likes
+            connection.release();
+            return res.status(200).json({ message: 'Answer liked', liked: true, answer_id });
+        }
     } catch (error) {
-        console.error('Error liking answer:', error);
+        console.error('Error liking/disliking answer:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
 
 
-// Route for creating subdiscussion data using POST method
-app.post('/api/subdiscussion', async (req, res) => {
-    const { discussion_id, user_id, subdiscussion_text } = req.body; // Assuming discussion_id, user_id, and subdiscussion_text are passed in the request body
+// Route for updating subdiscussion likes
+app.post('/api/subdiscussionlike', async (req, res) => {
+    const { s_id, subdiscussion_id } = req.body;
 
     try {
-        console.log('API subdiscussion requested');
+        console.log('API subdiscussion like requested');
 
-        // Insert subdiscussion data into the database
-        const [result] = await pool.execute(`
-            INSERT INTO subdiscussion (discussion_id, user_id, subdiscussion_text) VALUES (?, ?, ?)
-        `, [discussion_id, user_id, subdiscussion_text]);
-
-        // Check if the subdiscussion data was inserted successfully
-        if (result.affectedRows !== 1) {
-            console.log("Failed to create subdiscussion");
-            return res.status(500).json({ error: 'Failed to create subdiscussion' });
+        // Check if s_id and subdiscussion_id are provided
+        if (!s_id || !subdiscussion_id) {
+            return res.status(400).json({ error: 'Both s_id and subdiscussion_id are required' });
         }
 
-        // Subdiscussion data inserted successfully
-        res.status(201).json({ message: 'Subdiscussion created successfully' });
+        // Get connection from the pool
+        const connection = await pool.getConnection();
+
+        // Check if the user has already liked the subdiscussion
+        const [likedByResult] = await connection.execute(
+            'SELECT liked_by FROM subdiscussion WHERE subdiscussion_id = ?',
+            [subdiscussion_id]
+        );
+
+        const likedBy = likedByResult[0].liked_by;
+
+        if (likedBy && likedBy.includes(s_id)) {
+            // If the user has already liked the subdiscussion, remove their like
+            const updatedLikedBy = likedBy.filter(id => id !== s_id);
+            const updateSubdiscussionQuery = `
+                UPDATE subdiscussion
+                SET likes = likes - 1,
+                    liked_by = ?
+                WHERE subdiscussion_id = ?
+            `;
+            await connection.execute(updateSubdiscussionQuery, [JSON.stringify(updatedLikedBy), subdiscussion_id]);
+
+            // Successfully updated the subdiscussion likes
+            connection.release();
+            return res.status(200).json({ message: 'Subdiscussion disliked', liked: false, subdiscussion_id });
+        } else {
+            // If the user has not liked the subdiscussion, add their like
+            const updateSubdiscussionQuery = `
+                UPDATE subdiscussion
+                SET likes = likes + 1,
+                    liked_by = JSON_ARRAY_APPEND(IFNULL(liked_by, JSON_ARRAY()), '$', ?)
+                WHERE subdiscussion_id = ?
+            `;
+            await connection.execute(updateSubdiscussionQuery, [s_id, subdiscussion_id]);
+
+            // Successfully updated the subdiscussion likes
+            connection.release();
+            return res.status(200).json({ message: 'Subdiscussion liked', liked: true, subdiscussion_id });
+        }
     } catch (error) {
-        console.error('Error creating subdiscussion:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error liking/subdiscussion:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
