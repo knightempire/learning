@@ -1376,6 +1376,39 @@ app.post('/api/discussion', async (req, res) => {
 });
 
 
+// Route for viewing discussions
+app.post('/api/viewdiscussion', async (req, res) => {
+    const { s_id } = req.body;
+
+    try {
+        console.log('API view discussion requested');
+
+        // Check if s_id is provided
+        if (!s_id) {
+            return res.status(400).json({ error: 's_id is required' });
+        }
+
+        // Retrieve discussion data from the database based on the provided s_id
+        const [discussionData] = await pool.execute(
+            'SELECT * FROM discussion WHERE s_id = ?',
+            [s_id]
+        );
+
+        // Check if discussions were found
+        if (discussionData.length === 0) {
+            return res.status(404).json({ error: 'No discussions found for the provided s_id' });
+        }
+
+        // Return the retrieved discussions
+        return res.status(200).json({ discussions: discussionData });
+    } catch (error) {
+        console.error('Error fetching discussions:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
 // Route for fetching discussions based on mentor ID
 app.post('/api/showdiscussion', async (req, res) => {
     const { m_id } = req.body;
@@ -1388,36 +1421,33 @@ app.post('/api/showdiscussion', async (req, res) => {
             return res.status(400).json({ error: 'Mentor ID is required' });
         }
 
-        // Get connection from the pool
-        const connection = await pool.getConnection();
-
         // Retrieve the course ID associated with the mentor
-        const [courseResult] = await connection.execute(
+        const [mentorResult] = await pool.execute(
             'SELECT c_id FROM mentors WHERE m_id = ?',
             [m_id]
         );
 
-        if (courseResult.length === 0) {
-            connection.release();
+        // Check if mentor exists
+        if (mentorResult.length === 0) {
             return res.status(404).json({ error: 'Mentor not found' });
         }
 
-        const { c_id } = courseResult[0];
+        const { c_id } = mentorResult[0];
 
         // Retrieve discussions based on the course ID
-        const [discussionResult] = await connection.execute(
+        const [discussionResult] = await pool.execute(
             'SELECT * FROM discussion WHERE c_id = ?',
             [c_id]
         );
 
-        connection.release();
-
+        // Return the retrieved discussions
         return res.status(200).json({ discussions: discussionResult });
     } catch (error) {
         console.error('Error fetching discussions:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 // Route for updating discussion likes
@@ -1474,35 +1504,33 @@ app.post('/api/discussionlike', async (req, res) => {
 });
 
 
-// Route for inserting an answer into the Answer table
+
+// Route for creating answer data using POST method
 app.post('/api/answer', async (req, res) => {
-    const { discussion_id, m_id, answer } = req.body;
+    const { discussion_id, m_id, answer } = req.body; // Assuming discussion_id, m_id, and answer are passed in the request body
 
     try {
         console.log('API answer requested');
 
-        // Check if all required fields are provided
-        if (!discussion_id || !m_id || !answer) {
-            return res.status(400).json({ error: 'discussion_id, m_id, and answer are required' });
+        // Insert answer data into the database
+        const [result] = await pool.execute(`
+            INSERT INTO answer (discussion_id, m_id, answer) VALUES (?, ?, ?)
+        `, [discussion_id, m_id, answer]);
+
+        // Check if the answer data was inserted successfully
+        if (result.affectedRows !== 1) {
+            console.log("Failed to create answer");
+            return res.status(500).json({ error: 'Failed to create answer' });
         }
 
-        // Get connection from the pool
-        const connection = await pool.getConnection();
-
-        // Insert the answer into the Answer table
-        const [insertResult] = await connection.execute(
-            'INSERT INTO answer (discussion_id, m_id, answer) VALUES (?, ?, ?)',
-            [discussion_id, m_id, answer]
-        );
-
-        connection.release();
-
-        return res.status(200).json({ message: 'Answer inserted successfully', answer_id: insertResult.insertId });
+        // Answer data inserted successfully
+        res.status(201).json({ message: 'Answer created successfully' });
     } catch (error) {
-        console.error('Error inserting answer:', error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error creating answer:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 // Route for updating answer likes
@@ -1560,33 +1588,29 @@ app.post('/api/answerlike', async (req, res) => {
 
 
 
-// Route for inserting a subdiscussion into the Subdiscussion table
+// Route for creating subdiscussion data using POST method
 app.post('/api/subdiscussion', async (req, res) => {
-    const { discussion_id, user_id, subdiscussion_text } = req.body;
+    const { discussion_id, user_id, subdiscussion_text } = req.body; // Assuming discussion_id, user_id, and subdiscussion_text are passed in the request body
 
     try {
         console.log('API subdiscussion requested');
 
-        // Check if all required fields are provided
-        if (!discussion_id || !user_id || !subdiscussion_text) {
-            return res.status(400).json({ error: 'discussion_id, user_id, and subdiscussion_text are required' });
+        // Insert subdiscussion data into the database
+        const [result] = await pool.execute(`
+            INSERT INTO subdiscussion (discussion_id, user_id, subdiscussion_text) VALUES (?, ?, ?)
+        `, [discussion_id, user_id, subdiscussion_text]);
+
+        // Check if the subdiscussion data was inserted successfully
+        if (result.affectedRows !== 1) {
+            console.log("Failed to create subdiscussion");
+            return res.status(500).json({ error: 'Failed to create subdiscussion' });
         }
 
-        // Get connection from the pool
-        const connection = await pool.getConnection();
-
-        // Insert the subdiscussion into the Subdiscussion table
-        const [insertResult] = await connection.execute(
-            'INSERT INTO subdiscussion (discussion_id, user_id, subdiscussion_text) VALUES (?, ?, ?)',
-            [discussion_id, user_id, subdiscussion_text]
-        );
-
-        connection.release();
-
-        return res.status(200).json({ message: 'Subdiscussion inserted successfully', subdiscussion_id: insertResult.insertId });
+        // Subdiscussion data inserted successfully
+        res.status(201).json({ message: 'Subdiscussion created successfully' });
     } catch (error) {
-        console.error('Error inserting subdiscussion:', error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error creating subdiscussion:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
