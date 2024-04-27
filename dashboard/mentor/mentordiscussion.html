@@ -511,9 +511,8 @@
                 const welcomeMessage = document.getElementById('welcome');
                 welcomeMessage.textContent = `Hi, ${data.name}  !`;
                 // Fetch list of mentors
-                checkStudent(user_id);
-                studentLecture(user_id);
-             
+                fetchMentorDashboard(userId)
+           
             } else {
                 console.error('Failed to decode token:', response.statusText);
             }
@@ -522,135 +521,135 @@
         }
     }
 
-    async function checkStudent(s_id) {
+    async function fetchMentorDashboard(userId) {
         try {
-            const response = await fetch('https://learning-u7aw.onrender.com/api/checkstudent', {
+            const response = await fetch('https://learning-u7aw.onrender.com/api/mentordashboard', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ s_id })
+                body: JSON.stringify({ user_id: userId })
             });
 
             if (response.ok) {
-                const responseData = await response.json();
-                console.log('Student data:', responseData);
+                const mentorData = await response.json();
+                console.log('Mentor dashboard data:', mentorData);
+                if (mentorData.mentorExists && mentorData.mentorDetails.length > 0) {
+                    // If mentor exists and details are available
+                    c_id = mentorData.mentorDetails[0].c_id; // Assigning mentor c_id to the global variable
+                    console.log("c_id:", c_id);
                 
-                // Access the c_id directly from the data object
-                c_id = responseData.data.c_id;
-                console.log('c_id:', c_id);
-                viewDiscussion(c_id)
-
-                // Process student data as needed
+                }
             } else {
-                console.error('Failed to check student status:', response.statusText);
+                console.error('Failed to fetch mentor dashboard:', response.statusText);
             }
         } catch (error) {
-            console.error('Error checking student status:', error.message);
+            console.error('Error fetching mentor dashboard:', error.message);
         }
     }
+    
+    // async function studentLecture(m_id) {
+    //     try {
+    //         const response = await fetch('https://learning-u7aw.onrender.com/api/lecture', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify({ s_id })
+    //         });
 
-    async function studentLecture(s_id) {
-        try {
-            const response = await fetch('https://learning-u7aw.onrender.com/api/lecture', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ s_id })
-            });
+    //         if (response.ok) {
+    //             const responseData = await response.json();
+    //             const lectureData = responseData.data; // Access the array of lectures
+    //             console.log('Lecture data:', lectureData);
+    //             const lectureSelect = document.getElementById('lectureSelect');
 
-            if (response.ok) {
-                const responseData = await response.json();
-                const lectureData = responseData.data; // Access the array of lectures
-                console.log('Lecture data:', lectureData);
-                const lectureSelect = document.getElementById('lectureSelect');
+    //             // Add an initial option prompting the user to select a lecture
+    //             const initialOption = document.createElement('option');
+    //             initialOption.value = ''; // Set value as empty string
+    //             initialOption.textContent = 'Select a Lecture';
+    //             lectureSelect.appendChild(initialOption);
 
-                // Add an initial option prompting the user to select a lecture
-                const initialOption = document.createElement('option');
-                initialOption.value = ''; // Set value as empty string
-                initialOption.textContent = 'Select a Lecture';
-                lectureSelect.appendChild(initialOption);
+    //             // Populate the dropdown with lecture options
+    //             lectureData.forEach(lecture => {
+    //                 const option = document.createElement('option');
+    //                 option.value = lecture.lecture_id;
+    //                 option.textContent = lecture.title;
+    //                 lectureSelect.appendChild(option);
+    //             });
+    //         } else {
+    //             console.error('Failed to fetch lecture data:', response.statusText);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error fetching lecture data:', error.message);
+    //     }
+    // }
 
-                // Populate the dropdown with lecture options
-                lectureData.forEach(lecture => {
-                    const option = document.createElement('option');
-                    option.value = lecture.lecture_id;
-                    option.textContent = lecture.title;
-                    lectureSelect.appendChild(option);
-                });
-            } else {
-                console.error('Failed to fetch lecture data:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error fetching lecture data:', error.message);
-        }
-    }
+//     async function submitDiscussion() {
+//     const lectureSelect = document.getElementById('lectureSelect');
+//     const selectedLectureId = lectureSelect.value;
+//     if (!selectedLectureId) {
+//         console.error('Please select a lecture');
+//         return;
+//     }
 
-    async function submitDiscussion() {
-    const lectureSelect = document.getElementById('lectureSelect');
-    const selectedLectureId = lectureSelect.value;
-    if (!selectedLectureId) {
-        console.error('Please select a lecture');
-        return;
-    }
+//     // Get other form data
+//     const questionTextarea = document.getElementById('questionTextarea');
+//     const question = questionTextarea.value.trim();
 
-    // Get other form data
-    const questionTextarea = document.getElementById('questionTextarea');
-    const question = questionTextarea.value.trim();
+//     if (!question) {
+//         console.error('Please enter a question');
+//         return;
+//     }
 
-    if (!question) {
-        console.error('Please enter a question');
-        return;
-    }
+//     const discussionData = {
+//         s_id: user_id,
+//         c_id: c_id,
+//         lecture_id: selectedLectureId,
+//         question: question
+//     };
 
-    const discussionData = {
-        s_id: user_id,
-        c_id: c_id,
-        lecture_id: selectedLectureId,
-        question: question
-    };
+//     // Print the data before sending
+//     console.log('Discussion data:', discussionData);
 
-    // Print the data before sending
-    console.log('Discussion data:', discussionData);
+//     try {
+//         const response = await fetch('https://learning-u7aw.onrender.com/api/discussion', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(discussionData)
+//         });
 
-    try {
-        const response = await fetch('https://learning-u7aw.onrender.com/api/discussion', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(discussionData)
-        });
+//         if (response.ok) {
+//             const responseData = await response.json();
+//             console.log('Discussion submitted successfully:', responseData);
+//             // Optionally, reset the form
+//             questionTextarea.value = '';
 
-        if (response.ok) {
-            const responseData = await response.json();
-            console.log('Discussion submitted successfully:', responseData);
-            // Optionally, reset the form
-            questionTextarea.value = '';
+//             // Hide the form
+//             $('#discussionModal').modal('hide');
 
-            // Hide the form
-            $('#discussionModal').modal('hide');
-
-            // Display the success message for 5 seconds
-            document.getElementById('success').style.display = 'block';
-            setTimeout(() => {
-                document.getElementById('success').style.display = 'none';
-            }, 5000);
-        } else {
-            console.error('Failed to submit discussion:', response.statusText);
-            // Provide feedback to the user
-            alert('Failed to submit discussion. Please try again later.');
-        }
-    } catch (error) {
-        console.error('Error submitting discussion:', error.message);
-        // Provide feedback to the user
-        alert('An error occurred while submitting the discussion. Please try again later.');
-    }
-}
+//             // Display the success message for 5 seconds
+//             document.getElementById('success').style.display = 'block';
+//             setTimeout(() => {
+//                 document.getElementById('success').style.display = 'none';
+//             }, 5000);
+//         } else {
+//             console.error('Failed to submit discussion:', response.statusText);
+//             // Provide feedback to the user
+//             alert('Failed to submit discussion. Please try again later.');
+//         }
+//     } catch (error) {
+//         console.error('Error submitting discussion:', error.message);
+//         // Provide feedback to the user
+//         alert('An error occurred while submitting the discussion. Please try again later.');
+//     }
+// }
 
 
 // Object to store user colors
+
 const userColors = {};
 
 // Function to generate a random RGB color based on the user ID
@@ -769,7 +768,7 @@ async function SubDiscussion(discussionId, index) {
 }
 
 // Function to view discussion and handle accordion interactions
-async function viewDiscussion(c_id) {
+async function viewDiscussion(s_id) {
     try {
         const response = await fetch('https://learning-u7aw.onrender.com/api/viewdiscussion', {
             method: 'POST',

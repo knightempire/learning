@@ -1390,7 +1390,7 @@ app.post('/api/viewdiscussion', async (req, res) => {
 
         // Retrieve discussion data from the database based on the provided s_id
         const [discussionData] = await pool.execute(
-            'SELECT * FROM discussion WHERE s_id = ?',
+            'SELECT * FROM discussion WHERE c_id = ?',
             [s_id]
         );
 
