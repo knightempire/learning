@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Focus - Bootstrap Admin Dashboard </title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon.png">
+    <link href="./css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div class="nav-header">
+            <a href="index.html" class="brand-logo">
+                <img src="https://i.imgur.com/cJD1uRx.png" alt="">
+            </a>
+
+            <div class="nav-control">
+                <div class="hamburger">
+                    <span class="line"></span><span class="line"></span><span class="line"></span>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div class="header">
+            <div class="header-content">
+                <nav class="navbar navbar-expand">
+                    <div class="collapse navbar-collapse justify-content-between">
+                        <div class="header-left">
+                            <div class="search_bar dropdown">
+                                <span class="search_icon p-3 c-pointer" data-toggle="dropdown">
+                                    <i class="mdi mdi-magnify"></i>
+                                </span>
+                                <div class="dropdown-menu p-0 m-0">
+                                    <form>
+                                        <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul class="navbar-nav header-right">
+                            <li class="nav-item dropdown notification_dropdown">
+                                <a class="nav-link" href="#" role="button" data-toggle="dropdown">
+                                    <i class="mdi mdi-bell"></i>
+                                    <div class="pulse-css"></div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <ul class="list-unstyled">
+                                        <li class="media dropdown-item">
+                                            <span class="success"><i class="ti-user"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Martin</strong> has added a <strong>customer</strong> Successfully
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="primary"><i class="ti-shopping-cart"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Jennifer</strong> purchased Light Dashboard 2.0.</p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="danger"><i class="ti-bookmark"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Robin</strong> marked a <strong>ticket</strong> as unsolved.
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="primary"><i class="ti-heart"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>David</strong> purchased Light Dashboard 1.0.</p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="success"><i class="ti-image"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong> James.</strong> has added a<strong>customer</strong> Successfully
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                    </ul>
+                                    <a class="all-notification" href="#">See all notifications <i
+                                            class="ti-arrow-right"></i></a>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown header-profile">
+                                <a class="nav-link" href="#" role="button" data-toggle="dropdown">
+                                    <i class="mdi mdi-account"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a href="./app-profile.html" class="dropdown-item">
+                                        <i class="icon-user"></i>
+                                        <span class="ml-2">Profile </span>
+                                    </a>
+                                    <a href="./email-inbox.html" class="dropdown-item">
+                                        <i class="icon-envelope-open"></i>
+                                        <span class="ml-2">Inbox </span>
+                                    </a>
+                                                  <a href="#" class="dropdown-item" onclick="logout()">
+    <i class="icon-key"></i>
+    <span class="ml-2">Logout </span>
+</a>
+
+                                    <script>
+                                        function logout() {
+                                            // Remove token from local storage
+                                            localStorage.removeItem('token');
+    
+                                            // Redirect to index.html
+                                             window.location.href = '../../index.html';
+                                                }
+
+                                    </script>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+        <div class="quixnav">
+            <div class="quixnav-scroll">
+                <ul class="metismenu" id="menu">
+                    <li class="nav-label first">Main Menu</li>
+                    
+                    
+                    <li><a href="./mentorindex.html" aria-expanded="false"><i  class="icon icon-chart-bar-33"></i><span
+                        class="nav-text">Dashboard</span></a></li>
+                        
+              
+                    <li class="nav-label">Users</li>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                        class="icon icon-single-04"></i><span class="nav-text">Users</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="./mentorstudent.html">List of student</a></li>
+                            <li><a href="./mentorlist.html">List of mentors</a></li>
+                            
+                      
+                        </ul>
+                    </li>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                              class="icon icon-group-04"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-camera-reels" viewBox="0 0 16 16">
+                                <path d="M6 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0M1 3a2 2 0 1 0 4 0 2 2 0 0 0-4 0"/>
+                                <path d="M9 6h.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 7.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 16H2a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm6 8.73V7.27l-3.5 1.555v4.35zM1 8v6a1 1 0 0 0 1 1h7.5a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1"/>
+                                <path d="M9 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6M7 3a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
+                              </svg></i>
+                              <span class="nav-text">Materials</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="./mentorassign.html">Assign mentors</a></li>
+                            <li><a href="./mentorlecture.html">Topic</a></li>
+                            <li><a href="./mentorviewquiz.html">Quizs</a></li>
+                            <li><a href="./chart-chartjs.html">Discussion</a></li>
+                    
+                        </ul>
+                    </li>
+                    <li class="nav-label"> Components</li>
+
+
+                    <li><a href="./mentordiscussion.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book-half" viewBox="0 0 16 16">
+                        <path d="M8.5 2.687c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+                      </svg></i><span
+                        class="nav-text">Discussion</span></a></li>
+
+                    <li><a href="./app-calender.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-date" viewBox="0 0 16 16">
+                        <path d="M6.445 11.688V6.354h-.633A13 13 0 0 0 4.5 7.16v.695c.375-.257.969-.62 1.258-.777h.012v4.61zm1.188-1.305c.047.64.594 1.406 1.703 1.406 1.258 0 2-1.066 2-2.871 0-1.934-.781-2.668-1.953-2.668-.926 0-1.797.672-1.797 1.809 0 1.16.824 1.77 1.676 1.77.746 0 1.23-.376 1.383-.79h.027c-.004 1.316-.461 2.164-1.305 2.164-.664 0-1.008-.45-1.05-.82zm2.953-2.317c0 .696-.559 1.18-1.184 1.18-.601 0-1.144-.383-1.144-1.2 0-.823.582-1.21 1.168-1.21.633 0 1.16.398 1.16 1.23"/>
+                        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                      </svg></i><span
+                        class="nav-text">Calendar</span></a></li>
+
+                        
+                    <li><a href="widget-basic.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                      </svg></i><span
+                        class="nav-text">Profiler</span></a></li>
+
+                  
+      <!-- <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Email</a>
+                                <ul aria-expanded="false">
+                                    <li><a href="./email-compose.html">Compose</a></li>
+                                    <li><a href="./email-inbox.html">Inbox</a></li>
+                                    <li><a href="./email-read.html">Read</a></li>
+                                </ul>
+                            </li> -->
+                      
+                                
+                   
+                </ul>
+            </div>
+
+
+        </div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+            <!-- container-fluid starts -->
+            <div class="container-fluid">
+                <div class="row page-titles mx-0">
+                    <div class="col-sm-6 p-md-0">
+                        <div class="welcome-text">
+                            <h4 id='welcome'>Hi, welcome back   name  !</h4>  
+                           
+                        </div>
+                    </div>
+             
+                </div>
+                <!-- row -->
+                <!-- Row starts -->
+                
+                <div class="col-lg-12 discussions">
+                    <div class="card">
+                        <div class="alert alert-success solid alert-dismissible fade show" id="success" style="display: none;">
+                            <button type="button" class="close h-100" data-dismiss="alert" aria-label="Close">
+                                <span><i class="mdi mdi-close"></i></span>
+                            </button>
+                            <strong>Success!</strong> Message has been sent.
+                        </div>
+                        <br>
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="card-title">Discussion</h4>
+                              
+                            </div>
+                            <!-- <button id="addDiscussionBtn" class="btn btn-primary" data-toggle="modal" data-target="#discussionModal">Add Discussion</button> -->
+                        </div>
+                
+                        <div class="card-body">
+                            <div id="accordion-six" class="accordion accordion-with-icon">
+                            
+                
+                             
+                
+                                <!-- Add more accordion items here -->
+                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <script>
+                    function toggleForm(formId) {
+                        const form = document.getElementById(formId);
+                        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+                    }
+                </script>
+                
+                <script>
+                    function toggleButtons(header) {
+                        const likeButton = header.querySelector('.like-button');
+                        const replyButton = header.querySelector('.reply-button');
+                
+                        if (header.getAttribute('aria-expanded') === 'true') {
+                            likeButton.style.display = 'none';
+                            replyButton.style.display = 'none';
+                        } else {
+                            likeButton.style.display = 'inline-block';
+                            replyButton.style.display = 'inline-block';
+                        }
+                    }
+                </script>
+                
+                
+                
+
+
+
+                <!-- Row ends -->
+
+
+            </div>
+            <!-- container-fluid ends -->
+        </div>
+        
+   
+
+</div>
+
+
+
+        
+        <!--**********************************
+                Content body end
+            ***********************************-->
+
+
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                <p>Copyright © Designed &amp; Developed by <a href="#" target="_blank">Eduwell </a> 2024</p>
+            </div>
+        </div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+
+        <!--**********************************
+           Support ticket button start
+        ***********************************-->
+
+        <!--**********************************
+           Support ticket button end
+        ***********************************-->
+
+        
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="./vendor/global/global.min.js"></script>
+    <script src="./js/quixnav-init.js"></script>
+    <script src="./js/custom.min.js"></script>
+    
+
+
+
+</body>
+
+</html>
+
+<script>
+    let c_id; // Global variable to store mentor c_id
+    let user_id; // Global variable to store user ID
+
+    async function decodeToken() {
+        const token = localStorage.getItem('Token');
+        if (!token) {
+            console.error('Token not found in local storage');
+            return;
+        }
+
+        try {
+            const response = await fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Decoded token data:', data);
+                user_id = data.user_id; // Assign user ID to the global variable
+                console.log('User ID:', user_id);
+                const welcomeMessage = document.getElementById('welcome');
+                welcomeMessage.textContent = `Hi, ${data.name}  !`;
+                // Fetch list of mentors
+                fetchMentorDashboard(user_id)
+           
+            } else {
+            console.error('Failed to decode token:', response.statusText);
+            redirectToLogin();
+        }
+        } catch (error) {
+            console.error('Error decoding token:', error.message);
+        }
+    }
+
+    function redirectToLogin() {
+    // Redirect to login.html
+    window.location.href = 'login.html';
+}
+
+    async function fetchMentorDashboard(user_id) {
+        try {
+            const response = await fetch('https://learning-u7aw.onrender.com/api/mentordashboard', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_id: user_id })
+            });
+
+            if (response.ok) {
+                const mentorData = await response.json();
+                console.log('Mentor dashboard data:', mentorData);
+                if (mentorData.mentorExists && mentorData.mentorDetails.length > 0) {
+                    // If mentor exists and details are available
+                    c_id = mentorData.mentorDetails[0].c_id; // Assigning mentor c_id to the global variable
+                    console.log("c_id:", c_id);
+                    viewDiscussion(c_id)
+                
+                }
+            } else {
+                console.error('Failed to fetch mentor dashboard:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching mentor dashboard:', error.message);
+        }
+    }
+    
+    // async function studentLecture(m_id) {
+    //     try {
+    //         const response = await fetch('https://learning-u7aw.onrender.com/api/lecture', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify({ s_id })
+    //         });
+
+    //         if (response.ok) {
+    //             const responseData = await response.json();
+    //             const lectureData = responseData.data; // Access the array of lectures
+    //             console.log('Lecture data:', lectureData);
+    //             const lectureSelect = document.getElementById('lectureSelect');
+
+    //             // Add an initial option prompting the user to select a lecture
+    //             const initialOption = document.createElement('option');
+    //             initialOption.value = ''; // Set value as empty string
+    //             initialOption.textContent = 'Select a Lecture';
+    //             lectureSelect.appendChild(initialOption);
+
+    //             // Populate the dropdown with lecture options
+    //             lectureData.forEach(lecture => {
+    //                 const option = document.createElement('option');
+    //                 option.value = lecture.lecture_id;
+    //                 option.textContent = lecture.title;
+    //                 lectureSelect.appendChild(option);
+    //             });
+    //         } else {
+    //             console.error('Failed to fetch lecture data:', response.statusText);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error fetching lecture data:', error.message);
+    //     }
+    // }
+
+//     async function submitDiscussion() {
+//     const lectureSelect = document.getElementById('lectureSelect');
+//     const selectedLectureId = lectureSelect.value;
+//     if (!selectedLectureId) {
+//         console.error('Please select a lecture');
+//         return;
+//     }
+
+//     // Get other form data
+//     const questionTextarea = document.getElementById('questionTextarea');
+//     const question = questionTextarea.value.trim();
+
+//     if (!question) {
+//         console.error('Please enter a question');
+//         return;
+//     }
+
+//     const discussionData = {
+//         s_id: user_id,
+//         c_id: c_id,
+//         lecture_id: selectedLectureId,
+//         question: question
+//     };
+
+//     // Print the data before sending
+//     console.log('Discussion data:', discussionData);
+
+//     try {
+//         const response = await fetch('https://learning-u7aw.onrender.com/api/discussion', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(discussionData)
+//         });
+
+//         if (response.ok) {
+//             const responseData = await response.json();
+//             console.log('Discussion submitted successfully:', responseData);
+//             // Optionally, reset the form
+//             questionTextarea.value = '';
+
+//             // Hide the form
+//             $('#discussionModal').modal('hide');
+
+//             // Display the success message for 5 seconds
+//             document.getElementById('success').style.display = 'block';
+//             setTimeout(() => {
+//                 document.getElementById('success').style.display = 'none';
+//             }, 5000);
+//         } else {
+//             console.error('Failed to submit discussion:', response.statusText);
+//             // Provide feedback to the user
+//             alert('Failed to submit discussion. Please try again later.');
+//         }
+//     } catch (error) {
+//         console.error('Error submitting discussion:', error.message);
+//         // Provide feedback to the user
+//         alert('An error occurred while submitting the discussion. Please try again later.');
+//     }
+// }
+
+
+// Object to store user colors
+
+const userColors = {};
+
+// Function to generate a random RGB color based on the user ID
+function getUserNameColor(userId) {
+    // Generate random values for red, green, and blue components
+    const red = Math.floor(Math.random() * 256);
+    const green = Math.floor(Math.random() * 256);
+    const blue = Math.floor(Math.random() * 256);
+    
+    // Return the RGB color string
+    return `rgb(${red}, ${green}, ${blue})`;
+}
+
+
+// Function to display subdiscussion data
+function displaySubdiscussion(data, discussionId) {
+    // Get the subdiscussContainer element
+    const subdiscussContainer = document.getElementById(`subdiscuss${discussionId}`);
+
+    // Check if the subdiscussContainer element exists
+    if (!subdiscussContainer) {
+        console.error(`Subdiscussion container not found for discussion ID ${discussionId}`);
+        return;
+    }
+
+    // Clear previous content
+    subdiscussContainer.innerHTML = '';
+
+    // Sort subdiscussions array: mentor's subdiscussion first, then by likes
+    const sortedSubdiscussions = data.subdiscussions.sort((a, b) => {
+        // Mentor's subdiscussion comes first
+        if (a.user_role === 'mentor' && b.user_role !== 'mentor') return -1;
+        if (a.user_role !== 'mentor' && b.user_role === 'mentor') return 1;
+
+        // If both are mentor or not, sort by likes
+        return b.likes - a.likes;
+    });
+
+    // Iterate over each sorted subdiscussion and create HTML for each card
+    sortedSubdiscussions.forEach((subdiscussion, subIndex) => {
+        const userId = subdiscussion.user_id; // Get the user ID
+        const userName = subdiscussion.user_name || 'Unknown User'; // Ensure user_name property exists
+        const userRole = subdiscussion.user_role; // Get the user role
+        const likessub = subdiscussion.likes;
+
+        // Ensure that the subdiscussion object and its liked_by property are defined before accessing includes method
+        const userLiked = subdiscussion && subdiscussion.liked_by && subdiscussion.liked_by.includes(user_id);
+
+        // Determine the displayed username based on the role
+        let displayedUserName = userName;
+        if (userRole === "mentor") {
+            displayedUserName += " (mentor)";
+        }
+
+        // Set the button color based on whether the user has liked the subdiscussion
+        const buttonColor = userLiked ? 'red' : 'currentColor';
+
+        // HTML for the subdiscussion card
+        const subdiscussionCard = `
+            <div class="card mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="card-header" style="color: ${getUserNameColor(userId)};">${displayedUserName}</div> 
+                    <button class="like-button" style="background-color: transparent; border: none; padding: 5px; color: ${buttonColor};" onclick="likesubdiscussion(${subdiscussion.subdiscussion_id})">
+                        ${likessub}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="${buttonColor}" class="bi bi-heart" viewBox="0 0 16 16">
+                            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <p class="card-text" style="color: black;">${subdiscussion.subdiscussion_text}</p>
+                </div>
+            </div>
+        `;
+
+        // Append the card to the subdiscuss container
+        subdiscussContainer.insertAdjacentHTML('beforeend', subdiscussionCard);
+    });
+}
+
+// Function to handle submission of subdiscussion
+async function SubDiscussion(discussionId, index) {
+    try {
+        // Get the subdiscussion text from the textarea
+        const textareaValue = document.getElementById(`textarea${index}`).value.trim();
+        console.log('Textarea Value:', textareaValue); // Log the textarea value
+
+        // Prepare the data to send in the request body
+        const requestBody = {
+            discussion_id: discussionId,
+            user_id: user_id, // Assuming `user_id` is a global variable
+            subdiscussion_text: textareaValue
+        };
+
+        // Send a POST request to the API endpoint
+        const response = await fetch('https://learning-u7aw.onrender.com/api/subdiscussion', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            // Optionally, clear the textarea after successful submission
+            document.getElementById(`textarea${index}`).value = '';
+
+            // Close the form by toggling its visibility
+            toggleForm(`form${index}`);
+
+            // Display the success message for 5 seconds
+            document.getElementById('success').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('success').style.display = 'none';
+            }, 5000);
+        } else {
+            console.error('Failed to submit subdiscussion:', response.statusText);
+            // Provide feedback to the user
+            alert('Failed to submit subdiscussion. Please try again later.');
+        }
+    } catch (error) {
+        console.error('Error submitting subdiscussion:', error.message);
+        // Provide feedback to the user
+        alert('An error occurred while submitting the subdiscussion. Please try again later.');
+    }
+}
+
+// Function to view discussion and handle accordion interactions
+async function viewDiscussion(c_id) {
+    try {
+        const response = await fetch('https://learning-u7aw.onrender.com/api/viewdiscussion', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ c_id })
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Discussion data:', responseData);
+
+            // Get the accordion container
+            const accordionContainer = document.getElementById('accordion-six');
+            const reversedDiscussions = responseData.discussions.reverse();
+            // Initialize the discussion index
+            let index = 0;
+
+            // Iterate over each discussion in the response data
+            responseData.discussions.forEach((discussion) => {
+    // Increment the index
+    index++;
+
+    console.log('Discussion index:', index);
+    console.log('Discussion ID:', discussion.discussion_id);
+
+    // Check if the current discussion is liked by the user
+    const isLiked = discussion.liked_by.includes(user_id);
+    if (isLiked) {
+                    console.log(`Discussion with ID ${discussion.discussion_id} is liked.`);
+                }
+
+    // Determine the fill color for the heart icon
+    const heartFillColor = isLiked ? 'red' : 'currentColor';
+
+    // Create HTML markup for the new accordion item with the question data
+    const newAccordionItem = `
+        <div class="accordion__item" data-discussion-id="${discussion.discussion_id}">
+            <div class="accordion__header collapsed" data-toggle="collapse" data-target="#collapse${discussion.discussion_id}" aria-expanded="false" onclick="toggleButtons(this)">
+                <span class="accordion__header--icon"></span>
+                <span class="accordion__header--text">${discussion.question}</span>
+                <br><br>
+                <div class="btons">
+                    <button class="like-button" style="display: none; background-color: transparent; border: none; padding-left: 10px;" onclick="likediscussion(${discussion.discussion_id})"> ${discussion.likes}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="${heartFillColor}" class="bi bi-heart" viewBox="0 0 16 16">
+                            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                        </svg>
+                    </button>
+                    <button class="reply-button" style="display: none; background-color: transparent; border: none; padding-left: 10px;" onclick="toggleForm('form${discussion.discussion_id}')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-reply" viewBox="0 0 16 16">
+                            <path d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.7 8.7 0 0 0-1.921-.306 7 7 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254l-.042-.028a.147.147 0 0 1 0-.252l.042-.028zM7.8 10.386q.103 0 .223.006c.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96z"/>
+                        </svg>
+                    </button>
+                </div>
+                <form id="form${discussion.discussion_id}" class="reply-form" style="display: none;" data-discussion-id="${discussion.discussion_id}">
+                    <textarea id="textarea${discussion.discussion_id}" class="form-control" rows="3" placeholder="Enter your reply"></textarea>
+                    <button type="button" class="btn btn-primary mt-2" onclick="SubDiscussion(${discussion.discussion_id}, ${index})">Send</button>
+                    <button type="button" class="btn btn-secondary mt-2" onclick="toggleForm('form${discussion.discussion_id}')">Close</button>
+                </form>
+                <span class="accordion__header--indicator indicator_bordered"></span>
+            </div>
+            <br>
+            <div id="collapse${discussion.discussion_id}" class="accordion__body collapse card" data-parent="#accordion-six">
+                <div class="accordion__body--title card-header"></div>
+                <div class="accordion__body--text card-body">
+                    <div id="subdiscuss${discussion.discussion_id}"></div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Append the new accordion item to the accordion container
+    accordionContainer.insertAdjacentHTML('beforeend', newAccordionItem);
+    console.log(`Accordion item added for discussion ID ${discussion.discussion_id}`);
+});
+
+            // Add event listener to each card
+            const accordionItems = document.querySelectorAll('.accordion__header');
+            accordionItems.forEach((item) => {
+                item.addEventListener('click', async function() {
+                    // Retrieve the discussion_id from the clicked card
+                    const discussionId = this.parentElement.dataset.discussionId;
+                    console.log('Clicked card discussion ID:', discussionId);
+
+                    try {
+                        // Call the viewsubdiscussion API with the discussion_id
+                        const response = await fetch('https://learning-u7aw.onrender.com/api/viewsubdiscussion', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ discussion_id: discussionId })
+                        });
+
+                        if (response.ok) {
+                            const responseData = await response.json();
+                            console.log('view Subdiscussion data:', responseData);
+                            console.log('Calling displaySubdiscussion');
+                            // Display the subdiscussion data for the clicked discussion
+                            displaySubdiscussion(responseData, discussionId);
+                        } else {
+                            console.error('Failed to fetch subdiscussion data:', response.statusText);
+                        }
+                    } catch (error) {
+                        console.error('Error fetching subdiscussion data:', error.message);
+                        console.error('Error calling displaySubdiscussion:', error.message);
+                    }
+                });
+            });
+        } else {
+            console.error('Failed to fetch discussion data:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error fetching discussion data:', error.message);
+    }
+}
+
+
+
+async function likediscussion(discussionId) {
+    try {
+        // Prepare the data to send in the request body
+        const requestBody = {
+            s_id: user_id, // Assuming `s_id` is a global variable or obtained from somewhere
+            discussion_id: discussionId
+        };
+
+        // Send a POST request to the API endpoint
+        const response = await fetch('https://learning-u7aw.onrender.com/api/discussionlike', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            // Print the response
+            const responseData = await response.json();
+            console.log('Liked discussion response:', responseData);
+            s_id = user_id;
+            console.log(s_id);
+
+            location.reload();
+
+        } else {
+            console.error('Failed to like discussion:', response.statusText);
+            // Provide feedback to the user
+            alert('Failed to like discussion. Please try again later.');
+        }
+    } catch (error) {
+        console.error('Error liking discussion:', error.message);
+        // Provide feedback to the user
+        alert('An error occurred while liking the discussion. Please try again later.');
+    }
+}
+
+
+async function likesubdiscussion(subdiscussionId) {
+    try {
+        // Prepare the data to send in the request body
+        const requestBody = {
+            s_id: user_id, // Assuming `user_id` is a global variable
+            subdiscussion_id: subdiscussionId
+        };
+
+        // Send a POST request to the API endpoint
+        const response = await fetch('https://learning-u7aw.onrender.com/api/subdiscussionlike', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            // If the request is successful, log the response
+            const responseData = await response.json();
+            console.log('Liked subdiscussion response:', responseData);
+            location.reload();
+        } else {
+            // If the request fails, log the error and provide feedback to the user
+            console.error('Failed to like subdiscussion:', response.statusText);
+            alert('Failed to like subdiscussion. Please try again later.');
+        }
+    } catch (error) {
+        // Catch any unexpected errors and log them
+        console.error('Error liking subdiscussion:', error.message);
+        alert('An error occurred while liking the subdiscussion. Please try again later.');
+    }
+}
+
+
+    window.onload = decodeToken;
+</script>
+
+
