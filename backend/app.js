@@ -1378,34 +1378,40 @@ app.post('/api/discussion', async (req, res) => {
 
 // Route for viewing discussions
 app.post('/api/viewdiscussion', async (req, res) => {
-    const { s_id } = req.body;
-
+    const { c_id } = req.body;
     try {
         console.log('API view discussion requested');
 
-        // Check if s_id is provided
-        if (!s_id) {
-            return res.status(400).json({ error: 's_id is required' });
+        // Extract c_id from request body
+     
+
+        // Check if c_id is provided
+        if (!c_id) {
+            console.error('c_id is required');
+            return res.status(400).json({ error: 'c_id is required' });
         }
 
-        // Retrieve discussion data from the database based on the provided s_id
+        // Retrieve discussion data from the database based on the provided c_id
         const [discussionData] = await pool.execute(
             'SELECT * FROM discussion WHERE c_id = ?',
-            [s_id]
+            [c_id]
         );
 
         // Check if discussions were found
         if (discussionData.length === 0) {
-            return res.status(404).json({ error: 'No discussions found for the provided s_id' });
+            console.error('No discussions found for the provided c_id:', c_id);
+            return res.status(404).json({ error: 'No discussions found for the provided c_id' });
         }
 
         // Return the retrieved discussions
+        console.log('Discussion data:', discussionData);
         return res.status(200).json({ discussions: discussionData });
     } catch (error) {
         console.error('Error fetching discussions:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 

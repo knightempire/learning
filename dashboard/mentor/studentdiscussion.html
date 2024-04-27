@@ -539,7 +539,9 @@
                 // Access the c_id directly from the data object
                 c_id = responseData.data.c_id;
                 console.log('c_id:', c_id);
-                viewDiscussion(c_id)
+                viewDiscussion(c_id);
+
+
 
                 // Process student data as needed
             } else {
@@ -776,9 +778,8 @@ async function viewDiscussion(c_id) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ c_id })
+            body: JSON.stringify({ c_id }) // Ensure that the c_id is being sent correctly
         });
-
         if (response.ok) {
             const responseData = await response.json();
             console.log('Discussion data:', responseData);
