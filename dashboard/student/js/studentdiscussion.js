@@ -157,9 +157,13 @@
 
             // Display the success message for 5 seconds
             document.getElementById('success').style.display = 'block';
+
             setTimeout(() => {
                 document.getElementById('success').style.display = 'none';
-            }, 5000);
+                // Refresh the page
+                location.reload();
+            }, 2000); // Display for 2 seconds
+            
         } else {
             console.error('Failed to submit discussion:', response.statusText);
             // Provide feedback to the user
@@ -201,6 +205,19 @@ function displaySubdiscussion(data, discussionId) {
 
     // Clear previous content
     subdiscussContainer.innerHTML = '';
+
+    // Sort subdiscussions by user role and number of likes
+    data.subdiscussions.sort((a, b) => {
+        // First, sort by user role (mentor first)
+        if (a.user_role === 'mentor' && b.user_role !== 'mentor') {
+            return -1; // Mentor first
+        } else if (a.user_role !== 'mentor' && b.user_role === 'mentor') {
+            return 1; // Mentor first
+        } else {
+            // If user roles are the same, sort by number of likes
+            return b.likes - a.likes; // Sort in descending order of likes
+        }
+    });
 
     // Iterate over each subdiscussion and create HTML for each card
     data.subdiscussions.forEach((subdiscussion, subIndex) => {
@@ -244,6 +261,7 @@ function displaySubdiscussion(data, discussionId) {
     });
 }
 
+
 // Function to handle submission of subdiscussion
 async function SubDiscussion(discussionId, index) {
     try {
@@ -258,6 +276,7 @@ async function SubDiscussion(discussionId, index) {
             subdiscussion_text: textareaValue
         };
 
+  
         // Send a POST request to the API endpoint
         const response = await fetch('https://learning-u7aw.onrender.com/api/subdiscussion', {
             method: 'POST',
@@ -291,6 +310,7 @@ async function SubDiscussion(discussionId, index) {
     }
 }
 
+
 // Function to view discussion and handle accordion interactions
 async function viewDiscussion(c_id) {
     try {
@@ -301,6 +321,7 @@ async function viewDiscussion(c_id) {
             },
             body: JSON.stringify({ c_id }) // Ensure that the c_id is being sent correctly
         });
+
         if (response.ok) {
             const responseData = await response.json();
             console.log('Discussion data:', responseData);
@@ -311,63 +332,66 @@ async function viewDiscussion(c_id) {
             // Initialize the discussion index
             let index = 0;
 
+            // Sort discussions in reverse order
+            responseData.discussions.reverse();
+
             // Iterate over each discussion in the response data
             responseData.discussions.forEach((discussion) => {
-    // Increment the index
-    index++;
+                // Increment the index
+                index++;
 
-    console.log('Discussion index:', index);
-    console.log('Discussion ID:', discussion.discussion_id);
+                console.log('Discussion index:', index);
+                console.log('Discussion ID:', discussion.discussion_id);
 
-    // Check if the current discussion is liked by the user
-    const isLiked = discussion.liked_by.includes(user_id);
-    if (isLiked) {
+                // Check if the current discussion is liked by the user
+                const isLiked = Array.isArray(discussion.liked_by) && discussion.liked_by.includes(user_id);
+                if (isLiked) {
                     console.log(`Discussion with ID ${discussion.discussion_id} is liked.`);
                 }
 
-    // Determine the fill color for the heart icon
-    const heartFillColor = isLiked ? 'red' : 'currentColor';
+                // Determine the fill color for the heart icon
+                const heartFillColor = isLiked ? 'red' : 'currentColor';
 
-    // Create HTML markup for the new accordion item with the question data
-    const newAccordionItem = `
-        <div class="accordion__item" data-discussion-id="${discussion.discussion_id}">
-            <div class="accordion__header collapsed" data-toggle="collapse" data-target="#collapse${discussion.discussion_id}" aria-expanded="false" onclick="toggleButtons(this)">
-                <span class="accordion__header--icon"></span>
-                <span class="accordion__header--text">${discussion.question}</span>
-                <br><br>
-                <div class="btons">
-                    <button class="like-button" style="display: none; background-color: transparent; border: none; padding-left: 10px;" onclick="likediscussion(${discussion.discussion_id})"> ${discussion.likes}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="${heartFillColor}" class="bi bi-heart" viewBox="0 0 16 16">
-                            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                        </svg>
-                    </button>
-                    <button class="reply-button" style="display: none; background-color: transparent; border: none; padding-left: 10px;" onclick="toggleForm('form${discussion.discussion_id}')">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-reply" viewBox="0 0 16 16">
-                            <path d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.7 8.7 0 0 0-1.921-.306 7 7 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254l-.042-.028a.147.147 0 0 1 0-.252l.042-.028zM7.8 10.386q.103 0 .223.006c.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96z"/>
-                        </svg>
-                    </button>
-                </div>
-                <form id="form${discussion.discussion_id}" class="reply-form" style="display: none;" data-discussion-id="${discussion.discussion_id}">
-                    <textarea id="textarea${discussion.discussion_id}" class="form-control" rows="3" placeholder="Enter your reply"></textarea>
-                    <button type="button" class="btn btn-primary mt-2" onclick="SubDiscussion(${discussion.discussion_id}, ${index})">Send</button>
-                    <button type="button" class="btn btn-secondary mt-2" onclick="toggleForm('form${discussion.discussion_id}')">Close</button>
-                </form>
-                <span class="accordion__header--indicator indicator_bordered"></span>
-            </div>
-            <br>
-            <div id="collapse${discussion.discussion_id}" class="accordion__body collapse card" data-parent="#accordion-six">
-                <div class="accordion__body--title card-header"></div>
-                <div class="accordion__body--text card-body">
-                    <div id="subdiscuss${discussion.discussion_id}"></div>
-                </div>
-            </div>
-        </div>
-    `;
+                // Create HTML markup for the new accordion item with the question data
+                const newAccordionItem = `
+                    <div class="accordion__item" data-discussion-id="${discussion.discussion_id}">
+                        <div class="accordion__header collapsed" data-toggle="collapse" data-target="#collapse${discussion.discussion_id}" aria-expanded="false" onclick="toggleButtons(this)">
+                            <span class="accordion__header--icon"></span>
+                            <span class="accordion__header--text">${discussion.question}</span>
+                            <br><br>
+                            <div class="btons">
+                                <button class="like-button" style="display: none; background-color: transparent; border: none; padding-left: 10px;" onclick="likediscussion(${discussion.discussion_id})"> ${discussion.likes}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="${heartFillColor}" class="bi bi-heart" viewBox="0 0 16 16">
+                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                    </svg>
+                                </button>
+                                <button class="reply-button" style="display: none; background-color: transparent; border: none; padding-left: 10px;" onclick="toggleForm('form${discussion.discussion_id}')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-reply" viewBox="0 0 16 16">
+                                        <path d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.7 8.7 0 0 0-1.921-.306 7 7 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254l-.042-.028a.147.147 0 0 1 0-.252l.042-.028zM7.8 10.386q.103 0 .223.006c.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <form id="form${discussion.discussion_id}" class="reply-form" style="display: none;" data-discussion-id="${discussion.discussion_id}">
+                                <textarea id="textarea${discussion.discussion_id}" class="form-control" rows="3" placeholder="Enter your reply"></textarea>
+                                <button type="button" class="btn btn-primary mt-2" onclick="SubDiscussion(${discussion.discussion_id}, ${index})">Send</button>
+                                <button type="button" class="btn btn-secondary mt-2" onclick="toggleForm('form${discussion.discussion_id}')">Close</button>
+                            </form>
+                            <span class="accordion__header--indicator indicator_bordered"></span>
+                        </div>
+                        <br>
+                        <div id="collapse${discussion.discussion_id}" class="accordion__body collapse card" data-parent="#accordion-six">
+                            <div class="accordion__body--title card-header"></div>
+                            <div class="accordion__body--text card-body">
+                                <div id="subdiscuss${discussion.discussion_id}"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
 
-    // Append the new accordion item to the accordion container
-    accordionContainer.insertAdjacentHTML('beforeend', newAccordionItem);
-    console.log(`Accordion item added for discussion ID ${discussion.discussion_id}`);
-});
+                // Append the new accordion item to the accordion container
+                accordionContainer.insertAdjacentHTML('beforeend', newAccordionItem);
+                console.log(`Accordion item added for discussion ID ${discussion.discussion_id}`);
+            });
 
             // Add event listener to each card
             const accordionItems = document.querySelectorAll('.accordion__header');
@@ -409,6 +433,7 @@ async function viewDiscussion(c_id) {
         console.error('Error fetching discussion data:', error.message);
     }
 }
+
 
 
 
