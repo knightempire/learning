@@ -1695,6 +1695,43 @@ app.post('/api/viewsubdiscussion', async (req, res) => {
     }
 });
 
+//route to insert the subdiscussion
+app.post('/api/subdiscussion', async (req, res) => {
+    const { discussion_id, user_id, subdiscussion_text } = req.body;
+
+    try {
+        console.log('API subdiscussion requested');
+
+        // Check if all required fields are provided
+        if (!discussion_id || !user_id || !subdiscussion_text) {
+            return res.status(400).json({ error: 'discussion_id, user_id, and subdiscussion_text are required' });
+        }
+
+        // Get connection from the pool
+        const connection = await pool.getConnection();
+
+        // Insert the subdiscussion into the Subdiscussion table
+        const [insertResult] = await connection.execute(
+            'INSERT INTO subdiscussion (discussion_id, user_id, subdiscussion_text) VALUES (?, ?, ?)',
+            [discussion_id, user_id, subdiscussion_text]
+        );
+
+        connection.release();
+
+        // Check if the subdiscussion data was inserted successfully
+        if (insertResult.affectedRows !== 1) {
+            console.log("Failed to create subdiscussion");
+            return res.status(500).json({ error: 'Failed to create subdiscussion' });
+        }
+
+        return res.status(200).json({ message: 'Subdiscussion inserted successfully', subdiscussion_id: insertResult.insertId });
+    } catch (error) {
+        console.error('Error inserting subdiscussion:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 
 // Route for updating subdiscussion likes
 app.post('/api/subdiscussionlike', async (req, res) => {
