@@ -1403,8 +1403,7 @@ app.post('/api/viewdiscussion', async (req, res) => {
             return res.status(404).json({ error: 'No discussions found for the provided c_id' });
         }
 
-        // Return the retrieved discussions
-        console.log('Discussion data:', discussionData);
+    
         return res.status(200).json({ discussions: discussionData });
     } catch (error) {
         console.error('Error fetching discussions:', error);
@@ -1604,61 +1603,61 @@ app.post('/api/answerlike', async (req, res) => {
 
 
 // Route for updating subdiscussion likes
-app.post('/api/subdiscussionlike', async (req, res) => {
-    const { s_id, subdiscussion_id } = req.body;
+// app.post('/api/subdiscussionlike', async (req, res) => {
+//     const { s_id, subdiscussion_id } = req.body;
 
-    try {
-        console.log('API subdiscussion like requested');
+//     try {
+//         console.log('API subdiscussion like requested');
 
-        // Check if s_id and subdiscussion_id are provided
-        if (!s_id || !subdiscussion_id) {
-            return res.status(400).json({ error: 'Both s_id and subdiscussion_id are required' });
-        }
+//         // Check if s_id and subdiscussion_id are provided
+//         if (!s_id || !subdiscussion_id) {
+//             return res.status(400).json({ error: 'Both s_id and subdiscussion_id are required' });
+//         }
 
-        // Get connection from the pool
-        const connection = await pool.getConnection();
+//         // Get connection from the pool
+//         const connection = await pool.getConnection();
 
-        // Check if the user has already liked the subdiscussion
-        const [likedByResult] = await connection.execute(
-            'SELECT liked_by FROM subdiscussion WHERE subdiscussion_id = ?',
-            [subdiscussion_id]
-        );
+//         // Check if the user has already liked the subdiscussion
+//         const [likedByResult] = await connection.execute(
+//             'SELECT liked_by FROM subdiscussion WHERE subdiscussion_id = ?',
+//             [subdiscussion_id]
+//         );
 
-        const likedBy = likedByResult[0].liked_by;
+//         const likedBy = likedByResult[0].liked_by;
 
-        if (likedBy && likedBy.includes(s_id)) {
-            // If the user has already liked the subdiscussion, remove their like
-            const updatedLikedBy = likedBy.filter(id => id !== s_id);
-            const updateSubdiscussionQuery = `
-                UPDATE subdiscussion
-                SET likes = likes - 1,
-                    liked_by = ?
-                WHERE subdiscussion_id = ?
-            `;
-            await connection.execute(updateSubdiscussionQuery, [JSON.stringify(updatedLikedBy), subdiscussion_id]);
+//         if (likedBy && likedBy.includes(s_id)) {
+//             // If the user has already liked the subdiscussion, remove their like
+//             const updatedLikedBy = likedBy.filter(id => id !== s_id);
+//             const updateSubdiscussionQuery = `
+//                 UPDATE subdiscussion
+//                 SET likes = likes - 1,
+//                     liked_by = ?
+//                 WHERE subdiscussion_id = ?
+//             `;
+//             await connection.execute(updateSubdiscussionQuery, [JSON.stringify(updatedLikedBy), subdiscussion_id]);
 
-            // Successfully updated the subdiscussion likes
-            connection.release();
-            return res.status(200).json({ message: 'Subdiscussion disliked', liked: false, subdiscussion_id });
-        } else {
-            // If the user has not liked the subdiscussion, add their like
-            const updateSubdiscussionQuery = `
-                UPDATE subdiscussion
-                SET likes = likes + 1,
-                    liked_by = JSON_ARRAY_APPEND(IFNULL(liked_by, JSON_ARRAY()), '$', ?)
-                WHERE subdiscussion_id = ?
-            `;
-            await connection.execute(updateSubdiscussionQuery, [s_id, subdiscussion_id]);
+//             // Successfully updated the subdiscussion likes
+//             connection.release();
+//             return res.status(200).json({ message: 'Subdiscussion disliked', liked: false, subdiscussion_id });
+//         } else {
+//             // If the user has not liked the subdiscussion, add their like
+//             const updateSubdiscussionQuery = `
+//                 UPDATE subdiscussion
+//                 SET likes = likes + 1,
+//                     liked_by = JSON_ARRAY_APPEND(IFNULL(liked_by, JSON_ARRAY()), '$', ?)
+//                 WHERE subdiscussion_id = ?
+//             `;
+//             await connection.execute(updateSubdiscussionQuery, [s_id, subdiscussion_id]);
 
-            // Successfully updated the subdiscussion likes
-            connection.release();
-            return res.status(200).json({ message: 'Subdiscussion liked', liked: true, subdiscussion_id });
-        }
-    } catch (error) {
-        console.error('Error liking/subdiscussion:', error);
-        return res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
+//             // Successfully updated the subdiscussion likes
+//             connection.release();
+//             return res.status(200).json({ message: 'Subdiscussion liked', liked: true, subdiscussion_id });
+//         }
+//     } catch (error) {
+//         console.error('Error liking/subdiscussion:', error);
+//         return res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
 
 
 
