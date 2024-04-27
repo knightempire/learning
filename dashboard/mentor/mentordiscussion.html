@@ -147,10 +147,21 @@
                                         <i class="icon-envelope-open"></i>
                                         <span class="ml-2">Inbox </span>
                                     </a>
-                                    <a href="./page-login.html" class="dropdown-item">
-                                        <i class="icon-key"></i>
-                                        <span class="ml-2">Logout </span>
-                                    </a>
+                                                  <a href="#" class="dropdown-item" onclick="logout()">
+    <i class="icon-key"></i>
+    <span class="ml-2">Logout </span>
+</a>
+
+                                    <script>
+                                        function logout() {
+                                            // Remove token from local storage
+                                            localStorage.removeItem('token');
+    
+                                            // Redirect to index.html
+                                             window.location.href = '../../index.html';
+                                                }
+
+                                    </script>
                                 </div>
                             </li>
                         </ul>
@@ -170,70 +181,55 @@
                 <ul class="metismenu" id="menu">
                     <li class="nav-label first">Main Menu</li>
                     
-                     
-                    <li><a href="./studentindex.html" aria-expanded="false"><i  class="icon icon-chart-bar-33"></i><span
+                    
+                    <li><a href="./mentorindex.html" aria-expanded="false"><i  class="icon icon-chart-bar-33"></i><span
                         class="nav-text">Dashboard</span></a></li>
                         
               
-                    <li class="nav-label">Materials</li>
-               
-
-     
-
-                        <li><a href="./studentlecture.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-camera-reels" viewBox="0 0 16 16">
-                            <path d="M6 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0M1 3a2 2 0 1 0 4 0 2 2 0 0 0-4 0"/>
-                            <path d="M9 6h.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 7.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 16H2a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm6 8.73V7.27l-3.5 1.555v4.35zM1 8v6a1 1 0 0 0 1 1h7.5a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1"/>
-                            <path d="M9 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6M7 3a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
-                          </svg></i>
-                          <span class="nav-text">Lecture</span></a></li>
-    
-                          <li><a href="./studentquiz.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-                          </svg></i><span
-                            class="nav-text">Quiz</span></a></li>
-
+                    <li class="nav-label">Users</li>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                        class="icon icon-single-04"></i><span class="nav-text">Users</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="./mentorstudent.html">List of student</a></li>
+                            <li><a href="./mentorlist.html">List of mentors</a></li>
+                            
                       
-              
+                        </ul>
+                    </li>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                              class="icon icon-group-04"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-camera-reels" viewBox="0 0 16 16">
+                                <path d="M6 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0M1 3a2 2 0 1 0 4 0 2 2 0 0 0-4 0"/>
+                                <path d="M9 6h.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 7.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 16H2a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm6 8.73V7.27l-3.5 1.555v4.35zM1 8v6a1 1 0 0 0 1 1h7.5a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1"/>
+                                <path d="M9 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6M7 3a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
+                              </svg></i>
+                              <span class="nav-text">Materials</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="./mentorassign.html">Assign mentors</a></li>
+                            <li><a href="./mentorlecture.html">Topic</a></li>
+                            <li><a href="./mentorviewquiz.html">Quizs</a></li>
+                            <li><a href="./chart-chartjs.html">Discussion</a></li>
+                    
+                        </ul>
+                    </li>
                     <li class="nav-label"> Components</li>
 
 
-                    <!-- <li><a href="./app-calender.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-date" viewBox="0 0 16 16">
+                    <li><a href="./mentordiscussion.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book-half" viewBox="0 0 16 16">
+                        <path d="M8.5 2.687c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+                      </svg></i><span
+                        class="nav-text">Discussion</span></a></li>
+
+                    <li><a href="./app-calender.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-date" viewBox="0 0 16 16">
                         <path d="M6.445 11.688V6.354h-.633A13 13 0 0 0 4.5 7.16v.695c.375-.257.969-.62 1.258-.777h.012v4.61zm1.188-1.305c.047.64.594 1.406 1.703 1.406 1.258 0 2-1.066 2-2.871 0-1.934-.781-2.668-1.953-2.668-.926 0-1.797.672-1.797 1.809 0 1.16.824 1.77 1.676 1.77.746 0 1.23-.376 1.383-.79h.027c-.004 1.316-.461 2.164-1.305 2.164-.664 0-1.008-.45-1.05-.82zm2.953-2.317c0 .696-.559 1.18-1.184 1.18-.601 0-1.144-.383-1.144-1.2 0-.823.582-1.21 1.168-1.21.633 0 1.16.398 1.16 1.23"/>
                         <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
                       </svg></i><span
-                        class="nav-text">Calendar</span></a></li> -->
+                        class="nav-text">Calendar</span></a></li>
 
-                        <li><a href="./studentcode.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-code-slash" viewBox="0 0 16 16">
-                            <path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0m6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0"/>
-                          </svg></i><span
-                            class="nav-text">HTML</span></a></li>
-
-                            <li><a href="./studentcode2.html" aria-expanded="false"><i  class="icon icon"> 
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-braces" viewBox="0 0 16 16">
-                                    <path d="M2.114 8.063V7.9c1.005-.102 1.497-.615 1.497-1.6V4.503c0-1.094.39-1.538 1.354-1.538h.273V2h-.376C3.25 2 2.49 2.759 2.49 4.352v1.524c0 1.094-.376 1.456-1.49 1.456v1.299c1.114 0 1.49.362 1.49 1.456v1.524c0 1.593.759 2.352 2.372 2.352h.376v-.964h-.273c-.964 0-1.354-.444-1.354-1.538V9.663c0-.984-.492-1.497-1.497-1.6M13.886 7.9v.163c-1.005.103-1.497.616-1.497 1.6v1.798c0 1.094-.39 1.538-1.354 1.538h-.273v.964h.376c1.613 0 2.372-.759 2.372-2.352v-1.524c0-1.094.376-1.456 1.49-1.456V7.332c-1.114 0-1.49-.362-1.49-1.456V4.352C13.51 2.759 12.75 2 11.138 2h-.376v.964h.273c.964 0 1.354.444 1.354 1.538V6.3c0 .984.492 1.497 1.497 1.6"/>
-                                  </svg>
-                            </i><span
-                                class="nav-text">Playground</span></a></li>
-                     
-
-
-                                
-                            <li><a href="./studentchat.html" aria-expanded="false"><i  class="icon icon"> 
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-text" viewBox="0 0 16 16">
-                                    <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
-                                    <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
-                                  </svg>
-                 
-                            </i><span
-                                class="nav-text">Community</span></a></li>
-                     
-                          
-
+                        
                     <li><a href="widget-basic.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
                         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
                       </svg></i><span
-                        class="nav-text">Profile</span></a></li>
+                        class="nav-text">Profiler</span></a></li>
 
                   
       <!-- <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Email</a>
@@ -265,7 +261,7 @@
                     <div class="col-sm-6 p-md-0">
                         <div class="welcome-text">
                             <h4 id='welcome'>Hi, welcome back   name  !</h4>  
-                            <span class="ml-1">Accordion</span>
+                           
                         </div>
                     </div>
              
@@ -284,46 +280,15 @@
                         <br>
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <div>
-                                <h4 class="card-title">Accordion with icon</h4>
-                                <p class="m-0 subtitle">Add <code>accordion-with-icon</code> class with <code>accordion</code></p>
+                                <h4 class="card-title">Discussion</h4>
+                              
                             </div>
                             <!-- <button id="addDiscussionBtn" class="btn btn-primary" data-toggle="modal" data-target="#discussionModal">Add Discussion</button> -->
                         </div>
                 
                         <div class="card-body">
                             <div id="accordion-six" class="accordion accordion-with-icon">
-                                <div class="accordion__item">
-                                    <div class="accordion__header collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" onclick="toggleButtons(this)">
-                                        <span class="accordion__header--icon"></span>
-                                        <span class="accordion__header--text"> Accordion Header One </span>
-                                            <br> <br>
-                                            <div class="btons">
-                                            <button class="like-button" style="display: none; background-color: transparent; border: none; padding-left: 10px;">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                                </svg>
-                                            </button>
-                                            <button class="reply-button" style="display: none; background-color: transparent; border: none; padding-left: 10px;" onclick="toggleForm('formOne')">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-reply" viewBox="0 0 16 16">
-                                                    <path d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.7 8.7 0 0 0-1.921-.306 7 7 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254l-.042-.028a.147.147 0 0 1 0-.252l.042-.028zM7.8 10.386q.103 0 .223.006c.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96z"/>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                            <form id="formOne" class="reply-form" style="display: none;">
-                                                <textarea class="form-control" rows="3" placeholder="Enter your reply"></textarea>
-                                                <button type="submit" class="btn btn-primary mt-2">Submit</button>
-                                                <button type="button" class="btn btn-secondary mt-2" onclick="toggleForm('formOne')">Close</button>
-                                            </form>
-                                       
-                                        <span class="accordion__header--indicator indicator_bordered"></span>
-                                    </div>
-                                    <div id="collapseOne" class="accordion__body collapse card" data-parent="#accordion-six" style="">
-                                        <div class="accordion__body--title card-header">Title Here</div>
-                                        <div class="accordion__body--text card-body">
-                                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
-                                        </div>
-                                    </div>
-                                </div>
+                            
                 
                              
                 
@@ -362,36 +327,6 @@
 
 
 
-                <!-- Discussion Modal -->
-                <!-- <div class="modal fade" id="discussionModal" tabindex="-1" role="dialog" aria-labelledby="discussionModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="discussionModalLabel">Add Discussion</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="discussionForm">
-                                    <div class="form-group">
-                                        <label for="lectureSelect">Select Lecture:</label>
-                                        <select class="form-control" id="lectureSelect" name="lecture">
-
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="questionTextarea">Question:</label>
-                                        <textarea class="form-control" id="questionTextarea" name="question" rows="3"></textarea>
-                                    </div>
-                                    <button type="button" class="btn btn-primary" onclick="submitDiscussion()">Submit</button>
-
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-                
                 <!-- Row ends -->
 
 
@@ -400,36 +335,6 @@
         </div>
         
    
-<!-- Success Message -->
-
-<!-- Discussion Modal -->
-<!-- <div class="modal fade" id="discussionModal" tabindex="-1" role="dialog" aria-labelledby="discussionModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="discussionModalLabel">Add Discussion</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="discussionForm">
-                    <div class="form-group">
-                        <label for="lectureSelect">Select Lecture:</label>
-                        <select class="form-control" id="lectureSelect" name="lecture">
-                           
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="questionTextarea">Question:</label>
-                        <textarea class="form-control" id="questionTextarea" name="question" rows="3"></textarea>
-                    </div>
-                    <button type="button" class="btn btn-primary" onclick="submitDiscussion()">Submit</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div> -->
 
 </div>
 
@@ -513,12 +418,18 @@
                 fetchMentorDashboard(user_id)
            
             } else {
-                console.error('Failed to decode token:', response.statusText);
-            }
+            console.error('Failed to decode token:', response.statusText);
+            redirectToLogin();
+        }
         } catch (error) {
             console.error('Error decoding token:', error.message);
         }
     }
+
+    function redirectToLogin() {
+    // Redirect to login.html
+    window.location.href = 'login.html';
+}
 
     async function fetchMentorDashboard(user_id) {
         try {
@@ -678,8 +589,18 @@ function displaySubdiscussion(data, discussionId) {
     // Clear previous content
     subdiscussContainer.innerHTML = '';
 
-    // Iterate over each subdiscussion and create HTML for each card
-    data.subdiscussions.forEach((subdiscussion, subIndex) => {
+    // Sort subdiscussions array: mentor's subdiscussion first, then by likes
+    const sortedSubdiscussions = data.subdiscussions.sort((a, b) => {
+        // Mentor's subdiscussion comes first
+        if (a.user_role === 'mentor' && b.user_role !== 'mentor') return -1;
+        if (a.user_role !== 'mentor' && b.user_role === 'mentor') return 1;
+
+        // If both are mentor or not, sort by likes
+        return b.likes - a.likes;
+    });
+
+    // Iterate over each sorted subdiscussion and create HTML for each card
+    sortedSubdiscussions.forEach((subdiscussion, subIndex) => {
         const userId = subdiscussion.user_id; // Get the user ID
         const userName = subdiscussion.user_name || 'Unknown User'; // Ensure user_name property exists
         const userRole = subdiscussion.user_role; // Get the user role
@@ -784,7 +705,7 @@ async function viewDiscussion(c_id) {
 
             // Get the accordion container
             const accordionContainer = document.getElementById('accordion-six');
-
+            const reversedDiscussions = responseData.discussions.reverse();
             // Initialize the discussion index
             let index = 0;
 

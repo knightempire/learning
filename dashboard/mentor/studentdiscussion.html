@@ -147,10 +147,21 @@
                                         <i class="icon-envelope-open"></i>
                                         <span class="ml-2">Inbox </span>
                                     </a>
-                                    <a href="./page-login.html" class="dropdown-item">
-                                        <i class="icon-key"></i>
-                                        <span class="ml-2">Logout </span>
-                                    </a>
+                                                  <a href="#" class="dropdown-item" onclick="logout()">
+    <i class="icon-key"></i>
+    <span class="ml-2">Logout </span>
+</a>
+
+                                    <script>
+                                        function logout() {
+                                            // Remove token from local storage
+                                            localStorage.removeItem('token');
+    
+                                            // Redirect to index.html
+                                             window.location.href = '../../index.html';
+                                                }
+
+                                    </script>
                                 </div>
                             </li>
                         </ul>
@@ -165,7 +176,7 @@
         <!--**********************************
             Sidebar start
         ***********************************-->
-        <div class="quixnav">
+     <div class="quixnav">
             <div class="quixnav-scroll">
                 <ul class="metismenu" id="menu">
                     <li class="nav-label first">Main Menu</li>
@@ -203,6 +214,12 @@
                         <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
                       </svg></i><span
                         class="nav-text">Calendar</span></a></li> -->
+
+                        
+                    <li><a href="./studentdiscussion.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book-half" viewBox="0 0 16 16">
+                        <path d="M8.5 2.687c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+                      </svg></i><span
+                        class="nav-text">Discussion</span></a></li>
 
                         <li><a href="./studentcode.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-code-slash" viewBox="0 0 16 16">
                             <path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0m6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0"/>
@@ -284,47 +301,15 @@
                         <br>
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <div>
-                                <h4 class="card-title">Accordion with icon</h4>
-                                <p class="m-0 subtitle">Add <code>accordion-with-icon</code> class with <code>accordion</code></p>
+                                <h4 class="card-title">Discussion</h4>
+                               
                             </div>
                             <button id="addDiscussionBtn" class="btn btn-primary" data-toggle="modal" data-target="#discussionModal">Add Discussion</button>
                         </div>
                 
                         <div class="card-body">
                             <div id="accordion-six" class="accordion accordion-with-icon">
-                                <div class="accordion__item">
-                                    <div class="accordion__header collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" onclick="toggleButtons(this)">
-                                        <span class="accordion__header--icon"></span>
-                                        <span class="accordion__header--text"> Accordion Header One </span>
-                                            <br> <br>
-                                            <div class="btons">
-                                            <button class="like-button" style="display: none; background-color: transparent; border: none; padding-left: 10px;">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                                </svg>
-                                            </button>
-                                            <button class="reply-button" style="display: none; background-color: transparent; border: none; padding-left: 10px;" onclick="toggleForm('formOne')">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-reply" viewBox="0 0 16 16">
-                                                    <path d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.7 8.7 0 0 0-1.921-.306 7 7 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254l-.042-.028a.147.147 0 0 1 0-.252l.042-.028zM7.8 10.386q.103 0 .223.006c.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96z"/>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                            <form id="formOne" class="reply-form" style="display: none;">
-                                                <textarea class="form-control" rows="3" placeholder="Enter your reply"></textarea>
-                                                <button type="submit" class="btn btn-primary mt-2">Submit</button>
-                                                <button type="button" class="btn btn-secondary mt-2" onclick="toggleForm('formOne')">Close</button>
-                                            </form>
-                                       
-                                        <span class="accordion__header--indicator indicator_bordered"></span>
-                                    </div>
-                                    <div id="collapseOne" class="accordion__body collapse card" data-parent="#accordion-six" style="">
-                                        <div class="accordion__body--title card-header">Title Here</div>
-                                        <div class="accordion__body--text card-body">
-                                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
-                                        </div>
-                                    </div>
-                                </div>
-                
+                     
                              
                 
                                 <!-- Add more accordion items here -->
@@ -515,12 +500,18 @@
                 studentLecture(user_id);
              
             } else {
-                console.error('Failed to decode token:', response.statusText);
-            }
+            console.error('Failed to decode token:', response.statusText);
+            redirectToLogin();
+        }
         } catch (error) {
             console.error('Error decoding token:', error.message);
         }
     }
+
+    function redirectToLogin() {
+    // Redirect to login.html
+    window.location.href = 'login.html';
+}
 
     async function checkStudent(s_id) {
         try {
