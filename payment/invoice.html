@@ -4,16 +4,24 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-...." crossorigin="anonymous" />
   <!-- Your Custom CSS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <head>
 
+        <title>EduWell </title>
+        <link rel="icon" href="https://i.imgur.com/cZ8jeW3.png" type="image/png">
+
+  </head>
+<script src="./js/invoice.js"></script>
 <div class="container">
 <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
                     <div class="invoice-title">
-                        <h4 class="float-end font-size-15">Invoice #DS0204 <span class="badge bg-success font-size-12 ms-2">Paid</span></h4>
+                        <h4 class="float-end font-size-15" >Invoice   <span class="badge bg-success font-size-12 ms-2">Paid</span></h4>
                         <div class="mb-4">
-                           <h2 class="mb-1 text-muted">EduWell</h2>
+                      
+                            <img src="https://i.imgur.com/cJD1uRx.png" alt="" srcset="">     <h2 class="mb-1 text-muted">EduWell</h2>
+                       
                         </div>
                         <div class="text-muted">
                             <p class="mb-1">07, Amrita </p>
@@ -29,8 +37,6 @@
                             <div class="text-muted">
                                 <h5 class="font-size-16 mb-3">Billed To:</h5>
                                 <h5 class="font-size-15 mb-2" id="name">name</h5>
-                                <p class="mb-1">4068 Post Avenue Newfolden, MN 56738</p>
-                                <p class="mb-1">PrestonMiller@armyspy.com</p>
                                 <p id="phone">001-234-5678</p>
                             </div>
                         </div>
@@ -39,16 +45,13 @@
                             <div class="text-muted text-sm-end">
                                 <div>
                                     <h5 class="font-size-15 mb-1">Invoice No:</h5>
-                                    <p>#DZ0112</p>
+                                    <p id="paymentid">#DZ0112</p>
                                 </div>
                                 <div class="mt-4">
                                     <h5 class="font-size-15 mb-1">Invoice Date:</h5>
-                                    <p>12 Oct, 2020</p>
+                                    <p id="paymentdate">12 Oct, 2020</p>
                                 </div>
-                                <div class="mt-4">
-                                    <h5 class="font-size-15 mb-1">Order No:</h5>
-                                    <p>#1123456</p>
-                                </div>
+                         
                             </div>
                         </div>
                         <!-- end col -->
@@ -74,54 +77,38 @@
                                         <th scope="row">01</th>
                                         <td>
                                             <div>
-                                                <h5 class="text-truncate font-size-14 mb-1">Black Strap A012</h5>
-                                                <p class="text-muted mb-0">Watch, Black</p>
+                                                <h5 class="text-truncate font-size-14 mb-1" id="course_name">Black Strap A012</h5>
+                                        
                                             </div>
                                         </td>
-                                        <td>$ 245.50</td>
+                                        <td>&#8377; 100</td>
                                         <td>1</td>
-                                        <td class="text-end">$ 245.50</td>
+                                        <td class="text-end">&#8377; 110</td>
                                     </tr>
-                                    <!-- end tr -->
-                                    <tr>
-                                        <th scope="row">02</th>
-                                        <td>
-                                            <div>
-                                                <h5 class="text-truncate font-size-14 mb-1">Stainless Steel S010</h5>
-                                                <p class="text-muted mb-0">Watch, Gold</p>
-                                            </div>
-                                        </td>
-                                        <td>$ 245.50</td>
-                                        <td>2</td>
-                                        <td class="text-end">$491.00</td>
-                                    </tr>
+                                  
                                     <!-- end tr -->
                                     <tr>
                                         <th scope="row" colspan="4" class="text-end">Sub Total</th>
-                                        <td class="text-end">$732.50</td>
+                                        <td class="text-end">&#8377;110 </td>
                                     </tr>
                                     <!-- end tr -->
                                     <tr>
                                         <th scope="row" colspan="4" class="border-0 text-end">
                                             Discount :</th>
-                                        <td class="border-0 text-end">- $25.50</td>
+                                        <td class="border-0 text-end">- &#8377;30</td>
                                     </tr>
                                     <!-- end tr -->
-                                    <tr>
-                                        <th scope="row" colspan="4" class="border-0 text-end">
-                                            Shipping Charge :</th>
-                                        <td class="border-0 text-end">$20.00</td>
-                                    </tr>
+
                                     <!-- end tr -->
                                     <tr>
                                         <th scope="row" colspan="4" class="border-0 text-end">
                                             Tax</th>
-                                        <td class="border-0 text-end">$12.00</td>
+                                        <td class="border-0 text-end">&#8377;20.00</td>
                                     </tr>
                                     <!-- end tr -->
                                     <tr>
                                         <th scope="row" colspan="4" class="border-0 text-end">Total</th>
-                                        <td class="border-0 text-end"><h4 class="m-0 fw-semibold">$739.00</h4></td>
+                                        <td class="border-0 text-end"><h4 class="m-0 fw-semibold">&#8377;100.00</h4></td>
                                     </tr>
                                     <!-- end tr -->
                                 </tbody><!-- end tbody -->
@@ -130,7 +117,7 @@
                         <div class="d-print-none mt-4">
                             <div class="float-end">
                                 <a href="javascript:window.print()" class="btn btn-success me-1"><i class="fa fa-print"></i></a>
-                                <a href="#" class="btn btn-primary w-md">Send</a>
+                                <a href="../profile.html" class="btn btn-primary w-md">continue</a>
                             </div>
                         </div>
                     </div>
@@ -162,42 +149,4 @@ background-color:#eee;
 }
 </style>
 
-<script>
-       let c_id; // Global variable to store mentor c_id
-    let user_id; // Global variable to store user ID
 
-    async function decodeToken() {
-        const token = localStorage.getItem('Token');
-        if (!token) {
-            console.error('Token not found in local storage');
-            redirectToLogin();
-        }
-
-        try {
-            const response = await fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ token })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Decoded token data:', data);
-                user_id = data.user_id; // Assign user ID to the global variable
-                console.log('User ID:', user_id);
-
-
-            } else {
-            console.error('Failed to decode token:', response.statusText);
-          
-        }
-        } catch (error) {
-            console.error('Error decoding token:', error.message);
-        }
-    }
-
-    
-    window.onload = decodeToken();
-</script>
