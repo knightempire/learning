@@ -609,6 +609,44 @@ app.post('/api/payment', async (req, res) => {
 
 
 
+// Route for retrieving payment data using POST method
+app.post('/api/viewpayment', async (req, res) => {
+    const { user_id } = req.body; // Assuming user_id is passed in the request body
+
+    try {
+        console.log('API viewpayment requested');
+
+        // Query the database to retrieve payment data for the provided user ID
+        const [paymentData] = await pool.execute(`
+            SELECT * FROM payment WHERE user_id = ?
+        `, [user_id]);
+
+        // Check if any payment data is found for the provided user ID
+        if (paymentData.length === 0) {
+            // If no payment data is found, return an error
+            console.log("No payment data found for the provided user ID")
+            return res.status(404).json({ error: 'No payment data found for the provided user ID' });
+        }
+
+        // Iterate over each payment data to get the course name for each c_id
+        for (const payment of paymentData) {
+            const { c_id } = payment;
+            const [courseNameData] = await pool.execute(`
+                SELECT course_name FROM course WHERE c_id = ?
+            `, [c_id]);
+            // Assuming each payment has a corresponding course ID (c_id) and course name is retrieved
+            payment.course_name = courseNameData[0].course_name;
+        }
+
+        // Payment data found, return it
+        res.status(200).json({ data: paymentData });
+    } catch (error) {
+        console.error('Error retrieving payment data:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 // Route for checking student
 app.post('/api/checkstudent', async (req, res) => {
     const { s_id } = req.body;
@@ -1602,66 +1640,7 @@ app.post('/api/answerlike', async (req, res) => {
 
 
 
-// Route for updating subdiscussion likes
-// app.post('/api/subdiscussionlike', async (req, res) => {
-//     const { s_id, subdiscussion_id } = req.body;
 
-//     try {
-//         console.log('API subdiscussion like requested');
-
-//         // Check if s_id and subdiscussion_id are provided
-//         if (!s_id || !subdiscussion_id) {
-//             return res.status(400).json({ error: 'Both s_id and subdiscussion_id are required' });
-//         }
-
-//         // Get connection from the pool
-//         const connection = await pool.getConnection();
-
-//         // Check if the user has already liked the subdiscussion
-//         const [likedByResult] = await connection.execute(
-//             'SELECT liked_by FROM subdiscussion WHERE subdiscussion_id = ?',
-//             [subdiscussion_id]
-//         );
-
-//         const likedBy = likedByResult[0].liked_by;
-
-//         if (likedBy && likedBy.includes(s_id)) {
-//             // If the user has already liked the subdiscussion, remove their like
-//             const updatedLikedBy = likedBy.filter(id => id !== s_id);
-//             const updateSubdiscussionQuery = `
-//                 UPDATE subdiscussion
-//                 SET likes = likes - 1,
-//                     liked_by = ?
-//                 WHERE subdiscussion_id = ?
-//             `;
-//             await connection.execute(updateSubdiscussionQuery, [JSON.stringify(updatedLikedBy), subdiscussion_id]);
-
-//             // Successfully updated the subdiscussion likes
-//             connection.release();
-//             return res.status(200).json({ message: 'Subdiscussion disliked', liked: false, subdiscussion_id });
-//         } else {
-//             // If the user has not liked the subdiscussion, add their like
-//             const updateSubdiscussionQuery = `
-//                 UPDATE subdiscussion
-//                 SET likes = likes + 1,
-//                     liked_by = JSON_ARRAY_APPEND(IFNULL(liked_by, JSON_ARRAY()), '$', ?)
-//                 WHERE subdiscussion_id = ?
-//             `;
-//             await connection.execute(updateSubdiscussionQuery, [s_id, subdiscussion_id]);
-
-//             // Successfully updated the subdiscussion likes
-//             connection.release();
-//             return res.status(200).json({ message: 'Subdiscussion liked', liked: true, subdiscussion_id });
-//         }
-//     } catch (error) {
-//         console.error('Error liking/subdiscussion:', error);
-//         return res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// });
-
-
-
-// Route for viewing subdiscussions
 app.post('/api/viewsubdiscussion', async (req, res) => {
     const { discussion_id } = req.body;
 

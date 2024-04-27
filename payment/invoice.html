@@ -13,11 +13,11 @@
                     <div class="invoice-title">
                         <h4 class="float-end font-size-15">Invoice #DS0204 <span class="badge bg-success font-size-12 ms-2">Paid</span></h4>
                         <div class="mb-4">
-                           <h2 class="mb-1 text-muted">Bootdey.com</h2>
+                           <h2 class="mb-1 text-muted">EduWell</h2>
                         </div>
                         <div class="text-muted">
-                            <p class="mb-1">3184 Spruce Drive Pittsburgh, PA 15201</p>
-                            <p class="mb-1"><i class="uil uil-envelope-alt me-1"></i> xyz@987.com</p>
+                            <p class="mb-1">07, Amrita </p>
+                            <p class="mb-1"><i class="uil uil-envelope-alt me-1"></i> eduwell@gamil.com</p>
                             <p><i class="uil uil-phone me-1"></i> 012-345-6789</p>
                         </div>
                     </div>
@@ -28,10 +28,10 @@
                         <div class="col-sm-6">
                             <div class="text-muted">
                                 <h5 class="font-size-16 mb-3">Billed To:</h5>
-                                <h5 class="font-size-15 mb-2">Preston Miller</h5>
+                                <h5 class="font-size-15 mb-2" id="name">name</h5>
                                 <p class="mb-1">4068 Post Avenue Newfolden, MN 56738</p>
                                 <p class="mb-1">PrestonMiller@armyspy.com</p>
-                                <p>001-234-5678</p>
+                                <p id="phone">001-234-5678</p>
                             </div>
                         </div>
                         <!-- end col -->
@@ -161,3 +161,43 @@ background-color:#eee;
     border-radius: 1rem;
 }
 </style>
+
+<script>
+       let c_id; // Global variable to store mentor c_id
+    let user_id; // Global variable to store user ID
+
+    async function decodeToken() {
+        const token = localStorage.getItem('Token');
+        if (!token) {
+            console.error('Token not found in local storage');
+            redirectToLogin();
+        }
+
+        try {
+            const response = await fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Decoded token data:', data);
+                user_id = data.user_id; // Assign user ID to the global variable
+                console.log('User ID:', user_id);
+
+
+            } else {
+            console.error('Failed to decode token:', response.statusText);
+          
+        }
+        } catch (error) {
+            console.error('Error decoding token:', error.message);
+        }
+    }
+
+    
+    window.onload = decodeToken();
+</script>
