@@ -262,11 +262,19 @@ function displaySubdiscussion(data, discussionId) {
 }
 
 
-// Function to handle submission of subdiscussion
-async function SubDiscussion(discussionId, index) {
+async function SubDiscussion(discussionId) {
     try {
-        // Get the subdiscussion text from the textarea
-        const textareaValue = document.getElementById(`textarea${index}`).value.trim();
+        // Get the index based on the discussionId
+        const index = discussionId;
+
+        // Get the subdiscussion text from the textarea using the index
+        const textarea = document.getElementById(`textarea${index}`);
+        if (!textarea) {
+            console.log(`Textarea element with ID "textarea${index}" not found.`);
+            return; // Exit the function if textarea element is not found
+        }
+        
+        const textareaValue = textarea.value.trim();
         console.log('Textarea Value:', textareaValue); // Log the textarea value
 
         // Prepare the data to send in the request body
@@ -276,7 +284,6 @@ async function SubDiscussion(discussionId, index) {
             subdiscussion_text: textareaValue
         };
 
-  
         // Send a POST request to the API endpoint
         const response = await fetch('https://learning-u7aw.onrender.com/api/subdiscussion', {
             method: 'POST',
@@ -288,7 +295,7 @@ async function SubDiscussion(discussionId, index) {
 
         if (response.ok) {
             // Optionally, clear the textarea after successful submission
-            document.getElementById(`textarea${index}`).value = '';
+            textarea.value = '';
 
             // Close the form by toggling its visibility
             toggleForm(`form${index}`);
@@ -309,6 +316,7 @@ async function SubDiscussion(discussionId, index) {
         alert('An error occurred while submitting the subdiscussion. Please try again later.');
     }
 }
+
 
 
 // Function to view discussion and handle accordion interactions
@@ -362,7 +370,7 @@ async function viewDiscussion(c_id) {
                             <div class="btons">
                                 <button class="like-button" style="display: none; background-color: transparent; border: none; padding-left: 10px;" onclick="likediscussion(${discussion.discussion_id})"> ${discussion.likes}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="${heartFillColor}" class="bi bi-heart" viewBox="0 0 16 16">
-                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
                                     </svg>
                                 </button>
                                 <button class="reply-button" style="display: none; background-color: transparent; border: none; padding-left: 10px;" onclick="toggleForm('form${discussion.discussion_id}')">
@@ -372,10 +380,10 @@ async function viewDiscussion(c_id) {
                                 </button>
                             </div>
                             <form id="form${discussion.discussion_id}" class="reply-form" style="display: none;" data-discussion-id="${discussion.discussion_id}">
-                                <textarea id="textarea${discussion.discussion_id}" class="form-control" rows="3" placeholder="Enter your reply"></textarea>
-                                <button type="button" class="btn btn-primary mt-2" onclick="SubDiscussion(${discussion.discussion_id}, ${index})">Send</button>
-                                <button type="button" class="btn btn-secondary mt-2" onclick="toggleForm('form${discussion.discussion_id}')">Close</button>
-                            </form>
+                            <textarea id="textarea${discussion.discussion_id}" class="form-control" rows="3" placeholder="Enter your reply"></textarea>
+                            <button type="button" class="btn btn-primary mt-2" onclick="SubDiscussion(${discussion.discussion_id}, ${index})">Send</button>
+                            <button type="button" class="btn btn-secondary mt-2" onclick="toggleForm('form${discussion.discussion_id}')">Close</button>
+                        </form>
                             <span class="accordion__header--indicator indicator_bordered"></span>
                         </div>
                         <br>
@@ -388,7 +396,7 @@ async function viewDiscussion(c_id) {
                     </div>
                 `;
 
-                // Append the new accordion item to the accordion container
+                // Add the new accordion item to the accordion container
                 accordionContainer.insertAdjacentHTML('beforeend', newAccordionItem);
                 console.log(`Accordion item added for discussion ID ${discussion.discussion_id}`);
             });
@@ -433,6 +441,7 @@ async function viewDiscussion(c_id) {
         console.error('Error fetching discussion data:', error.message);
     }
 }
+
 
 
 

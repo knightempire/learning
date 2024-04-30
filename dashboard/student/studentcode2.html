@@ -313,177 +313,174 @@
             </div>
 
 
-<div class="card-body">
-<code-runner language="python" class="code-runner python">
-    print("Hello, World!")               
-            
-</code-runner>
-                    
-<code-runner language="java" class="code-runner java">
-    class HelloWorld { 
-        public static void main(String[] args) { 
-            System.out.println("Hello, World!"); 
-        } 
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        </code-runner>
-    
-        <code-runner language="javascript" class="code-runner javascript">
-    console.log("Hello, World!");
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        </code-runner>
-    
-        <code-runner language="c" class="code-runner c">
-    #include&lt;stdio.h&gt; 
-    int main() { 
-        printf("hello world"); 
-        return 0; 
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        </code-runner>
-    
-        <code-runner language="c++" class="code-runner c++">
-    #include &lt;iostream&gt; 
-    int main() { 
-        std::cout &lt;&lt; "Hello, World!" &lt;&lt; std::endl; 
-        return 0; 
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        </code-runner>
-    
-        <code-runner language="go" class="code-runner go">
-    package main 
-    import "fmt" 
-    func main() { 
-        fmt.Println("Hello, World!") 
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        </code-runner>
-    
-        <code-runner language="rust" class="code-runner rust">
-    fn main() { 
-        println!("Hello, World!"); 
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        </code-runner>
-    
-        <code-runner language="swift" class="code-runner swift">
-    print("Hello, World!")
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        </code-runner>
-    
-        <code-runner language="kotlin" class="code-runner kotlin">
-    fun main() { 
-        println("Hello, World!") 
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        </code-runner>
-    
-        <code-runner language="typescript" class="code-runner typescript">
-    console.log("Hello, World!");
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        </code-runner>
-                                
-                                    <script>
-                                        const languageSelect = document.getElementById('language-select');
-                                        const codeRunners = document.querySelectorAll('.code-runner');
-                                
-                                        // Set the initial value of the language select to Python
-                                        languageSelect.value = "python";
-                                
-                                        // Show the Python code runner initially
-                                        codeRunners.forEach(codeRunner => {
-                                            if (codeRunner.classList.contains("python")) {
-                                                codeRunner.style.display = 'block';
-                                            } else {
-                                                codeRunner.style.display = 'none';
-                                            }
-                                        });
-                                
-                                        languageSelect.addEventListener('change', () => {
-                                            const selectedLanguage = languageSelect.value;
-                                            codeRunners.forEach(codeRunner => {
-                                                if (codeRunner.classList.contains(selectedLanguage)) {
-                                                    codeRunner.style.display = 'block';
-                                                } else {
-                                                    codeRunner.style.display = 'none';
-                                                }
-                                            });
-                                        });
-                                    </script>
-                        </div>
+            <div class="card-body">
+                <code-runner language="python" class="code-runner python">
+print("Hello, World!")
+
+
+
+
+
+
+
+
+                </code-runner>
+
+                <code-runner language="java" class="code-runner java">
+class HelloWorld { public static void main(String[] args) {
+System.out.println("Hello, World!"); } }
+
+
+
+
+
+
+
+
+                </code-runner>
+
+                <code-runner language="javascript" class="code-runner javascript">
+console.log("Hello, World!");
+
+
+
+
+
+
+
+
+                </code-runner>
+
+                <code-runner language="c" class="code-runner c">
+#include&lt;stdio.h&gt;
+int main() {
+printf("hello world");
+return 0; 
+}
+
+
+
+
+
+
+
+
+                </code-runner>
+
+                <code-runner language="c++" class="code-runner c++">
+#include &lt;iostream&gt;
+int main() { 
+std::cout &lt;&lt;"Hello, World!" &lt;&lt;
+std::endl;
+return 0; 
+}
+
+
+
+
+
+
+
+
+                </code-runner>
+
+                <code-runner language="go" class="code-runner go">
+package main
+import "fmt"
+func main() {
+fmt.Println("Hello,World!") 
+}
+
+
+
+
+
+
+
+
+                </code-runner>
+
+                <code-runner language="rust" class="code-runner rust">
+fn main() {
+println!("Hello, World!");
+}
+
+
+
+
+
+
+
+
+                </code-runner>
+
+                <code-runner language="swift" class="code-runner swift">
+print("Hello, World!")
+
+
+
+
+
+
+
+
+                </code-runner>
+
+                <code-runner language="kotlin" class="code-runner kotlin">
+fun main() {
+println("Hello, World!") 
+}
+
+
+
+
+
+
+
+
+                </code-runner>
+
+                <code-runner language="typescript" class="code-runner typescript">
+console.log("Hello, World!");
+
+
+
+
+
+
+
+
+                </code-runner>
+
+                <script>
+                    const languageSelect =
+                        document.getElementById("language-select");
+                    const codeRunners = document.querySelectorAll(".code-runner");
+
+                    // Set the initial value of the language select to Python
+                    languageSelect.value = "python";
+
+                    // Show the Python code runner initially
+                    codeRunners.forEach((codeRunner) => {
+                        if (codeRunner.classList.contains("python")) {
+                            codeRunner.style.display = "block";
+                        } else {
+                            codeRunner.style.display = "none";
+                        }
+                    });
+
+                    languageSelect.addEventListener("change", () => {
+                        const selectedLanguage = languageSelect.value;
+                        codeRunners.forEach((codeRunner) => {
+                            if (codeRunner.classList.contains(selectedLanguage)) {
+                                codeRunner.style.display = "block";
+                            } else {
+                                codeRunner.style.display = "none";
+                            }
+                        });
+                    });
+                </script>
+            </div>
                     </div>
                 </div>
                 <!-- Row ends -->

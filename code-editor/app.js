@@ -30,7 +30,18 @@ function compile() {
 }
 
 function setInitial(data) {
-  let htmlContent = data[0] || '<h1>Welcome to the Live Code Editor !</h1> br <h2> EduWell</h2>' ;
+  // Clear localStorage items
+  localStorage.removeItem('livecode-html');
+  localStorage.removeItem('livecode-css');
+  localStorage.removeItem('livecode-js');
+
+  // Check if it's the first load
+  let isFirstLoad = !localStorage.getItem('isFirstLoad');
+  if (isFirstLoad) {
+    localStorage.setItem('isFirstLoad', false);
+  }
+
+  let htmlContent = data[0] || '<h1>Welcome to the Live Code Editor!</h1>';
   let cssContent =
     data[1] ||
     `body {
@@ -42,9 +53,13 @@ function setInitial(data) {
       margin-top: 10%;
     }`;
   let jsContent = data[2] || '';
+
+  // Set the values of HTML, CSS, and JavaScript areas
   css.value = cssContent;
   js.value = jsContent;
   html.value = htmlContent;
+
+  // Display the default code in the output iframe
   code.open();
   code.writeln(
     htmlContent +
@@ -57,6 +72,7 @@ function setInitial(data) {
   );
   code.close();
 }
+
 
 compile();
 

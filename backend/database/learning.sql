@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 07, 2024 at 06:37 PM
+-- Generation Time: Apr 30, 2024 at 02:56 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -59,6 +59,34 @@ CREATE TABLE `admin_profile` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `answer`
+--
+
+CREATE TABLE `answer` (
+  `answer_id` int(11) NOT NULL,
+  `discussion_id` int(11) DEFAULT NULL,
+  `m_id` int(11) DEFAULT NULL,
+  `answer` text DEFAULT NULL,
+  `likes` int(11) DEFAULT 0,
+  `liked_by` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`liked_by`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `chat`
+--
+
+CREATE TABLE `chat` (
+  `chat_id` int(11) NOT NULL,
+  `s_id` int(11) DEFAULT NULL,
+  `msg` text DEFAULT NULL,
+  `c_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `course`
 --
 
@@ -103,6 +131,22 @@ CREATE TABLE `course_mentor` (
 CREATE TABLE `department` (
   `d_id` int(11) NOT NULL,
   `department_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `discussion`
+--
+
+CREATE TABLE `discussion` (
+  `discussion_id` int(11) NOT NULL,
+  `s_id` int(11) DEFAULT NULL,
+  `c_id` int(11) DEFAULT NULL,
+  `lecture_id` int(11) DEFAULT NULL,
+  `question` text DEFAULT NULL,
+  `likes` int(11) DEFAULT 0,
+  `liked_by` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`liked_by`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -211,18 +255,6 @@ CREATE TABLE `mentor_profile` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `mentor_student_course`
---
-
-CREATE TABLE `mentor_student_course` (
-  `m_id` int(11) NOT NULL,
-  `s_id` int(11) NOT NULL,
-  `c_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `payment`
 --
 
@@ -244,8 +276,7 @@ CREATE TABLE `payment` (
 CREATE TABLE `performance` (
   `s_id` int(11) NOT NULL,
   `q_id` int(11) NOT NULL,
-  `mark` decimal(5,2) DEFAULT NULL,
-  `count` int(11) DEFAULT NULL
+  `mark` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -481,19 +512,34 @@ CREATE TABLE `student_completed_courses` (
 
 CREATE TABLE `student_profile` (
   `s_id` int(11) NOT NULL,
-  `first_name` varchar(255) NOT NULL,
-  `last_name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `m_id` int(11) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
-  `pincode` varchar(20) DEFAULT NULL,
+  `pincode` varchar(10) DEFAULT NULL,
   `district` varchar(255) DEFAULT NULL,
   `state` varchar(255) DEFAULT NULL,
   `DOB` date DEFAULT NULL,
-  `age` int(3) DEFAULT NULL,
-  `skills` text DEFAULT NULL,
-  `area_of_interest` text DEFAULT NULL,
-  `education` text DEFAULT NULL,
-  `m_id` int(11) DEFAULT NULL
+  `age` int(11) DEFAULT NULL,
+  `skills` varchar(255) DEFAULT NULL,
+  `grade_point_average` decimal(5,2) DEFAULT NULL,
+  `education_level` varchar(50) DEFAULT NULL,
+  `university` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `subdiscussion`
+--
+
+CREATE TABLE `subdiscussion` (
+  `subdiscussion_id` int(11) NOT NULL,
+  `discussion_id` int(11) DEFAULT NULL,
+  `subdiscussion_text` text DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `likes` int(11) DEFAULT 0,
+  `liked_by` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`liked_by`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -540,6 +586,22 @@ ALTER TABLE `admin_profile`
   ADD KEY `d_id` (`d_id`);
 
 --
+-- Indexes for table `answer`
+--
+ALTER TABLE `answer`
+  ADD PRIMARY KEY (`answer_id`),
+  ADD KEY `m_id` (`m_id`),
+  ADD KEY `answer_ibfk_1` (`discussion_id`);
+
+--
+-- Indexes for table `chat`
+--
+ALTER TABLE `chat`
+  ADD PRIMARY KEY (`chat_id`),
+  ADD KEY `s_id` (`s_id`),
+  ADD KEY `fk_chat_course` (`c_id`);
+
+--
 -- Indexes for table `course`
 --
 ALTER TABLE `course`
@@ -558,6 +620,15 @@ ALTER TABLE `course_mentor`
 --
 ALTER TABLE `department`
   ADD PRIMARY KEY (`d_id`);
+
+--
+-- Indexes for table `discussion`
+--
+ALTER TABLE `discussion`
+  ADD PRIMARY KEY (`discussion_id`),
+  ADD KEY `lecture_id` (`lecture_id`),
+  ADD KEY `s_id` (`s_id`),
+  ADD KEY `c_id` (`c_id`);
 
 --
 -- Indexes for table `inquiry`
@@ -587,14 +658,6 @@ ALTER TABLE `mentors`
 ALTER TABLE `mentor_profile`
   ADD PRIMARY KEY (`m_id`),
   ADD KEY `salary_id` (`salary_id`);
-
---
--- Indexes for table `mentor_student_course`
---
-ALTER TABLE `mentor_student_course`
-  ADD KEY `m_id` (`m_id`),
-  ADD KEY `s_id` (`s_id`),
-  ADD KEY `c_id` (`c_id`);
 
 --
 -- Indexes for table `payment`
@@ -655,6 +718,14 @@ ALTER TABLE `student_profile`
   ADD KEY `m_id` (`m_id`);
 
 --
+-- Indexes for table `subdiscussion`
+--
+ALTER TABLE `subdiscussion`
+  ADD PRIMARY KEY (`subdiscussion_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `subdiscussion_ibfk_1` (`discussion_id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -669,10 +740,28 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `answer`
+--
+ALTER TABLE `answer`
+  MODIFY `answer_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `chat`
+--
+ALTER TABLE `chat`
+  MODIFY `chat_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `department`
 --
 ALTER TABLE `department`
   MODIFY `d_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `discussion`
+--
+ALTER TABLE `discussion`
+  MODIFY `discussion_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `inquiry`
@@ -705,6 +794,12 @@ ALTER TABLE `salary`
   MODIFY `salary_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `subdiscussion`
+--
+ALTER TABLE `subdiscussion`
+  MODIFY `subdiscussion_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
@@ -731,6 +826,20 @@ ALTER TABLE `admin_profile`
   ADD CONSTRAINT `admin_profile_ibfk_3` FOREIGN KEY (`d_id`) REFERENCES `department` (`d_id`);
 
 --
+-- Constraints for table `answer`
+--
+ALTER TABLE `answer`
+  ADD CONSTRAINT `answer_ibfk_1` FOREIGN KEY (`discussion_id`) REFERENCES `discussion` (`discussion_id`),
+  ADD CONSTRAINT `answer_ibfk_2` FOREIGN KEY (`m_id`) REFERENCES `mentors` (`m_id`);
+
+--
+-- Constraints for table `chat`
+--
+ALTER TABLE `chat`
+  ADD CONSTRAINT `chat_ibfk_1` FOREIGN KEY (`s_id`) REFERENCES `student` (`s_id`),
+  ADD CONSTRAINT `fk_chat_course` FOREIGN KEY (`c_id`) REFERENCES `course` (`c_id`);
+
+--
 -- Constraints for table `course`
 --
 ALTER TABLE `course`
@@ -742,6 +851,14 @@ ALTER TABLE `course`
 ALTER TABLE `course_mentor`
   ADD CONSTRAINT `course_mentor_ibfk_1` FOREIGN KEY (`m_id`) REFERENCES `mentors` (`m_id`),
   ADD CONSTRAINT `course_mentor_ibfk_2` FOREIGN KEY (`c_id`) REFERENCES `course` (`c_id`);
+
+--
+-- Constraints for table `discussion`
+--
+ALTER TABLE `discussion`
+  ADD CONSTRAINT `discussion_ibfk_1` FOREIGN KEY (`lecture_id`) REFERENCES `lecture` (`lecture_id`),
+  ADD CONSTRAINT `discussion_ibfk_2` FOREIGN KEY (`s_id`) REFERENCES `student` (`s_id`),
+  ADD CONSTRAINT `discussion_ibfk_3` FOREIGN KEY (`c_id`) REFERENCES `course` (`c_id`);
 
 --
 -- Constraints for table `inquiry`
@@ -769,14 +886,6 @@ ALTER TABLE `mentors`
 ALTER TABLE `mentor_profile`
   ADD CONSTRAINT `mentor_profile_ibfk_1` FOREIGN KEY (`m_id`) REFERENCES `mentors` (`m_id`),
   ADD CONSTRAINT `mentor_profile_ibfk_2` FOREIGN KEY (`salary_id`) REFERENCES `salary` (`salary_id`);
-
---
--- Constraints for table `mentor_student_course`
---
-ALTER TABLE `mentor_student_course`
-  ADD CONSTRAINT `mentor_student_course_ibfk_1` FOREIGN KEY (`m_id`) REFERENCES `mentors` (`m_id`),
-  ADD CONSTRAINT `mentor_student_course_ibfk_2` FOREIGN KEY (`s_id`) REFERENCES `student` (`s_id`),
-  ADD CONSTRAINT `mentor_student_course_ibfk_3` FOREIGN KEY (`c_id`) REFERENCES `course` (`c_id`);
 
 --
 -- Constraints for table `payment`
@@ -832,6 +941,13 @@ ALTER TABLE `student_completed_courses`
 ALTER TABLE `student_profile`
   ADD CONSTRAINT `student_profile_ibfk_1` FOREIGN KEY (`s_id`) REFERENCES `student` (`s_id`),
   ADD CONSTRAINT `student_profile_ibfk_2` FOREIGN KEY (`m_id`) REFERENCES `mentors` (`m_id`);
+
+--
+-- Constraints for table `subdiscussion`
+--
+ALTER TABLE `subdiscussion`
+  ADD CONSTRAINT `subdiscussion_ibfk_1` FOREIGN KEY (`discussion_id`) REFERENCES `discussion` (`discussion_id`),
+  ADD CONSTRAINT `subdiscussion_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
