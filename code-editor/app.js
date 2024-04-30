@@ -106,3 +106,4 @@ function copyCode(code) {
   document.execCommand('copy');
   swal('Copied!', 'You are ready to rock', 'success');
 }
+
