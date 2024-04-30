@@ -21,7 +21,7 @@ const createChatLi = (message, className) => {
 const generateResponse = async (chatElement) => {
     const messageElement = chatElement.querySelector("p");
     try {
-      const response = await fetch('https://learning-u7aw.onrender.com/message', {
+      const response = await fetch('https://learning-l3tf.onrender.com/message', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
