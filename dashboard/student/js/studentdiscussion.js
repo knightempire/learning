@@ -111,21 +111,29 @@
     }
 
     async function submitDiscussion() {
-    const lectureSelect = document.getElementById('lectureSelect');
-    const selectedLectureId = lectureSelect.value;
-    if (!selectedLectureId) {
-        console.error('Please select a lecture');
-        return;
-    }
-
-    // Get other form data
-    const questionTextarea = document.getElementById('questionTextarea');
-    const question = questionTextarea.value.trim();
-
-    if (!question) {
-        console.error('Please enter a question');
-        return;
-    }
+        const lectureSelect = document.getElementById('lectureSelect');
+        if (!lectureSelect) {
+            console.error('Element with ID "lectureSelect" not found.');
+            return;
+        }
+    
+        const selectedLectureId = lectureSelect.value;
+        if (!selectedLectureId) {
+            console.error('Please select a lecture');
+            return;
+        }
+    
+        const questionTextarea = document.getElementById('questionTextarea');
+        if (!questionTextarea) {
+            console.error('Element with ID "questionTextarea" not found.');
+            return;
+        }
+    
+        const question = questionTextarea.value.trim();
+        if (!question) {
+            console.error('Please enter a question');
+            return;
+        }
 
     const discussionData = {
         s_id: user_id,
