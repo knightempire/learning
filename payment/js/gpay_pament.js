@@ -15,7 +15,7 @@
           document.getElementById('loader').style.display = 'block';
 
           // Call your API here
-          fetch('https://learning-u7aw.onrender.com/api/paymentmake', {
+          fetch('https://learning-l3tf.onrender.com/api/paymentmake', {
             method: 'POST',
             // Add any necessary headers and body for your API call
           })

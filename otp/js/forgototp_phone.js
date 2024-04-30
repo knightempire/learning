@@ -22,7 +22,7 @@
         const encodedPhoneNumber = btoa(phoneNumber);
 
         // Send the phone number to the API
-        const apiUrl = 'https://learning-u7aw.onrender.com/api/forgotgenerate-otp';
+        const apiUrl = 'https://learning-l3tf.onrender.com/api/forgotgenerate-otp';
         try {
             const response = await fetch(apiUrl, {
                 method: 'POST',

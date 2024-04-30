@@ -12,7 +12,7 @@
         }
 
         try {
-            const response = await fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
+            const response = await fetch('https://learning-l3tf.onrender.com/api/decodeToken', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -39,7 +39,7 @@
 
     async function viewPayment(user_id) {
     try {
-        const response = await fetch('https://learning-u7aw.onrender.com/api/viewpayment', {
+        const response = await fetch('https://learning-l3tf.onrender.com/api/viewpayment', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

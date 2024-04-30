@@ -13,7 +13,7 @@ const courseName = getCourseNameFromURL();
 
 async function checkPaymentStatus() {
     try {
-        const paymentStatusResponse = await fetch('https://learning-u7aw.onrender.com/api/paymentcall');
+        const paymentStatusResponse = await fetch('https://learning-l3tf.onrender.com/api/paymentcall');
         if (paymentStatusResponse.ok) {
             const paymentStatus = await paymentStatusResponse.json();
             console.log('Payment Status:', paymentStatus.value);
@@ -42,7 +42,7 @@ async function insertPaymentDetails() {
 
         console.log('API Request:', paymentData);
 
-        const paymentResponse = await fetch('https://learning-u7aw.onrender.com/api/payment', {
+        const paymentResponse = await fetch('https://learning-l3tf.onrender.com/api/payment', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -75,7 +75,7 @@ function decodeTokenAndLoad() {
     //   console.log(token)
 
     // Perform AJAX request to decodeToken endpoint
-    fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
+    fetch('https://learning-l3tf.onrender.com/api/decodeToken', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

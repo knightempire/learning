@@ -10,7 +10,7 @@
         }
 
         try {
-            const response = await fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
+            const response = await fetch('https://learning-l3tf.onrender.com/api/decodeToken', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -44,7 +44,7 @@
 
     async function checkStudent(s_id) {
     try {
-        const response = await fetch('https://learning-u7aw.onrender.com/api/checkstudent', {
+        const response = await fetch('https://learning-l3tf.onrender.com/api/checkstudent', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -72,7 +72,7 @@
 
 async function  studentLecture(s_id) {
         try {
-            const response = await fetch('https://learning-u7aw.onrender.com/api/lecture', {
+            const response = await fetch('https://learning-l3tf.onrender.com/api/lecture', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

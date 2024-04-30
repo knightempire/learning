@@ -12,7 +12,7 @@ async function decodeToken() {
     }
 
     try {
-        const response = await fetch('https://learning-u7aw.onrender.com/api/decodeToken', {
+        const response = await fetch('https://learning-l3tf.onrender.com/api/decodeToken', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ function redirectToLogin() {
 
 async function fetchMentorDashboard(userId) {
     try {
-        const response = await fetch('https://learning-u7aw.onrender.com/api/mentordashboard', {
+        const response = await fetch('https://learning-l3tf.onrender.com/api/mentordashboard', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -75,7 +75,7 @@ async function fetchMentorDashboard(userId) {
 
 async function fetchStudentList(c_id) {
     try {
-        const response = await fetch('https://learning-u7aw.onrender.com/api/liststudent', {
+        const response = await fetch('https://learning-l3tf.onrender.com/api/liststudent', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

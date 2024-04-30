@@ -23,7 +23,7 @@
     }
 
     async function verifyOtp(otp, phoneNumber) {
-        const apiUrl = 'https://learning-u7aw.onrender.com/api/verify-otp'; // Update with your API endpoint
+        const apiUrl = 'https://learning-l3tf.onrender.com/api/verify-otp'; // Update with your API endpoint
 
         try {
             const response = await fetch(apiUrl, {

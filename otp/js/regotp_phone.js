@@ -17,7 +17,7 @@
           // const option = urlParams.get('option');
 
           // Send the phone number to the API
-          const apiUrl = 'https://learning-u7aw.onrender.com/api/generate-otp';
+          const apiUrl = 'https://learning-l3tf.onrender.com/api/generate-otp';
           try {
               const response = await fetch(apiUrl, { 
                   method: 'POST',
