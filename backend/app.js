@@ -8,14 +8,25 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const moment = require('moment');
 const fs = require('fs').promises;
-
+const csv = require('csv-parser');
 const XLSX = require('xlsx');
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' }); 
+const fetch = require('node-fetch');
+
+// Define storage configuration
+const storage = multer.memoryStorage();
+
+// Initialize multer with storage configuration
+const upload = multer({ storage: storage });
+
+// Now you can use the upload middleware in your routes
 
 // const authMiddleware = require('./authmiddleware');
 const { generateOtpMiddleware, verifyOtpMiddleware } = require('./middleWare/otpgeneration');
 const generateResponse = require('./middleWare/chat');
+
 
 const app = express();
 const port = 3000||null;
@@ -40,11 +51,14 @@ const {
     SESSION_SECRET,
     JWT_SECRET,
     JWT_EXPIRY,
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
 } = process.env;
 
 const dbConfig = {
     host: DB_HOST,
-    port: 10379,
+    // port: 10379,
+    port:3306,
     user: DB_USER,
     password: DB_PASSWORD,
     database: DB_DATABASE,
@@ -65,6 +79,209 @@ app.use(session({
     saveUninitialized: true,
 }));
 
+(async () => {
+    try {
+        // Attempt to get a connection from the pool
+        const connection = await pool.getConnection();
+        
+        // If connection successful, log a success message
+        console.log('Database connected successfully');
+        
+        // Release the connection back to the pool
+        connection.release();
+    } catch (error) {
+        // Log an error message if connection fails
+        console.error('Error connecting to the database:', error);
+        process.exit(1); // Terminate the application process
+    }
+})();
+
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new GoogleStrategy({
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
+    callbackURL: 'http://localhost:3000/auth/google/callback'
+}, (accessToken, refreshToken, profile, done) => {
+    // You can handle the user's profile here (e.g., save to database)
+    return done(null, profile);
+}));
+
+passport.serializeUser((user, done) => {
+    done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+    done(null, user);
+});
+
+
+app.get('/proxy/google/oauth', async (req, res) => {
+    try {
+        const response = await fetch('https://accounts.google.com/o/oauth2/v2/auth?response_type=code&redirect_uri=https%3A%2F%2Feduwel.onrender.com%2Flogin.html&client_id=290997095546-oec6je9hb7sl1cj0injd3stjmi12tprs.apps.googleusercontent.com');
+        const data = await response.text();
+        res.send(data);
+    } catch (error) {
+        console.error('Error proxying Google OAuth request:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
+app.get('/auth/google',
+    passport.authenticate('google', { 
+        scope: ['profile', 'email', 'openid', 'https://www.googleapis.com/auth/user.birthday.read', 'https://www.googleapis.com/auth/user.phonenumbers.read'] 
+    }));
+
+    
+// Google OAuth callback route
+
+app.get('/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: 'http://10.12.194.15:5500/login.html' }),
+    async (req, res) => {
+        try {
+            // Extract user's email from the Google OAuth response
+            const email = req.user.emails[0].value;
+            const givenName = req.user.name.givenName; // Access given name
+
+            // Check if the user already exists in the database
+            const [existingUser] = await pool.query('SELECT * FROM users WHERE username = ?', [email]);
+
+            if (!existingUser.length) {
+                // If the user doesn't exist, register the user
+                const username = email; 
+                const hashedPassword = await bcrypt.hash(email, 10); // Assuming email as default password for Google users
+                const role = 'student'; // Default role for new users
+
+                await pool.execute('INSERT INTO users (name, username, password, role) VALUES (?, ?, ?, ?)', [givenName, username, hashedPassword, role]);
+
+                // Retrieve the newly created user
+                const [newUser] = await pool.query('SELECT * FROM users WHERE username = ?', [email]);
+                
+                // Proceed with login using the provided username (email) and password (also email)
+                const loginResponse = await loginUser({ username: email, password: email }); // Assuming loginUser function is implemented
+
+                if (loginResponse.isValid) {
+                    // Create token for the newly registered user
+                    const token = createtoken(req, res, newUser);
+
+                    // Send all necessary data including the token as a response to the login.html page
+                    const responseData = {
+                        isValid: true,
+                        responseNumber: loginResponse.responseNumber,
+                        token: token,
+                        // Add any additional data you want to send
+                    };
+
+                    // Redirect the user to the login.html page with the response data as query parameters
+                    const redirectUrl = `http://10.12.194.15:5500/login.html?${new URLSearchParams(responseData).toString()}`;
+                    res.redirect(redirectUrl);
+                } else {
+                    // If login is unsuccessful, return an error
+                    res.status(400).json({ error: 'Login failed' });
+                }
+            } else {
+                // Proceed with login using the provided username (email) and password (also email)
+                const loginResponse = await loginUser({ username: email, password: email }); // Assuming loginUser function is implemented
+
+                if (loginResponse.isValid) {
+                    // Create token for the existing user
+                    const token = createtoken(req, res, existingUser);
+
+                    // Send all necessary data including the token as a response to the login.html page
+                    const responseData = {
+                        isValid: true,
+                        responseNumber: loginResponse.responseNumber,
+                        token: token,
+                        // Add any additional data you want to send
+                    };
+
+                    // Redirect the user to the login.html page with the response data as query parameters
+                    const redirectUrl = `http://10.12.194.15:5500/login.html?${new URLSearchParams(responseData).toString()}`;
+                    res.redirect(redirectUrl);
+                } else {
+                    // If login is unsuccessful, return an error
+                    res.status(400).json({ error: 'Login failed' });
+                }
+            }
+        } catch (error) {
+            console.error('Error during OAuth callback:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+
+
+
+    // Function to handle user login
+async function loginUser(credentials) {
+    try {
+        // Extract username and password from credentials
+        const { username, password } = credentials;
+
+        // Query the database to check if the provided username exists
+        const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
+
+        if (existingUser.length === 0) {
+            // If the username doesn't exist, return an error
+            console.log("no user found");
+            return { isValid: false, error: 'Invalid username' };
+        }
+
+        // Verify the password
+        const isPasswordValid = await bcrypt.compare(password, existingUser[0].password);
+
+        if (!isPasswordValid) {
+            // If the password is incorrect, return an error
+            console.log("password invalid");
+            return { isValid: false, error: 'Invalid password' };
+        }
+
+        // Get the role from the existingUser object
+        const role = existingUser[0].role;
+
+        // Determine the role-specific response number
+        let responseNumber;
+        if (role === 'student') {
+            // Check if the user is also in the student table
+            const [studentResult] = await pool.execute('SELECT s_id FROM student WHERE s_id = ?', [existingUser[0].user_id]);
+            responseNumber = studentResult.length > 0 ? 2 : 1; // If user is in student table, set responseNumber to 2, else 1
+        } else if (role === 'mentor') {
+            // Query the mentors table to get mentor details based on user_id
+            const [mentorResult] = await pool.execute('SELECT position FROM mentors WHERE m_id = ?', [existingUser[0].user_id]);
+
+            if (mentorResult.length === 0) {
+                // If mentor data is not found, return an error
+                console.log("Mentor data not found");
+                return { isValid: false, error: 'Mentor data not found' };
+            }
+
+            const mentorPosition = mentorResult[0].position;
+
+            if (mentorPosition === 'handling') {
+                responseNumber = 4; // Response number for handling mentor
+            } else if (mentorPosition === 'head') {
+                responseNumber = 3; // Response number for head mentor
+            } else {
+                // If the mentor position is neither 'handling' nor 'head', return an error
+                console.log("Invalid mentor position");
+                return { isValid: false, error: 'Invalid mentor position' };
+            }
+        }
+
+        // Log the responseNumber
+        console.log("responseNumber:", responseNumber);
+
+        // User is authenticated
+        return { isValid: true, responseNumber };
+
+    } catch (error) {
+        console.error('Error during login:', error);
+        return { isValid: false, error: 'Internal Server Error' };
+    }
+}
+
 
 //function to create token
 const createtoken = (req, res, rows) => {
@@ -84,6 +301,122 @@ const createtoken = (req, res, rows) => {
     // Return the token
     return token;
 };
+
+
+
+// Route for login
+app.post('/api/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        console.log('api login requested');
+        console.log(username)
+        console.log(password)
+        // Query the database to check if the provided username exists
+        const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
+
+        if (existingUser.length === 0) {
+            // If the username doesn't exist, return an error
+            console.log("no user found")
+            return res.status(400).json({ error: 'Invalid username ' });
+        }
+
+        // Verify the password
+        const isPasswordValid = await bcrypt.compare(password, existingUser[0].password);
+
+        if (!isPasswordValid) {
+            // If the password is incorrect, return an error
+            console.log("password invalid")
+            return res.status(400).json({ error: 'Invalid password' });
+        }
+
+        // Get the role from the existingUser object
+        const role = existingUser[0].role;
+
+    
+
+        // Determine the role-specific response number
+        let responseNumber;
+        if (role === 'student') {
+            // Check if the user is also in the student table
+            const [studentResult] = await pool.execute('SELECT s_id FROM student WHERE s_id = ?', [existingUser[0].user_id]);
+            responseNumber = studentResult.length > 0 ? 2 : 1; // If user is in student table, set responseNumber to 2, else 1
+        } 
+        else if (role === 'mentor') {
+            // Query the mentors table to get mentor details based on user_id
+            const [mentorResult] = await pool.execute('SELECT position FROM mentors WHERE m_id = ?', [existingUser[0].user_id]);
+            
+            if (mentorResult.length === 0) {
+                // If mentor data is not found, return an error
+                console.log("Mentor data not found");
+                return res.status(400).json({ error: 'Mentor data not found' });
+            }
+        
+            const mentorPosition = mentorResult[0].position;
+            
+            if (mentorPosition === 'handling') {
+                responseNumber = 4; // Response number for handling mentor
+            } else if (mentorPosition === 'head') {
+                responseNumber = 3; // Response number for head mentor
+            } else {
+                // If the mentor position is neither 'handling' nor 'head', return an error
+                console.log("Invalid mentor position");
+                return res.status(400).json({ error: 'Invalid mentor position' });
+            }
+        }
+        
+
+        // Log the responseNumber
+        console.log("responseNumber:", responseNumber);
+
+        // User is authenticated
+        const token = createtoken(req, res, existingUser); // Call the createtoken function with req and res
+        console.log("token:", token);
+
+        res.json({ isValid: true, responseNumber, token }); 
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+// Route for register
+app.post('/api/register', async (req, res) => {
+    console.log('Received data for registration:', req.body);
+    const { name, username, password, role } = req.body;
+
+    try {
+        console.log('api register requested');
+
+        // Check if the username is already taken
+        const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
+
+        if (existingUser.length > 0) {
+            return res.status(400).json({ error: 'Username already exists' });
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Set default role if not provided
+        const userRole = role || 'student';
+
+        // Insert the new user into the database
+        const [result] = await pool.execute('INSERT INTO users (name, username, password, role) VALUES (?, ?,  ?, ?)', [name, username, hashedPassword, userRole]);
+        
+        // Check if insertion was successful
+        if (result.affectedRows === 1) {
+            // Redirect to login after successful registration
+            return res.redirect('/api/login', { username, password });
+        } else {
+            throw new Error('Failed to register user');
+        }
+    } catch (error) {
+        console.error('Error during registration:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 //function to verify token
@@ -154,79 +487,6 @@ const authenticateToken = async (req, res, next) => {
     }
 };
 
-// Route for login
-app.post('/api/login', async (req, res) => {
-    const { username, password } = req.body;
-
-    try {
-        console.log('api login requested');
-        // Query the database to check if the provided username exists
-        const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
-
-        if (existingUser.length === 0) {
-            // If the username doesn't exist, return an error
-            console.log("no user found")
-            return res.status(400).json({ error: 'Invalid username ' });
-        }
-
-        // Verify the password
-        const isPasswordValid = await bcrypt.compare(password, existingUser[0].password);
-
-        if (!isPasswordValid) {
-            // If the password is incorrect, return an error
-            console.log("password invalid")
-            return res.status(400).json({ error: 'Invalid password' });
-        }
-
-        // Get the role from the existingUser object
-        const role = existingUser[0].role;
-
-    
-
-        // Determine the role-specific response number
-        let responseNumber;
-        if (role === 'student') {
-            // Check if the user is also in the student table
-            const [studentResult] = await pool.execute('SELECT s_id FROM student WHERE s_id = ?', [existingUser[0].user_id]);
-            responseNumber = studentResult.length > 0 ? 2 : 1; // If user is in student table, set responseNumber to 2, else 1
-        } 
-        else if (role === 'mentor') {
-            // Query the mentors table to get mentor details based on user_id
-            const [mentorResult] = await pool.execute('SELECT position FROM mentors WHERE m_id = ?', [existingUser[0].user_id]);
-            
-            if (mentorResult.length === 0) {
-                // If mentor data is not found, return an error
-                console.log("Mentor data not found");
-                return res.status(400).json({ error: 'Mentor data not found' });
-            }
-        
-            const mentorPosition = mentorResult[0].position;
-            
-            if (mentorPosition === 'handling') {
-                responseNumber = 4; // Response number for handling mentor
-            } else if (mentorPosition === 'head') {
-                responseNumber = 3; // Response number for head mentor
-            } else {
-                // If the mentor position is neither 'handling' nor 'head', return an error
-                console.log("Invalid mentor position");
-                return res.status(400).json({ error: 'Invalid mentor position' });
-            }
-        }
-        
-
-        // Log the responseNumber
-        console.log("responseNumber:", responseNumber);
-
-        // User is authenticated
-        const token = createtoken(req, res, existingUser); // Call the createtoken function with req and res
-        console.log("token:", token);
-
-        res.json({ isValid: true, responseNumber, token }); 
-    } catch (error) {
-        console.error('Error during login:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
 
 
 
@@ -251,7 +511,7 @@ app.post('/api/decodeToken', async (req, res) => {
 
         try {
             // Query the database to retrieve user data based on username
-            const [rows] = await connection.execute('SELECT user_id,name,phoneNumber,username FROM users WHERE username = ?', [username]);
+            const [rows] = await connection.execute('SELECT user_id,name,username FROM users WHERE username = ?', [username]);
 
             // Check if user exists in the database
             if (rows.length === 0) {
@@ -326,44 +586,11 @@ app.post('/api/forgotgenerate-otp', async (req, res) => {
 });
 
 
-//Route for register
-app.post('/api/register', async (req, res) => {
-    const { name, username, password, phoneNumber, role } = req.body;
 
-    try {
-        console.log('api register requested');
-
-        // Check if the username is already taken
-        const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
-
-        if (existingUser.length > 0) {
-            return res.status(400).json({ error: 'Username already exists' });
-        }
-
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Set default role if not provided
-        const userRole = role || 'student';
-
-        // Insert the new user into the database
-        const [result] = await pool.execute('INSERT INTO users (name, username, password, phoneNumber, role) VALUES (?, ?, ?, ?, ?)', [name, username, hashedPassword, phoneNumber, userRole]);
-        
-        // Check if insertion was successful
-        if (result.affectedRows === 1) {
-            return res.status(201).json({ message: 'User registered successfully' });
-        } else {
-            throw new Error('Failed to register user');
-        }
-    } catch (error) {
-        console.error('Error during registration:', error);
-        return res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
 
 //Route for mentor
 app.post('/api/registermentor', async (req, res) => {
-    const { name, username, phoneNumber, course_name, role } = req.body;
+    const { name, username,  course_name, role } = req.body;
     const defaultPassword = 'mentor'; // Define the default password for mentors
 
     try {
@@ -383,7 +610,7 @@ app.post('/api/registermentor', async (req, res) => {
         const hashedPassword = await bcrypt.hash(defaultPassword, 10);
 
         // Insert the new user (mentor) into the users table
-        const [userInsertResult] = await pool.execute('INSERT INTO users (name, username, password, phoneNumber, role) VALUES (?, ?, ?, ?, ?)', [name, username, hashedPassword, phoneNumber, userRole]);
+        const [userInsertResult] = await pool.execute('INSERT INTO users (name, username, password,  role) VALUES (?, ?, ?,  ?)', [name, username, hashedPassword, userRole]);
 
         // Check if insertion was successful
         if (userInsertResult.affectedRows === 1) {
@@ -417,60 +644,7 @@ app.post('/api/registermentor', async (req, res) => {
 
 
 
-// Route for login
-app.post('/api/login', async (req, res) => {
-    const { username, password } = req.body;
 
-    try {
-        console.log('api login requested');
-        // Query the database to check if the provided username exists
-        const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
-
-        if (existingUser.length === 0) {
-            // If the username doesn't exist, return an error
-            console.log("no user found")
-            return res.status(400).json({ error: 'Invalid username ' });
-        }
-
-        // Verify the password
-        const isPasswordValid = await bcrypt.compare(password, existingUser[0].password);
-
-        if (!isPasswordValid) {
-            // If the password is incorrect, return an error
-            console.log("password invalid")
-            return res.status(400).json({ error: 'Invalid password' });
-        }
-
-        // Get the role from the existingUser object
-        const role = existingUser[0].role;
-
-        // Log the role
-        console.log("Role:", role);
-
-        // Determine the role-specific response number
-        let responseNumber;
-        if (role === 'student') {
-            // Check if the user is also in the student table
-            const [studentResult] = await pool.execute('SELECT s_id FROM student WHERE s_id = ?', [existingUser[0].user_id]);
-            console.log("studentResult:", studentResult); // Log the studentResult
-            responseNumber = studentResult.length > 0 ? 2 : 1; // If user is in student table, set responseNumber to 2, else 1
-        } else if (role === 'mentor') {
-            responseNumber = 3; // Response number for mentor
-        }
-
-        // Log the responseNumber
-        console.log("responseNumber:", responseNumber);
-
-        // User is authenticated
-        const token = createtoken(req, res, existingUser); // Call the createtoken function with req and res
-        console.log("token:", token);
-
-        res.json({ isValid: true, responseNumber, token }); 
-    } catch (error) {
-        console.error('Error during login:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
 
 
 
@@ -1674,6 +1848,7 @@ app.post('/api/viewsubdiscussion', async (req, res) => {
     }
 });
 
+
 //route to insert the subdiscussion
 app.post('/api/subdiscussion', async (req, res) => {
     const { discussion_id, user_id, subdiscussion_text } = req.body;
@@ -1764,6 +1939,97 @@ app.post('/api/subdiscussionlike', async (req, res) => {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
+// Route for viewing lectures without quizzes
+app.post('/api/viewnoquizlecture', async (req, res) => {
+    // Extract c_id from request body
+    const { c_id } = req.body;
+
+    try {
+        console.log('API viewnoquizlecture requested');
+
+        // Select lectures without quizzes for the given c_id
+        const [lectures] = await pool.execute(
+            `SELECT * FROM lecture 
+            WHERE c_id = ? 
+            AND lecture_id NOT IN (
+                SELECT DISTINCT lecture_id FROM quiz WHERE c_id = ?
+            )
+            `,
+            [c_id, c_id]
+        );
+
+        // Send the data of lectures without quizzes
+        return res.status(200).json({ lectures });
+    } catch (error) {
+        console.error('Error viewing lectures without quizzes:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+//upload quiz
+app.post('api/uploadquizinfos', upload.single('file'), async (req, res) => {
+    try {
+        const { quiz_id } = req.body;
+
+        if (!quiz_id || !req.file) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        let excelData = [];
+
+        // Read the file based on its type (Excel or CSV)
+        if (req.file.mimetype === 'application/vnd.ms-excel') {
+            const workbook = XLSX.read(req.file.buffer);
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            excelData = XLSX.utils.sheet_to_json(sheet);
+        } else if (req.file.mimetype === 'text/csv') {
+            const fileContent = await fs.readFile(req.file.path, 'utf-8');
+            excelData = await readCSV(fileContent);
+        } else {
+            return res.status(400).json({ error: 'Unsupported file format' });
+        }
+
+        // Prepare the values array for insertion
+        const values = excelData.map(row => [quiz_id, row.question, row.a, row.b, row.c, row.d, row.answer]);
+
+        const query = `INSERT INTO quiz_info (q_id, question, a, b, c, d, answer) VALUES ?`;
+
+        // Get a connection from the pool
+        const connection = await pool.getConnection();
+
+        // Execute the insert query
+        await connection.query(query, [values]);
+
+        // Release the connection back to the pool
+        connection.release();
+
+        console.log('Quiz data inserted successfully');
+        res.json({ message: 'Quiz data inserted successfully' });
+    } catch (error) {
+        console.error('Error inserting quiz data:', error);
+        res.status(500).json({ error: 'An error occurred while inserting quiz data' });
+    }
+});
+
+// Function to read CSV file
+function readCSV(fileContent) {
+    return new Promise((resolve, reject) => {
+        const results = [];
+        // Parse the CSV data
+        csv({ skipLines: 1 })
+            .on('data', (data) => results.push(data))
+            .on('end', () => resolve(results))
+            .on('error', (error) => reject(error))
+            .write(fileContent);
+    });
+}
+
+
+
 
 
 
