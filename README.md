@@ -65,4 +65,3 @@ MIT License: This is a permissive open-source license that allows users to do al
 
 LICENSE: This is a placeholder link that should point to a file named LICENSE in your project repository. You should create this file and include the actual text of the MIT License within it. You can find the full text of the MIT License on the Open Source Initiative website.
 
-Make sure to replace [LICENSE](LICENSE) with the actual relative path to your LICENSE file if it's located in a different directory within your project.
