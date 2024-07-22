@@ -10,7 +10,7 @@
         }
 
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/decodeToken', {
+            const response = await fetch('http://localhost:3000/api/decodeToken', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -44,7 +44,7 @@
 
     async function fetchMentorDashboard(userId) {
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/mentordashboard', {
+            const response = await fetch('http://localhost:3000/api/mentordashboard', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -73,7 +73,7 @@
     async function fetchStudentsWithoutMentor(c_id) {
     try {
         // Fetch data from the API
-        const response = await fetch('https://learning-l3tf.onrender.com/api/studentwithoutmentor', {
+        const response = await fetch('http://localhost:3000/api/studentwithoutmentor', {
             method: 'POST', // Use POST method
             headers: {
                 'Content-Type': 'application/json'
@@ -160,7 +160,7 @@
 
 async function fetchMentorDropdown(c_id, dropdownId) {
     try {
-        const response = await fetch('https://learning-l3tf.onrender.com/api/listmentor', {
+        const response = await fetch('http://localhost:3000/api/listmentor', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -205,7 +205,7 @@ async function fetchMentorDropdown(c_id, dropdownId) {
 
     async function assignMentorToStudent(studentId, selectedMentorId) {
     try {
-        const response = await fetch('https://learning-l3tf.onrender.com/api/assignmentor', {
+        const response = await fetch('http://localhost:3000/api/assignmentor', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -233,7 +233,7 @@ async function fetchMentorDropdown(c_id, dropdownId) {
  
 async function fetchMentorListDropdown(c_id) {
     try {
-        const mentorListResponse = await fetch('https://learning-l3tf.onrender.com/api/listmentor', {
+        const mentorListResponse = await fetch('http://localhost:3000/api/listmentor', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

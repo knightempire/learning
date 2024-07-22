@@ -10,7 +10,7 @@
         }
 
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/decodeToken', {
+            const response = await fetch('http://localhost:3000/api/decodeToken', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -45,7 +45,7 @@
 
     async function checkStudent(s_id) {
     try {
-        const response = await fetch('https://learning-l3tf.onrender.com/api/checkstudent', {
+        const response = await fetch('http://localhost:3000/api/checkstudent', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -74,7 +74,7 @@
 
 async function fetchQuizData(c_id) {
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/quiz', {
+            const response = await fetch('http://localhost:3000/api/quiz', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -149,7 +149,7 @@ async function fetchQuizData(c_id) {
     async function fetchQuizInfo(q_id) {
     resetQuizState(); // Reset quiz state before fetching new quiz info
     try {
-        const response = await fetch('https://learning-l3tf.onrender.com/api/quizinfo', {
+        const response = await fetch('http://localhost:3000/api/quizinfo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -317,7 +317,7 @@ async function displayResult() {
 
     try {
         // Call the /api/performance endpoint
-        const response = await fetch('https://learning-l3tf.onrender.com/api/performance', {
+        const response = await fetch('http://localhost:3000/api/performance', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -346,7 +346,7 @@ async function displayResult() {
 
 async function viewPerformance(user_id, q_id) {
     try {
-        const response = await fetch('https://learning-l3tf.onrender.com/api/viewperformance', {
+        const response = await fetch('http://localhost:3000/api/viewperformance', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

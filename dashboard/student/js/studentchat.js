@@ -10,7 +10,7 @@
         }
 
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/decodeToken', {
+            const response = await fetch('http://localhost:3000/api/decodeToken', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -43,7 +43,7 @@
 
     async function checkStudent(s_id) {
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/checkstudent', {
+            const response = await fetch('http://localhost:3000/api/checkstudent', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -71,7 +71,7 @@
 
     async function viewChat(c_id) {
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/viewchat', {
+            const response = await fetch('http://localhost:3000/api/viewchat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -156,7 +156,7 @@
     if (!message) return; // Exit if the message is empty
 
     try {
-        const response = await fetch('https://learning-l3tf.onrender.com/api/chat', {
+        const response = await fetch('http://localhost:3000/api/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

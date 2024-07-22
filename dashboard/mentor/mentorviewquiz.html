@@ -258,6 +258,12 @@
         <div class="content-body">
             <!-- container-fluid starts -->
             <div class="container-fluid">
+                <div class="alert alert-success solid alert-dismissible fade show" id="success" style="display: none;">
+                    <button type="button" class="close h-100" data-dismiss="alert" aria-label="Close">
+                        <span><i class="mdi mdi-close"></i></span>
+                    </button>
+                    <strong>Success!</strong> Message has been sent.
+                </div>
                 <div class="row page-titles mx-0">
                     <div class="col-sm-6 p-md-0">
                         <div class="welcome-text">
@@ -265,30 +271,81 @@
                         
                         </div>
                     </div>
-             
+          
                 </div>
                 <!-- row -->
                 <!-- Row starts -->
 
-                <div class="col-xl-8" data-select2-id="102">
-                    <div class="card" data-select2-id="101">
-                        <div class="card-body" data-select2-id="100">
-                            <div class="mb-4">
-                                <h4 class="card-title">Select Quiz title</h4>
-                                <p>Choose a quiz name </p>
-                            </div>
+                <div class="row">
+                    <div class="col-xl-8" data-select2-id="102">
+                        <div class="card" data-select2-id="101">
+                            <div class="card-body" data-select2-id="100">
+                                <div class="mb-4">
+                                    <h4 class="card-title">Select Quiz title</h4>
+                                    <!-- <p>Choose a quiz name </p> -->
+                                </div>
                 
-                            <div class="col-sm-12 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
-                                <!-- Dropdown with Select2 -->
-                                <select id="dropdown" class="form-control ml-2">
-                                    <!-- quiz title -->
-                                </select>
+                                <div class="col-sm-12 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+                                    <!-- Dropdown with Select2 -->
+                                    <select id="dropdown" class="form-control ml-2">
+                                        <!-- quiz title -->
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+
+               <div class="col-xl-4">
+    <div class="card">
+        <div class="card-body">
+            <div class="mb-4">
+                <h4 class="card-title">Total quiz  <span id="totalQuizCount">0</span> (Total lectures: <span id="totalLectureCount">0</span>)</h4>
+            </div>
+            
+            <div class="text-center">
+                <button class="btn btn-primary btn-block addQuizButton" onclick="initializeQuizForm()">Add Quiz</button>
+            </div>
+            <form class="mt-4 quizForm" style="display: none;">
+                <div class="form-group">
+                    <label for="lectureSelect">Select Lecture:</label>
+                    <select class="form-control custom-select lectureSelect" style="color: black;">
+                        <!-- Options will be populated dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fileUpload">Upload File (Excel or CSV):</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input fileUpload" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" onchange="updateFileName(this)">
+                        <label class="custom-file-label fileLabel">Choose file</label>
+                    </div>
+                    
+                </div>
+                <div class="form-group">
+                    <div class="progress" style="display: none;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary handleFormSubmit" onclick="uploadingQuiz()">Submit</button>
+                    <button type="button" class="btn btn-secondary closeFormButton" onclick="hideForm()">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+                    
+                    
+                    
+
+
                 </div>
 
-
+                
+       
+                
+                
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-header d-block">

@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to fetch college names
     async function fetchCollegeNames() {
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/universities');
+            const response = await fetch('http://localhost:3000/api/universities');
             if (!response.ok) {
                 throw new Error('Network response was not ok.');
             }
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             try {
                 // Send token to server-side API endpoint to decode
-                const response = await fetch('https://learning-l3tf.onrender.com/api/decodeToken', {
+                const response = await fetch('http://localhost:3000/api/decodeToken', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('Payload:', payload);
 
                     // Send payload to the server
-                    const profileResponse = await fetch('https://learning-l3tf.onrender.com/api/studentprofile', {
+                    const profileResponse = await fetch('http://localhost:3000/api/studentprofile', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'

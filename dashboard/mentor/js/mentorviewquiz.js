@@ -10,7 +10,7 @@
         }
 
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/decodeToken', {
+            const response = await fetch('http://localhost:3000/api/decodeToken', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -43,7 +43,7 @@
 
     async function fetchMentorDashboard(userId) {
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/mentordashboard', {
+            const response = await fetch('http://localhost:3000/api/mentordashboard', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -60,6 +60,7 @@
                     console.log("c_id:", c_id);
                
                     fetchQuizData(c_id)
+                    getLecturesWithoutQuizzes(c_id)
                 }
             } else {
                 console.error('Failed to fetch mentor dashboard:', response.statusText);
@@ -72,7 +73,7 @@
 
     async function fetchQuizData(c_id) {
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/quiz', {
+            const response = await fetch('http://localhost:3000/api/quiz', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -145,7 +146,7 @@
 
     async function fetchQuizInfo(q_id) {
     try {
-        const response = await fetch('https://learning-l3tf.onrender.com/api/quizinfo', {
+        const response = await fetch('http://localhost:3000/api/quizinfo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -247,6 +248,246 @@ function displayQuizInfo(quizInfoData) {
         accordionContainer.appendChild(accordionItem);
     });
 }
+
+
+function initializeQuizForm() {
+    const addQuizButtons = document.querySelectorAll('.addQuizButton');
+    const quizForms = document.querySelectorAll('.quizForm');
+    const closeFormButtons = document.querySelectorAll('.closeFormButton');
+
+    addQuizButtons.forEach((addQuizButton, index) => {
+        addQuizButton.addEventListener('click', function() {
+            quizForms[index].style.display = 'block';
+        });
+    });
+
+    closeFormButtons.forEach((closeFormButton, index) => {
+        closeFormButton.addEventListener('click', function() {
+            quizForms[index].style.display = 'none';
+        });
+    });
+}
+
+
+function initializeQuizForm() {
+    // Select the quiz form element
+    const quizForm = document.querySelector('.quizForm');
+    
+    // Toggle the display property of the quiz form
+    if (quizForm.style.display === 'none') {
+        // If form is hidden, show it
+        quizForm.style.display = 'block';
+    } else {
+        // If form is visible, hide it
+        quizForm.style.display = 'none';
+    }
+}
+
+
+async function getLectureCount(c_id) {
+    try {
+        const url = 'http://localhost:3000/api/getlecture';
+        const body = JSON.stringify({ c_id });
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: body
+        };
+        const response = await fetch(url, options);
+        const data = await response.json();
+        if (response.ok) {
+            return data.data.length;
+        } else {
+            console.error('Error retrieving lecture count:', data.error);
+            return 0;
+        }
+    } catch (error) {
+        console.error('Error fetching lecture count:', error);
+        return 0;
+    }
+}
+
+
+async function getLecturesWithoutQuizzes(c_id) {
+    try {
+        const url = 'http://localhost:3000/api/viewnoquizlecture';
+        const body = JSON.stringify({ c_id });
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: body
+        };
+        const response = await fetch(url, options);
+        const data = await response.json();
+        if (response.ok) {
+            const totalLectureCount = await getLectureCount(c_id);
+            const totalQuizCount = data.lectures.length;
+            const totalQuizWithoutLecture = totalQuizCount - totalLectureCount;
+            document.getElementById('totalQuizCount').textContent = totalQuizWithoutLecture;
+            document.getElementById('totalLectureCount').textContent = totalLectureCount;
+            
+            const lectureSelect = document.querySelector('.lectureSelect');
+      
+            
+            if (lectureSelect) {
+                // Set initial option to "Select Lecture"
+                lectureSelect.innerHTML = '<option value="" selected>Select Lecture</option>'; 
+                
+                if (totalLectureCount === 0) {
+                    // If there are no lectures, show a message or handle the case as needed
+                    console.log('No lectures found');
+                } else {
+                    // Populate the dropdown with lecture titles
+                    populateLectureDropdown(data.lectures);
+                }
+            } else {
+                console.error('Dropdown element not found');
+            }
+            
+            return data.lectures;
+        } else {
+            console.error('Error retrieving lectures:', data.error);
+            return null;
+        }
+    } catch (error) {
+        console.error('Error fetching lectures:', error);
+        return null;
+    }
+}
+
+
+function populateLectureDropdown(lectures) {
+    const lectureSelect = document.querySelector('.lectureSelect');
+    lectureSelect.innerHTML = '<option value="" selected>Select Lecture</option>'; // Set initial option to "Select Lecture"
+    lectures.forEach(lecture => {
+        const option = document.createElement('option');
+        option.value = lecture.lecture_id;
+        option.textContent = lecture.title; // Assuming 'title' is the property name containing the lecture title
+        lectureSelect.appendChild(option);
+    });
+}
+
+
+
+function populateLectureDropdown(lectures) {
+    const lectureSelect = document.querySelector('.lectureSelect');
+
+    try {
+        // Clear existing options
+        lectureSelect.innerHTML = '';
+
+        // Check if lectures were successfully retrieved
+        if (lectures) {
+            // Populate dropdown with lecture titles
+            lectures.forEach(lecture => {
+                const option = document.createElement('option');
+                option.value = lecture.lecture_id;
+                option.textContent = lecture.title; // Assuming 'title' is the property name containing the lecture title
+                lectureSelect.appendChild(option);
+            });
+        } else {
+            // Handle case where lectures couldn't be retrieved
+            console.error('Failed to retrieve lectures without quizzes');
+        }
+    } catch (error) {
+        // Log any errors that occur during retrieval
+        console.error('Error populating lecture dropdown:', error);
+    }
+}
+
+
+function hideForm() {
+    const form = document.querySelector('.quizForm');
+    form.style.display = 'none';
+}
+
+function updateFileName(input) {
+    const fileName = input.files[0].name;
+    const label = input.parentElement.querySelector('.custom-file-label');
+    label.textContent = fileName;
+}
+
+
+
+// Function to handle uploading quiz data
+
+function uploadingQuiz() {
+    // Get the selected lecture ID
+    const lectureSelect = document.querySelector('.lectureSelect');
+    const selectedLectureId = lectureSelect.value;
+    
+    // Get the uploaded file
+    const uploadedFile = document.querySelector('.fileUpload').files[0];
+    
+    // Check if a lecture is selected
+    if (!selectedLectureId) {
+        console.error('No lecture selected');
+        return;
+    }
+    
+    // Check if a file is uploaded
+    if (!uploadedFile) {
+        console.error('No file uploaded');
+        return;
+    }
+    
+    // Get c_id from the global scope
+    const globalCId = c_id;
+    
+    // Log the lecture ID, uploaded file name, and c_id
+    console.log('Lecture ID:', selectedLectureId);
+    console.log('Uploaded File Name:', uploadedFile.name);
+    console.log('c_id in global:', globalCId);
+    
+    // Create a new FormData object
+    const formData = new FormData();
+    
+    // Append other form data fields
+    formData.append('c_id', globalCId);
+    formData.append('lecture_id', selectedLectureId);
+    
+    // Append the file as a blob
+    formData.append('file', uploadedFile);
+    
+    // Send a POST request to the server
+    fetch('http://localhost:3000/api/uploadquizinfos', {
+        method: 'POST',
+        body: formData // Send the FormData object
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log('Quiz data uploaded successfully');
+            // Handle success
+            showSuccessMessage();
+            // Refresh the page after 2 seconds
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        } else {
+            console.error('Failed to upload quiz data');
+            // Handle failure
+        }
+    })
+    .catch(error => {
+        console.error('Error uploading quiz data:', error);
+        // Handle error
+    });
+}
+
+
+
+// Function to show success message
+function showSuccessMessage() {
+    const successAlert = document.getElementById('success');
+    successAlert.style.display = 'block';
+}
+
+
+
 
 
     window.onload = function() {

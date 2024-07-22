@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>EduWell </title>
+    <link rel="icon" href="https://i.imgur.com/cZ8jeW3.png" type="image/png">
+
+    <link href="./vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+    <!-- Custom Stylesheet -->
+    <link href="./css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div class="nav-header">
+            <a href="index.html" class="brand-logo">
+          <img src="https://i.imgur.com/cJD1uRx.png" alt="">
+            </a>
+
+            <div class="nav-control">
+                <div class="hamburger">
+                    <span class="line"></span><span class="line"></span><span class="line"></span>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div class="header">
+            <div class="header-content">
+                <nav class="navbar navbar-expand">
+                    <div class="collapse navbar-collapse justify-content-between">
+                        <div class="header-left">
+                            <div class="search_bar dropdown">
+                                <span class="search_icon p-3 c-pointer" data-toggle="dropdown">
+                                    <i class="mdi mdi-magnify"></i>
+                                </span>
+                                <div class="dropdown-menu p-0 m-0">
+                                    <form>
+                                        <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul class="navbar-nav header-right">
+                            <li class="nav-item dropdown notification_dropdown">
+                                <a class="nav-link" href="#" role="button" data-toggle="dropdown">
+                                    <i class="mdi mdi-bell"></i>
+                                    <div class="pulse-css"></div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <ul class="list-unstyled">
+                                        <li class="media dropdown-item">
+                                            <span class="success"><i class="ti-user"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Martin</strong> has added a <strong>customer</strong> Successfully
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="primary"><i class="ti-shopping-cart"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Jennifer</strong> purchased Light Dashboard 2.0.</p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="danger"><i class="ti-bookmark"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>Robin</strong> marked a <strong>ticket</strong> as unsolved.
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="primary"><i class="ti-heart"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong>David</strong> purchased Light Dashboard 1.0.</p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                        <li class="media dropdown-item">
+                                            <span class="success"><i class="ti-image"></i></span>
+                                            <div class="media-body">
+                                                <a href="#">
+                                                    <p><strong> James.</strong> has added a<strong>customer</strong> Successfully
+                                                    </p>
+                                                </a>
+                                            </div>
+                                            <span class="notify-time">3:20 am</span>
+                                        </li>
+                                    </ul>
+                                    <a class="all-notification" href="#">See all notifications <i
+                                            class="ti-arrow-right"></i></a>
+                                </div>
+                            </li>
+                            
+                            <li class="nav-item dropdown header-profile">
+                                <a class="nav-link" href="#" role="button" data-toggle="dropdown">
+                                    <i class="mdi mdi-account"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a href="./app-profile.html" class="dropdown-item">
+                                        <i class="icon-user"></i>
+                                        <span class="ml-2">Profile </span>
+                                    </a>
+                                    <a href="./email-inbox.html" class="dropdown-item">
+                                        <i class="icon-envelope-open"></i>
+                                        <span class="ml-2">Inbox </span>
+                                    </a>
+                                                  <a href="#" class="dropdown-item" onclick="logout()">
+    <i class="icon-key"></i>
+    <span class="ml-2">Logout </span>
+</a>
+
+                                    <script>
+                                        function logout() {
+                                            // Remove token from local storage
+                                     localStorage.removeItem('Token');
+    
+                                            // Redirect to index.html
+                                             window.location.href = '../../index.html';
+                                                }
+
+                                    </script>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+        <div class="quixnav">
+            <div class="quixnav-scroll">
+                <ul class="metismenu" id="menu">
+                    <li class="nav-label first">Main Menu</li>
+                    
+                    
+                    <li><a href="./mentorindex.html" aria-expanded="false"><i  class="icon icon-chart-bar-33"></i><span
+                        class="nav-text">Dashboard</span></a></li>
+                        
+              
+                    <li class="nav-label">Users</li>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                        class="icon icon-single-04"></i><span class="nav-text">Users</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="./mentorstudent.html">List of student</a></li>
+                            <li><a href="./mentorlist.html">List of mentors</a></li>
+                            
+                      
+                        </ul>
+                    </li>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                              class="icon icon-group-04"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-camera-reels" viewBox="0 0 16 16">
+                                <path d="M6 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0M1 3a2 2 0 1 0 4 0 2 2 0 0 0-4 0"/>
+                                <path d="M9 6h.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 7.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 16H2a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm6 8.73V7.27l-3.5 1.555v4.35zM1 8v6a1 1 0 0 0 1 1h7.5a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1"/>
+                                <path d="M9 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6M7 3a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
+                              </svg></i>
+                              <span class="nav-text">Materials</span></a>
+                        <ul aria-expanded="false">
+                            <li><a href="./mentorassign.html">Assign mentors</a></li>
+                            <li><a href="./mentorlecture.html">Topic</a></li>
+                            <li><a href="./mentorviewquiz.html">Quizs</a></li>
+                           
+                    
+                        </ul>
+                    </li>
+                    <li class="nav-label"> Components</li>
+
+
+                    <li><a href="./mentordiscussion.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book-half" viewBox="0 0 16 16">
+                        <path d="M8.5 2.687c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+                      </svg></i><span
+                        class="nav-text">Discussion</span></a></li>
+
+                    <li><a href="./app-calender.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-date" viewBox="0 0 16 16">
+                        <path d="M6.445 11.688V6.354h-.633A13 13 0 0 0 4.5 7.16v.695c.375-.257.969-.62 1.258-.777h.012v4.61zm1.188-1.305c.047.64.594 1.406 1.703 1.406 1.258 0 2-1.066 2-2.871 0-1.934-.781-2.668-1.953-2.668-.926 0-1.797.672-1.797 1.809 0 1.16.824 1.77 1.676 1.77.746 0 1.23-.376 1.383-.79h.027c-.004 1.316-.461 2.164-1.305 2.164-.664 0-1.008-.45-1.05-.82zm2.953-2.317c0 .696-.559 1.18-1.184 1.18-.601 0-1.144-.383-1.144-1.2 0-.823.582-1.21 1.168-1.21.633 0 1.16.398 1.16 1.23"/>
+                        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                      </svg></i><span
+                        class="nav-text">Calendar</span></a></li>
+
+                        
+                    <li><a href="widget-basic.html" aria-expanded="false"><i  class="icon icon"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                      </svg></i><span
+                        class="nav-text">Profiler</span></a></li>
+
+                  
+      <!-- <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Email</a>
+                                <ul aria-expanded="false">
+                                    <li><a href="./email-compose.html">Compose</a></li>
+                                    <li><a href="./email-inbox.html">Inbox</a></li>
+                                    <li><a href="./email-read.html">Read</a></li>
+                                </ul>
+                            </li> -->
+                      
+                                
+                   
+                </ul>
+            </div>
+
+
+        </div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        
+        <div class="content-body">
+            <div class="container-fluid">
+                <div class="row page-titles mx-0">
+                    <div class="col-sm-6 p-md-0">
+                        <div class="welcome-text">
+                            <h4 id='welcome'>Hi, welcome back   name  !</h4>
+                       
+                        </div>
+                    </div>
+                    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+                        <ol class="breadcrumb">
+                            <!-- <li class="breadcrumb-item"><a href="javascript:void(0)">Add mentor</a></li> -->
+                        </ol>
+                    </div>
+                </div>
+                <!-- Existing content -->
+
+
+                <!-- <div class="row" id="addMentorForm" style="display: none;">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Add Mentor</h4>
+                            </div>
+                            <div class="card-body">
+                              
+                                <form id="mentorForm">
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" class="form-control" id="name" name="name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="position">Position</label>
+                                        <input type="text" class="form-control" id="position" name="position" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="office">Office</label>
+                                        <input type="text" class="form-control" id="office" name="office" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="age">Age</label>
+                                        <input type="number" class="form-control" id="age" name="age" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="startDate">Start date</label>
+                                        <input type="date" class="form-control" id="startDate" name="startDate" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="salary">Salary</label>
+                                        <input type="number" class="form-control" id="salary" name="salary" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="profile-tab">
+                                <div class="custom-tab-1">
+                                    <ul class="nav nav-tabs">
+                                        <li class="nav-item"><a href="#profile" data-toggle="tab" class="nav-link show active">Profile</a>
+                                        </li>
+                                        <li class="nav-item"><a href="#about-me" data-toggle="tab" class="nav-link">About Me</a>
+                                        </li>
+                                        <li class="nav-item"><a href="#profile-settings" data-toggle="tab" class="nav-link">Setting</a>
+                                        </li>
+                                    </ul>
+
+
+                                    <div class="tab-content">
+
+
+                                        <div id="profile" class="tab-pane fade active show">
+                                            <div class="my-post-content pt-3">
+                                                <h4 class="text-primary">Profile Details</h4>
+                                                <form id="profileForm" class="row g-3">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="firstName" class="form-label">First Name:</label>
+                                                        <input type="text" class="form-control" id="firstName" name="firstName" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="lastName" class="form-label">Last Name:</label>
+                                                        <input type="text" class="form-control" id="lastName" name="lastName" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="email" class="form-label">Email:</label>
+                                                        <input type="email" class="form-control" id="email" name="email" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="phone" class="form-label">Phone:</label>
+                                                        <input type="tel" class="form-control" id="phone" name="phone" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="pincode" class="form-label">Pincode:</label>
+                                                        <input type="text" class="form-control" id="pincode" name="pincode" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="district" class="form-label">District:</label>
+                                                        <input type="text" class="form-control" id="district" name="district" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="state" class="form-label">State:</label>
+                                                        <input type="text" class="form-control" id="state" name="state" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="dob" class="form-label">Date of Birth:</label>
+                                                        <input type="date" class="form-control" id="dob" name="dob" required readonly>
+                                                    </div>
+                                                    <div class="col-12 d-flex justify-content-between mb-3">
+                                                        <button type="button" class="btn btn-primary edit-btn">Edit</button>
+                                                        <div class="edit-mode-buttons d-none">
+                                                            <button type="submit" class="btn btn-primary submit-btn">Save</button>
+                                                            <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                    
+                                                <hr> <!-- Divider -->
+                                    
+                                                <h4 class="text-primary">UG College Details</h4>
+                                                <form id="ugEducationForm" class="row g-3">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="ugCollegeName" class="form-label">UG College Name:</label>
+                                                        <input type="text" class="form-control" id="ugCollegeName" name="ugCollegeName" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="ugPassedOutYear" class="form-label">UG Passed Out Year:</label>
+                                                        <input type="text" class="form-control" id="ugPassedOutYear" name="ugPassedOutYear" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="ugDepartment" class="form-label">UG Department:</label>
+                                                        <input type="text" class="form-control" id="ugDepartment" name="ugDepartment" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="ugGPA" class="form-label">UG GPA:</label>
+                                                        <input type="text" class="form-control" id="ugGPA" name="ugGPA" required readonly>
+                                                    </div>
+                                                    <div class="col-12 d-flex justify-content-between mb-3">
+                                                        <button type="button" class="btn btn-primary edit-btn">Edit</button>
+                                                        <div class="edit-mode-buttons d-none">
+                                                            <button type="submit" class="btn btn-primary submit-btn">Save</button>
+                                                            <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                    
+                                                <hr> <!-- Divider -->
+                                    
+                                                <h4 class="text-primary">PG College Details</h4>
+                                                <form id="pgEducationForm" class="row g-3">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="pgCollegeName" class="form-label">PG College Name:</label>
+                                                        <input type="text" class="form-control" id="pgCollegeName" name="pgCollegeName" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="pgPassedOutYear" class="form-label">PG Passed Out Year:</label>
+                                                        <input type="text" class="form-control" id="pgPassedOutYear" name="pgPassedOutYear" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="pgDepartment" class="form-label">PG Department:</label>
+                                                        <input type="text" class="form-control" id="pgDepartment" name="pgDepartment" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="pgGPA" class="form-label">PG GPA:</label>
+                                                        <input type="text" class="form-control" id="pgGPA" name="pgGPA" required readonly>
+                                                    </div>
+                                                    <div class="col-12 d-flex justify-content-between mb-3">
+                                                        <button type="button" class="btn btn-primary edit-btn">Edit</button>
+                                                        <div class="edit-mode-buttons d-none">
+                                                            <button type="submit" class="btn btn-primary submit-btn">Save</button>
+                                                            <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                    
+                                                <hr> <!-- Divider -->
+                                    
+                                                <h4 class="text-primary">10th School Details</h4>
+                                                <form id="10thSchoolForm" class="row g-3">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="10thSchoolName" class="form-label">School Name:</label>
+                                                        <input type="text" class="form-control" id="10thSchoolName" name="10thSchoolName" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="10thPercentage" class="form-label">10th Percentage:</label>
+                                                        <input type="text" class="form-control" id="10thPercentage" name="10thPercentage" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="10thBoard" class="form-label">Board:</label>
+                                                        <input type="text" class="form-control" id="10thBoard" name="10thBoard" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="10thDistrict" class="form-label">District:</label>
+                                                        <input type="text" class="form-control" id="10thDistrict" name="10thDistrict" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="10thState" class="form-label">State:</label>
+                                                        <input type="text" class="form-control" id="10thState" name="10thState" required readonly>
+                                                    </div>
+                                                    <div class="col-12 d-flex justify-content-between mb-3">
+                                                        <button type="button" class="btn btn-primary edit-btn">Edit</button>
+                                                        <div class="edit-mode-buttons d-none">
+                                                            <button type="submit" class="btn btn-primary submit-btn">Save</button>
+                                                            <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                    
+                                                <hr> <!-- Divider -->
+                                    
+                                                <h4 class="text-primary">12th School Details</h4>
+                                                <form id="12thSchoolForm" class="row g-3">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="12thSchoolName" class="form-label">School Name:</label>
+                                                        <input type="text" class="form-control" id="12thSchoolName" name="12thSchoolName" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="12thPercentage" class="form-label">12th Percentage:</label>
+                                                        <input type="text" class="form-control" id="12thPercentage" name="12thPercentage" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="12thBoard" class="form-label">Board:</label>
+                                                        <input type="text" class="form-control" id="12thBoard" name="12thBoard" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="12thDistrict" class="form-label">District:</label>
+                                                        <input type="text" class="form-control" id="12thDistrict" name="12thDistrict" required readonly>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="12thState" class="form-label">State:</label>
+                                                        <input type="text" class="form-control" id="12thState" name="12thState" required readonly>
+                                                    </div>
+                                                    <div class="col-12 d-flex justify-content-between mb-3">
+                                                        <button type="button" class="btn btn-primary edit-btn">Edit</button>
+                                                        <div class="edit-mode-buttons d-none">
+                                                            <button type="submit" class="btn btn-primary submit-btn">Save</button>
+                                                            <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                    
+                                            </div>
+                                        </div>
+                                        
+                                        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+                                        <script>
+                                            function toggleEditMode() {
+                                                const editBtns = document.querySelectorAll('.edit-btn');
+                                        
+                                                editBtns.forEach(editBtn => {
+                                                    const submitBtn = editBtn.nextElementSibling.querySelector('.submit-btn');
+                                                    const cancelBtn = editBtn.nextElementSibling.querySelector('.cancel-btn');
+                                                    const editModeButtons = editBtn.nextElementSibling;
+                                        
+                                                    editBtn.addEventListener('click', function() {
+                                                        const formFields = editBtn.closest('form').querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="date"]');
+                                                        formFields.forEach(field => {
+                                                            field.removeAttribute('readonly');
+                                                        });
+                                                        editBtn.classList.add('d-none');
+                                                        editModeButtons.classList.remove('d-none');
+                                                    });
+                                        
+                                                    cancelBtn.addEventListener('click', function() {
+                                                        const formFields = editBtn.closest('form').querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="date"]');
+                                                        formFields.forEach(field => {
+                                                            field.setAttribute('readonly', true);
+                                                        });
+                                                        editModeButtons.classList.add('d-none');
+                                                        editBtn.classList.remove('d-none');
+                                                    });
+                                                });
+                                            }
+                                        
+                                            $(document).ready(function() {
+                                                toggleEditMode();
+                                            });
+                                        </script>
+
+
+
+                                        <div id="about-me" class="tab-pane fade">
+                                            <div class="profile-about-me">
+                                                <div class="pt-4 border-bottom-1 pb-4">
+                                                    <h4 class="text-primary">About Me</h4>
+                                                    <p>A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart. I am alone, and feel the charm of existence was created for the
+                                                        bliss of souls like mine.I am so happy, my dear friend, so absorbed in the exquisite sense of mere tranquil existence, that I neglect my talents.</p>
+                                                    <p>A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture that he had recently cut out of an illustrated magazine and housed
+                                                        in a nice, gilded frame.</p>
+                                                </div>
+                                            </div>
+                                            <div class="profile-skills pt-2 border-bottom-1 pb-2">
+                                                <h4 class="text-primary mb-4">Skills</h4>
+                                                <a href="javascript:void()" class="btn btn-outline-dark btn-rounded pl-4 my-3 my-sm-0 pr-4 mr-3 m-b-10">Admin</a>
+                                                <a href="javascript:void()" class="btn btn-outline-dark btn-rounded pl-4 my-3 my-sm-0 pr-4 mr-3 m-b-10">Dashboard</a>
+                                                <a href="javascript:void()" class="btn btn-outline-dark btn-rounded pl-4 my-3 my-sm-0 pr-4 mr-3 m-b-10">Photoshop</a>
+                                                <a href="javascript:void()" class="btn btn-outline-dark btn-rounded pl-4 my-3 my-sm-0 pr-4 mr-3 m-b-10">Bootstrap</a>
+                                                <a href="javascript:void()" class="btn btn-outline-dark btn-rounded pl-4 my-3 my-sm-0 pr-4 mr-3 m-b-10">Responsive</a>
+                                                <a href="javascript:void()" class="btn btn-outline-dark btn-rounded pl-4 my-3 my-sm-0 pr-4 mr-3 m-b-10">Crypto</a>
+                                            </div>
+                                            <div class="profile-lang pt-5 border-bottom-1 pb-5">
+                                                <h4 class="text-primary mb-4">Language</h4><a href="javascript:void()" class="text-muted pr-3 f-s-16"><i class="flag-icon flag-icon-us"></i> English</a> <a href="javascript:void()" class="text-muted pr-3 f-s-16"><i class="flag-icon flag-icon-fr"></i> French</a>
+                                                <a href="javascript:void()" class="text-muted pr-3 f-s-16"><i class="flag-icon flag-icon-bd"></i> Bangla</a>
+                                            </div>
+                                            <div class="profile-personal-info">
+                                                <h4 class="text-primary mb-4">Personal Information</h4>
+                                                <div class="row mb-4">
+                                                    <div class="col-3">
+                                                        <h5 class="f-w-500">Name <span class="pull-right">:</span>
+                                                        </h5>
+                                                    </div>
+                                                    <div class="col-9"><span>Mitchell C.Shay</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <div class="col-3">
+                                                        <h5 class="f-w-500">Email <span class="pull-right">:</span>
+                                                        </h5>
+                                                    </div>
+                                                    <div class="col-9"><span>example@examplel.com</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <div class="col-3">
+                                                        <h5 class="f-w-500">Availability <span class="pull-right">:</span></h5>
+                                                    </div>
+                                                    <div class="col-9"><span>Full Time (Free Lancer)</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <div class="col-3">
+                                                        <h5 class="f-w-500">Age <span class="pull-right">:</span>
+                                                        </h5>
+                                                    </div>
+                                                    <div class="col-9"><span>27</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <div class="col-3">
+                                                        <h5 class="f-w-500">Location <span class="pull-right">:</span></h5>
+                                                    </div>
+                                                    <div class="col-9"><span>Rosemont Avenue Melbourne,
+                                                            Florida</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <div class="col-3">
+                                                        <h5 class="f-w-500">Year Experience <span class="pull-right">:</span></h5>
+                                                    </div>
+                                                    <div class="col-9"><span>07 Year Experiences</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="profile-settings" class="tab-pane fade">
+                                            <div class="pt-3">
+                                                <div class="settings-form">
+                                                    <h4 class="text-primary">Account Setting</h4>
+                                                    <form>
+                                                        <div class="form-row">
+                                                            <div class="form-group col-md-6">
+                                                                <label>Email</label>
+                                                                <input type="email" placeholder="Email" class="form-control">
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label>Password</label>
+                                                                <input type="password" placeholder="Password" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Address</label>
+                                                            <input type="text" placeholder="1234 Main St" class="form-control">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Address 2</label>
+                                                            <input type="text" placeholder="Apartment, studio, or floor" class="form-control">
+                                                        </div>
+                                                        <div class="form-row">
+                                                            <div class="form-group col-md-6">
+                                                                <label>City</label>
+                                                                <input type="text" class="form-control">
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label>State</label>
+                                                                <select class="form-control" id="inputState">
+                                                                    <option selected="">Choose...</option>
+                                                                    <option>Option 1</option>
+                                                                    <option>Option 2</option>
+                                                                    <option>Option 3</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group col-md-2">
+                                                                <label>Zip</label>
+                                                                <input type="text" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="form-check">
+                                                                <input type="checkbox" class="form-check-input" id="gridCheck">
+                                                                <label for="gridCheck" class="form-check-label">Check me out</label>
+                                                            </div>
+                                                        </div>
+                                                        <button class="btn btn-primary" type="submit">Sign
+                                                            in</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            
+                
+                <!-- End of existing content -->
+    
+                <!-- Add mentor form -->
+             
+                <!-- End of add mentor form -->
+            </div>
+        </div>
+    
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $("li.breadcrumb-item a").click(function () {
+                    $("#addMentorForm").toggle();
+                });
+            });
+        </script>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+
+
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                <p>Copyright © Designed &amp; Developed by <a href="#" target="_blank">Eduwell </a> 2024</p>
+            </div>
+        </div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+
+        <!--**********************************
+           Support ticket button start
+        ***********************************-->
+
+        <!--**********************************
+           Support ticket button end
+        ***********************************-->
+
+        
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="./vendor/global/global.min.js"></script>
+    <script src="./js/quixnav-init.js"></script>
+    <script src="./js/custom.min.js"></script>
+
+</body>
+
+</html>
+
+

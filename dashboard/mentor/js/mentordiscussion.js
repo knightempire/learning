@@ -10,7 +10,7 @@
         }
 
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/decodeToken', {
+            const response = await fetch('http://localhost:3000/api/decodeToken', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -44,7 +44,7 @@
 
     async function fetchMentorDashboard(user_id) {
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/mentordashboard', {
+            const response = await fetch('http://localhost:3000/api/mentordashboard', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -99,7 +99,7 @@
         console.log('Discussion data:', discussionData);
     
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/discussion', {
+            const response = await fetch('http://localhost:3000/api/discussion', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -239,7 +239,7 @@
             console.log(requestBody)
     
             // Send a POST request to the API endpoint
-            const response = await fetch('https://learning-l3tf.onrender.com/api/subdiscussion', {
+            const response = await fetch('http://localhost:3000/api/subdiscussion', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -275,7 +275,7 @@
     // Function to view discussion and handle accordion interactions
     async function viewDiscussion(c_id) {
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/viewdiscussion', {
+            const response = await fetch('http://localhost:3000/api/viewdiscussion', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -364,7 +364,7 @@
     
                         try {
                             // Call the viewsubdiscussion API with the discussion_id
-                            const response = await fetch('https://learning-l3tf.onrender.com/api/viewsubdiscussion', {
+                            const response = await fetch('http://localhost:3000/api/viewsubdiscussion', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -407,7 +407,7 @@
             };
     
             // Send a POST request to the API endpoint
-            const response = await fetch('https://learning-l3tf.onrender.com/api/discussionlike', {
+            const response = await fetch('http://localhost:3000/api/discussionlike', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -446,7 +446,7 @@
             };
     
             // Send a POST request to the API endpoint
-            const response = await fetch('https://learning-l3tf.onrender.com/api/subdiscussionlike', {
+            const response = await fetch('http://localhost:3000/api/subdiscussionlike', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

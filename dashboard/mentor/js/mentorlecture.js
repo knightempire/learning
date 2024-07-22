@@ -10,7 +10,7 @@
         }
 
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/decodeToken', {
+            const response = await fetch('http://localhost:3000/api/decodeToken', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -43,7 +43,7 @@
 
     async function fetchMentorDashboard(userId) {
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/mentordashboard', {
+            const response = await fetch('http://localhost:3000/api/mentordashboard', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -70,7 +70,7 @@
 
     async function fetchLectureData(c_id) {
         try {
-            const response = await fetch('https://learning-l3tf.onrender.com/api/getlecture', {
+            const response = await fetch('http://localhost:3000/api/getlecture', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -148,7 +148,7 @@
         console.log(requestBody)
 
         // Send a POST request to the API endpoint
-        const response = await fetch('https://learning-l3tf.onrender.com/api/uploadvideo', {
+        const response = await fetch('http://localhost:3000/api/uploadvideo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

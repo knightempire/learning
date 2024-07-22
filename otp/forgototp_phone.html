@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -14,63 +15,67 @@
     <title>EduWell</title>
     <link rel="icon" href="https://i.imgur.com/cZ8jeW3.png" type="image/png">
 </head>
+
 <body>
-<div class="content">
-  <div id="loginMessage" class="popup-message"></div> <!-- Added class 'popup-message' -->
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <img src="images/undraw_remotely_2j6y.svg" alt="Image" class="img-fluid">
-            </div>
-            <div class="col-md-6 contents">
-                <div class="row justify-content-center">
-                    <div class="col-md-8">
-                        <div class="mb-4">
-                            <h3>Verification</h3>
-                            <p class="mb-4">Enter phone number</p>
-                        </div>
-                        <form id="verificationForm" action="./forgototp_verify.html" method="post">
-                            <div class="form-group first">
-                                <label for="phone">Phone</label>
-                                <input type="text" class="form-control" id="phone" name="phone" style="height: 30px;">
+    <div class="content">
+        <div id="loginMessage" class="popup-message"></div>
+        <!-- Added class 'popup-message' -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="images/undraw_remotely_2j6y.svg" alt="Image" class="img-fluid">
+                </div>
+                <div class="col-md-6 contents">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="mb-4">
+                                <h3>Verification</h3>
+                                <p class="mb-4">Enter phone number</p>
                             </div>
-                            <br>
-                            <input type="submit" value="Log In" class="btn btn-block btn-primary" style="height: 40px;">
-                        </form>
+                            <form id="verificationForm" action="./forgototp_verify.html" method="post">
+                                <div class="form-group first">
+                                    <label for="phone">Phone</label>
+                                    <input type="text" class="form-control" id="phone" name="phone" style="height: 30px;">
+                                </div>
+                                <br>
+                                <input type="submit" value="Log In" class="btn btn-block btn-primary" style="height: 40px;">
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script src="js/jquery-3.3.1.min.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/main.js"></script>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
 
-<script src="./js//forgototp_phone.js"></script>
+    <script src="./js/forgototp_phone.js"></script>
 
 
 </body>
+
 </html>
 
 
 <style>
-  .popup-message {
-      display: none;
-      position: fixed;
-      top: 20px; /* Changed from bottom to top */
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 10px 20px;
-      background-color: rgba(255, 0, 0, 0.7);
-      color: white;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  }
-
-  .popup-message.show {
-      display: block;
-  }
+    .popup-message {
+        display: none;
+        position: fixed;
+        top: 20px;
+        /* Changed from bottom to top */
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        background-color: rgba(255, 0, 0, 0.7);
+        color: white;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    .popup-message.show {
+        display: block;
+    }
 </style>

@@ -19,8 +19,12 @@ const fetch = require('node-fetch');
 const storage = multer.memoryStorage();
 
 // Initialize multer with storage configuration
-const upload = multer({ storage: storage });
-
+const upload = multer({
+    storage: storage, // Use memory storage
+    limits: {
+      fileSize: 10 * 1024 * 1024 // Set file size limit to 10MB
+    }
+  });
 // Now you can use the upload middleware in your routes
 
 // const authMiddleware = require('./authmiddleware');
@@ -139,12 +143,14 @@ app.get('/auth/google',
 // Google OAuth callback route
 
 app.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: 'http://10.12.194.15:5500/login.html' }),
+    passport.authenticate('google', { failureRedirect: 'http://10.12.68.177:5500/login.html' }),
     async (req, res) => {
         try {
             // Extract user's email from the Google OAuth response
             const email = req.user.emails[0].value;
             const givenName = req.user.name.givenName; // Access given name
+
+            console.log(email,givenName)
 
             // Check if the user already exists in the database
             const [existingUser] = await pool.query('SELECT * FROM users WHERE username = ?', [email]);
@@ -176,7 +182,7 @@ app.get('/auth/google/callback',
                     };
 
                     // Redirect the user to the login.html page with the response data as query parameters
-                    const redirectUrl = `http://10.12.194.15:5500/login.html?${new URLSearchParams(responseData).toString()}`;
+                    const redirectUrl = `http://10.12.68.177:5500/login.html?${new URLSearchParams(responseData).toString()}`;
                     res.redirect(redirectUrl);
                 } else {
                     // If login is unsuccessful, return an error
@@ -199,7 +205,7 @@ app.get('/auth/google/callback',
                     };
 
                     // Redirect the user to the login.html page with the response data as query parameters
-                    const redirectUrl = `http://10.12.194.15:5500/login.html?${new URLSearchParams(responseData).toString()}`;
+                    const redirectUrl = `http://10.12.68.177:5500/login.html?${new URLSearchParams(responseData).toString()}`;
                     res.redirect(redirectUrl);
                 } else {
                     // If login is unsuccessful, return an error
@@ -311,7 +317,7 @@ app.post('/api/login', async (req, res) => {
     try {
         console.log('api login requested');
         console.log(username)
-        console.log(password)
+    
         // Query the database to check if the provided username exists
         const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
 
@@ -1969,43 +1975,64 @@ app.post('/api/viewnoquizlecture', async (req, res) => {
 });
 
 
-//upload quiz
-app.post('api/uploadquizinfos', upload.single('file'), async (req, res) => {
-    try {
-        const { quiz_id } = req.body;
 
-        if (!quiz_id || !req.file) {
+app.post('/api/uploadquizinfos', upload.single('file'), async (req, res) => {
+    try {
+        console.log("API upload quiz requested");
+        
+        // Print received data
+        console.log("Received data:", req.body);
+        console.log("Received file:", req.file);
+
+        const { c_id, lecture_id } = req.body;
+
+        if (!c_id || !lecture_id || !req.file) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
-        let excelData = [];
+        // Log file details
+        console.log("Files are");
+        console.log("File details:", req.file);
+        console.log("Is working");
 
         // Read the file based on its type (Excel or CSV)
-        if (req.file.mimetype === 'application/vnd.ms-excel') {
+        let excelData = [];
+        console.log("Data of Excel");
+        if (req.file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+            console.log("Excel");
             const workbook = XLSX.read(req.file.buffer);
             const sheetName = workbook.SheetNames[0];
             const sheet = workbook.Sheets[sheetName];
             excelData = XLSX.utils.sheet_to_json(sheet);
         } else if (req.file.mimetype === 'text/csv') {
             const fileContent = await fs.readFile(req.file.path, 'utf-8');
-            excelData = await readCSV(fileContent);
+            excelData = await readCSV(fileContent); // Implement readCSV function
         } else {
+            console.log("wrong format")
             return res.status(400).json({ error: 'Unsupported file format' });
         }
 
-        // Prepare the values array for insertion
-        const values = excelData.map(row => [quiz_id, row.question, row.a, row.b, row.c, row.d, row.answer]);
+        // Log the number of questions
+        console.log("Number of questions:", excelData.length);
 
-        const query = `INSERT INTO quiz_info (q_id, question, a, b, c, d, answer) VALUES ?`;
+        // Prepare the values array for insertion into quiz table
+        const quizValues = [[c_id, lecture_id, excelData.length,excelData.length]];
 
-        // Get a connection from the pool
-        const connection = await pool.getConnection();
+        // Insert data into quiz table
+        const quizQuery = `INSERT INTO quiz (c_id, lecture_id, no_of_questions, total_mark) VALUES ?`;
+        const quizConnection = await pool.getConnection();
+        const [quizResult] = await quizConnection.query(quizQuery, [quizValues]);
+        const insertedQId = quizResult.insertId; // Get the generated q_id from the inserted row
+        quizConnection.release();
 
-        // Execute the insert query
-        await connection.query(query, [values]);
+        // Prepare the values array for insertion into quiz_info table
+        const quizInfoValues = excelData.map(row => [insertedQId, row.question, row.a, row.b, row.c, row.d, row.answer]);
 
-        // Release the connection back to the pool
-        connection.release();
+        // Insert data into quiz_info table
+        const quizInfoQuery = `INSERT INTO quiz_info (q_id, question, a, b, c, d, answer) VALUES ?`;
+        const quizInfoConnection = await pool.getConnection();
+        await quizInfoConnection.query(quizInfoQuery, [quizInfoValues]);
+        quizInfoConnection.release();
 
         console.log('Quiz data inserted successfully');
         res.json({ message: 'Quiz data inserted successfully' });
@@ -2014,6 +2041,8 @@ app.post('api/uploadquizinfos', upload.single('file'), async (req, res) => {
         res.status(500).json({ error: 'An error occurred while inserting quiz data' });
     }
 });
+
+
 
 // Function to read CSV file
 function readCSV(fileContent) {
