@@ -14,7 +14,7 @@ Please note that Eduwell is currently in the process of development, and registr
 |----------|----------|
 | user     | user     |
 
->>>>>>> main
+
 
 
 ## Table of Contents
