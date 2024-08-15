@@ -59,6 +59,7 @@ Welcome to Eduwell, our Interactive Learning Website! This platform is designed 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+ 
 
 In this template:
 
