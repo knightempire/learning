@@ -1,4 +1,4 @@
-# Interactive Learning Website Readme
+# Interactive Learning Website 
 
 
 Click [here](https://eduwells.onrender.com/) to visit and explore our site, Eduwell.
