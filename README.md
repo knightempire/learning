@@ -24,7 +24,7 @@ Please note that Eduwell is currently in the process of development, and registr
 - [Installation](#installation)
 - [Usage](#usage)
 - [Chatbot](#chatbot)
-- [Opt Verification](#opt-verification)
+- [Otp Verification](#opt-verification)
 - [Contributing](#contributing)
 - [License](#license)
 
