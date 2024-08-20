@@ -10,7 +10,7 @@ Please note that Eduwell is currently in the process of development, and registr
 
 ## Login Credentials
 
-| Username | Password | 
+| Username | Password |  
 |----------|----------|
 | user     | user     |
 
