@@ -7,7 +7,7 @@ Click [here](https://eduwells.onrender.com/) to visit and explore our site, Eduw
 
 Please note that Eduwell is currently in the process of development, and registration is not yet available. Thank you for your understanding.
 
-
+ 
 ## Login Credentials
 
 | Username | Password |  
