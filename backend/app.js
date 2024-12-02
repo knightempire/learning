@@ -22,9 +22,9 @@ const storage = multer.memoryStorage();
 const upload = multer({
     storage: storage, // Use memory storage
     limits: {
-      fileSize: 10 * 1024 * 1024 // Set file size limit to 10MB
+        fileSize: 10 * 1024 * 1024 // Set file size limit to 10MB
     }
-  });
+});
 // Now you can use the upload middleware in your routes
 
 // const authMiddleware = require('./authmiddleware');
@@ -33,7 +33,7 @@ const generateResponse = require('./middleWare/chat');
 
 
 const app = express();
-const port = 3000||null;
+const port = 3000 || null;
 
 
 app.use(cors());
@@ -62,7 +62,7 @@ const {
 const dbConfig = {
     host: DB_HOST,
     // port: 10379,
-    port:3306,
+    port: 19516,
     user: DB_USER,
     password: DB_PASSWORD,
     database: DB_DATABASE,
@@ -83,14 +83,14 @@ app.use(session({
     saveUninitialized: true,
 }));
 
-(async () => {
+(async() => {
     try {
         // Attempt to get a connection from the pool
         const connection = await pool.getConnection();
-        
+
         // If connection successful, log a success message
         console.log('Database connected successfully');
-        
+
         // Release the connection back to the pool
         connection.release();
     } catch (error) {
@@ -122,7 +122,7 @@ passport.deserializeUser((user, done) => {
 });
 
 
-app.get('/proxy/google/oauth', async (req, res) => {
+app.get('/proxy/google/oauth', async(req, res) => {
     try {
         const response = await fetch('https://accounts.google.com/o/oauth2/v2/auth?response_type=code&redirect_uri=https%3A%2F%2Feduwel.onrender.com%2Flogin.html&client_id=290997095546-oec6je9hb7sl1cj0injd3stjmi12tprs.apps.googleusercontent.com');
         const data = await response.text();
@@ -135,29 +135,29 @@ app.get('/proxy/google/oauth', async (req, res) => {
 
 
 app.get('/auth/google',
-    passport.authenticate('google', { 
-        scope: ['profile', 'email', 'openid', 'https://www.googleapis.com/auth/user.birthday.read', 'https://www.googleapis.com/auth/user.phonenumbers.read'] 
+    passport.authenticate('google', {
+        scope: ['profile', 'email', 'openid', 'https://www.googleapis.com/auth/user.birthday.read', 'https://www.googleapis.com/auth/user.phonenumbers.read']
     }));
 
-    
+
 // Google OAuth callback route
 
 app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: 'http://10.12.68.177:5500/login.html' }),
-    async (req, res) => {
+    async(req, res) => {
         try {
             // Extract user's email from the Google OAuth response
             const email = req.user.emails[0].value;
             const givenName = req.user.name.givenName; // Access given name
 
-            console.log(email,givenName)
+            console.log(email, givenName)
 
             // Check if the user already exists in the database
             const [existingUser] = await pool.query('SELECT * FROM users WHERE username = ?', [email]);
 
             if (!existingUser.length) {
                 // If the user doesn't exist, register the user
-                const username = email; 
+                const username = email;
                 const hashedPassword = await bcrypt.hash(email, 10); // Assuming email as default password for Google users
                 const role = 'student'; // Default role for new users
 
@@ -165,7 +165,7 @@ app.get('/auth/google/callback',
 
                 // Retrieve the newly created user
                 const [newUser] = await pool.query('SELECT * FROM users WHERE username = ?', [email]);
-                
+
                 // Proceed with login using the provided username (email) and password (also email)
                 const loginResponse = await loginUser({ username: email, password: email }); // Assuming loginUser function is implemented
 
@@ -182,7 +182,7 @@ app.get('/auth/google/callback',
                     };
 
                     // Redirect the user to the login.html page with the response data as query parameters
-                    const redirectUrl = `http://10.12.68.177:5500/login.html?${new URLSearchParams(responseData).toString()}`;
+                    const redirectUrl = `./login.html?${new URLSearchParams(responseData).toString()}`;
                     res.redirect(redirectUrl);
                 } else {
                     // If login is unsuccessful, return an error
@@ -220,7 +220,7 @@ app.get('/auth/google/callback',
 
 
 
-    // Function to handle user login
+// Function to handle user login
 async function loginUser(credentials) {
     try {
         // Extract username and password from credentials
@@ -297,7 +297,7 @@ const createtoken = (req, res, rows) => {
     // Sign the token with the username instead of email
     const token = jwt.sign({ username: username }, JWT_SECRET, {
 
-        
+
         expiresIn: JWT_EXPIRY,
     });
 
@@ -311,13 +311,13 @@ const createtoken = (req, res, rows) => {
 
 
 // Route for login
-app.post('/api/login', async (req, res) => {
+app.post('/api/login', async(req, res) => {
     const { username, password } = req.body;
 
     try {
         console.log('api login requested');
         console.log(username)
-    
+
         // Query the database to check if the provided username exists
         const [existingUser] = await pool.execute('SELECT * FROM users WHERE username = ?', [username]);
 
@@ -339,7 +339,7 @@ app.post('/api/login', async (req, res) => {
         // Get the role from the existingUser object
         const role = existingUser[0].role;
 
-    
+
 
         // Determine the role-specific response number
         let responseNumber;
@@ -347,19 +347,18 @@ app.post('/api/login', async (req, res) => {
             // Check if the user is also in the student table
             const [studentResult] = await pool.execute('SELECT s_id FROM student WHERE s_id = ?', [existingUser[0].user_id]);
             responseNumber = studentResult.length > 0 ? 2 : 1; // If user is in student table, set responseNumber to 2, else 1
-        } 
-        else if (role === 'mentor') {
+        } else if (role === 'mentor') {
             // Query the mentors table to get mentor details based on user_id
             const [mentorResult] = await pool.execute('SELECT position FROM mentors WHERE m_id = ?', [existingUser[0].user_id]);
-            
+
             if (mentorResult.length === 0) {
                 // If mentor data is not found, return an error
                 console.log("Mentor data not found");
                 return res.status(400).json({ error: 'Mentor data not found' });
             }
-        
+
             const mentorPosition = mentorResult[0].position;
-            
+
             if (mentorPosition === 'handling') {
                 responseNumber = 4; // Response number for handling mentor
             } else if (mentorPosition === 'head') {
@@ -370,7 +369,7 @@ app.post('/api/login', async (req, res) => {
                 return res.status(400).json({ error: 'Invalid mentor position' });
             }
         }
-        
+
 
         // Log the responseNumber
         console.log("responseNumber:", responseNumber);
@@ -379,7 +378,7 @@ app.post('/api/login', async (req, res) => {
         const token = createtoken(req, res, existingUser); // Call the createtoken function with req and res
         console.log("token:", token);
 
-        res.json({ isValid: true, responseNumber, token }); 
+        res.json({ isValid: true, responseNumber, token });
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -388,7 +387,7 @@ app.post('/api/login', async (req, res) => {
 
 
 // Route for register
-app.post('/api/register', async (req, res) => {
+app.post('/api/register', async(req, res) => {
     console.log('Received data for registration:', req.body);
     const { name, username, password, role } = req.body;
 
@@ -410,7 +409,7 @@ app.post('/api/register', async (req, res) => {
 
         // Insert the new user into the database
         const [result] = await pool.execute('INSERT INTO users (name, username, password, role) VALUES (?, ?,  ?, ?)', [name, username, hashedPassword, userRole]);
-        
+
         // Check if insertion was successful
         if (result.affectedRows === 1) {
             // Redirect to login after successful registration
@@ -449,7 +448,7 @@ app.post('/api/register', async (req, res) => {
 //     }
 // }
 
-const authenticateToken = async (req, res, next) => {
+const authenticateToken = async(req, res, next) => {
     try {
         // Check if Authorization header exists
         if (!req.headers.authorization) {
@@ -461,14 +460,14 @@ const authenticateToken = async (req, res, next) => {
         console.log("Token:", token); // Print token value
 
         // Verify token
-        jwt.verify(token, "learn@1234", async (err, decodedToken) => {
+        jwt.verify(token, "learn@1234", async(err, decodedToken) => {
             if (err) {
                 console.error('Authentication error:', err.message);
                 // Token is invalid or expired, send 401 Unauthorized response to client
                 return res.status(401).json({ error: 'Unauthorized' });
             } else {
                 console.log('Decoded Token:', decodedToken); // Print decoded token data
-                
+
                 // Decode the token to get the username
                 const username = decodedToken.username;
                 console.log(username)
@@ -497,12 +496,12 @@ const authenticateToken = async (req, res, next) => {
 
 
 //decoding the token
-app.post('/api/decodeToken', async (req, res) => {
+app.post('/api/decodeToken', async(req, res) => {
     console.log('api decode requested');
     try {
         // Extract the token from the request body
         const { token } = req.body;
-    
+
         console.log(token)
 
         // Verify and decode the token
@@ -547,7 +546,7 @@ app.post('/api/decodeToken', async (req, res) => {
 
 
 // Route for generating OTP
-app.post('/api/generate-otp', async (req, res) => {
+app.post('/api/generate-otp', async(req, res) => {
     try {
         console.log('api generate otp requested');
         const { phoneNumber } = req.body;
@@ -571,7 +570,7 @@ app.post('/api/generate-otp', async (req, res) => {
 app.post('/api/verify-otp', verifyOtpMiddleware);
 
 
-app.post('/api/forgotgenerate-otp', async (req, res) => {
+app.post('/api/forgotgenerate-otp', async(req, res) => {
     try {
         console.log('api forgot otp requested');
         const { phoneNumber } = req.body;
@@ -595,8 +594,8 @@ app.post('/api/forgotgenerate-otp', async (req, res) => {
 
 
 //Route for mentor
-app.post('/api/registermentor', async (req, res) => {
-    const { name, username,  course_name, role } = req.body;
+app.post('/api/registermentor', async(req, res) => {
+    const { name, username, course_name, role } = req.body;
     const defaultPassword = 'mentor'; // Define the default password for mentors
 
     try {
@@ -658,7 +657,7 @@ app.post('/api/registermentor', async (req, res) => {
 
 
 //Route for chat
-app.post('/message', async (req, res) => {
+app.post('/message', async(req, res) => {
     console.log('api chat bot requested');
     const userInput = req.body.message;
 
@@ -669,7 +668,7 @@ app.post('/message', async (req, res) => {
 
 
 // Route for updating user data (username or password)
-app.put('/api/users/:phoneNumber', async (req, res) => {
+app.put('/api/users/:phoneNumber', async(req, res) => {
     const { phoneNumber } = req.params;
     const { option, newData } = req.body;
 
@@ -737,7 +736,7 @@ app.get('/api/paymentcall', (req, res) => {
 
 
 // Route for processing payment
-app.post('/api/payment', async (req, res) => {
+app.post('/api/payment', async(req, res) => {
     const { user_id, amount, course_name, payment_date } = req.body;
 
     try {
@@ -790,7 +789,7 @@ app.post('/api/payment', async (req, res) => {
 
 
 // Route for retrieving payment data using POST method
-app.post('/api/viewpayment', async (req, res) => {
+app.post('/api/viewpayment', async(req, res) => {
     const { user_id } = req.body; // Assuming user_id is passed in the request body
 
     try {
@@ -828,7 +827,7 @@ app.post('/api/viewpayment', async (req, res) => {
 
 
 // Route for checking student
-app.post('/api/checkstudent', async (req, res) => {
+app.post('/api/checkstudent', async(req, res) => {
     const { s_id } = req.body;
 
     try {
@@ -854,7 +853,7 @@ app.post('/api/checkstudent', async (req, res) => {
 
 
 // Route for retrieving course data by c_id for a student
-app.post('/api/studentcourse', async (req, res) => {
+app.post('/api/studentcourse', async(req, res) => {
     const { c_id } = req.body;
 
     try {
@@ -879,14 +878,14 @@ app.post('/api/studentcourse', async (req, res) => {
 
 
 //courses
-app.get('/api/courselist', async (req, res) => {
+app.get('/api/courselist', async(req, res) => {
     try {
- 
+
         const [rows] = await pool.query('SELECT c_id, course_name FROM course');
         if (!Array.isArray(rows)) {
             throw new Error('Data returned from query is not an array');
         }
-        
+
         console.log("API courselist requested")
         res.json(rows);
     } catch (error) {
@@ -897,7 +896,7 @@ app.get('/api/courselist', async (req, res) => {
 
 
 //upload video
-app.post('/api/uploadvideo', async (req, res) => {
+app.post('/api/uploadvideo', async(req, res) => {
     const { title, video_url, c_id } = req.body;
 
     try {
@@ -905,7 +904,7 @@ app.post('/api/uploadvideo', async (req, res) => {
 
         // Insert the new lecture into the database
         const [result] = await pool.execute('INSERT INTO lecture (title, video_url, c_id) VALUES (?, ?, ?)', [title, video_url, c_id]);
-        
+
         // Check if insertion was successful
         if (result.affectedRows === 1) {
             return res.status(201).json({ message: 'Video uploaded successfully' });
@@ -920,7 +919,7 @@ app.post('/api/uploadvideo', async (req, res) => {
 
 
 // Route for retrieving lecture data
-app.post('/api/lecture', async (req, res) => {
+app.post('/api/lecture', async(req, res) => {
     const { s_id } = req.body; // Assuming s_id is passed in the request body
 
     try {
@@ -965,14 +964,14 @@ app.post('/api/lecture', async (req, res) => {
 
 
 // Route for retrieving quiz data
-app.post('/api/quiz', async (req, res) => {
+app.post('/api/quiz', async(req, res) => {
     const { c_id } = req.body; // Assuming c_id is passed in the request body
 
     try {
         console.log('API quiz requested');
         // Query the database to retrieve quiz data based on the provided course ID
         const [quizData] = await pool.execute(` SELECT q.*, l.title   FROM quiz q  JOIN lecture l ON q.lecture_id = l.lecture_id WHERE q.c_id = ?; `, [c_id]);
-    
+
 
         // Check if any quiz data is found for the provided course ID
         if (quizData.length === 0) {
@@ -991,8 +990,8 @@ app.post('/api/quiz', async (req, res) => {
 
 
 // Route for adding new quiz
-app.post('/api/uploadquiz', async (req, res) => {
-    const { c_id, lecture_id, no_of_questions, total_marks } = req.body; 
+app.post('/api/uploadquiz', async(req, res) => {
+    const { c_id, lecture_id, no_of_questions, total_marks } = req.body;
 
     try {
         console.log('API quiz upload requested');
@@ -1009,12 +1008,12 @@ app.post('/api/uploadquiz', async (req, res) => {
 
 
 // POST endpoint to retrieve all quiz information based on q_id in the request body
-app.post('/api/quizinfo', async (req, res) => {
+app.post('/api/quizinfo', async(req, res) => {
     const { q_id } = req.body;
 
     try {
         console.log('API quizinfo requested for quiz ID:', q_id);
-        
+
         // Query the database to get all quiz information based on q_id
         const [quizInfoRows] = await pool.execute('SELECT * FROM quiz_info WHERE q_id = ?', [q_id]);
 
@@ -1033,8 +1032,8 @@ app.post('/api/quizinfo', async (req, res) => {
 
 
 // Route for adding quiz information
-app.post('/api/uploadquizinfo', async (req, res) => {
-    const { q_id, question, a, b, c, d, answer } = req.body; 
+app.post('/api/uploadquizinfo', async(req, res) => {
+    const { q_id, question, a, b, c, d, answer } = req.body;
 
     try {
         console.log('API quiz info upload requested');
@@ -1051,7 +1050,7 @@ app.post('/api/uploadquizinfo', async (req, res) => {
 
 
 // Route for uploading quiz information from an Excel file
-app.post('/api/quizinfoes/upload', upload.single('excelFile'), async (req, res) => {
+app.post('/api/quizinfoes/upload', upload.single('excelFile'), async(req, res) => {
     try {
         // Ensure that a file was uploaded
         console.log('api quiz excel upload');
@@ -1103,7 +1102,7 @@ app.post('/api/quizinfoes/upload', upload.single('excelFile'), async (req, res) 
 
 
 //list of university
-app.get('/api/universities', async (req, res) => {
+app.get('/api/universities', async(req, res) => {
     try {
         // Read universities JSON file
         console.log('API university requested');
@@ -1120,7 +1119,7 @@ app.get('/api/universities', async (req, res) => {
 });
 
 // Route for storing profile data
-app.post('/api/studentprofile', async (req, res) => {
+app.post('/api/studentprofile', async(req, res) => {
     const { s_id, name, email, phone, pincode, District, State, DOB, age, skills, grade_point_average, education_level, university } = req.body;
 
     try {
@@ -1160,7 +1159,7 @@ app.post('/api/studentprofile', async (req, res) => {
 
 
 // Route for checking student profile
-app.post('/api/checkstudentprofile', async (req, res) => {
+app.post('/api/checkstudentprofile', async(req, res) => {
     const { s_id } = req.body;
 
     try {
@@ -1188,7 +1187,7 @@ app.post('/api/checkstudentprofile', async (req, res) => {
 
 
 // Route for fetching mentor dashboard based on user_id
-app.post('/api/mentordashboard', async (req, res) => {
+app.post('/api/mentordashboard', async(req, res) => {
     try {
         console.log('API mentor dashboard requested');
         const { user_id } = req.body;
@@ -1212,7 +1211,7 @@ app.post('/api/mentordashboard', async (req, res) => {
 
 
 // Route for fetching student details based on c_id
-app.post('/api/liststudent', async (req, res) => {
+app.post('/api/liststudent', async(req, res) => {
     try {
         console.log('API student list requested');
         const { c_id } = req.body; // Extract c_id from request body
@@ -1249,7 +1248,7 @@ app.post('/api/liststudent', async (req, res) => {
 
 
 // Route for fetching mentors details based on c_id
-app.post('/api/listmentor', async (req, res) => {
+app.post('/api/listmentor', async(req, res) => {
     try {
         console.log('API mentor list requested');
         const { c_id } = req.body; // Extract c_id from request body
@@ -1273,7 +1272,7 @@ app.post('/api/listmentor', async (req, res) => {
 
 
 // Route for fetching student details without a mentor
-app.post('/api/studentwithoutmentor', async (req, res) => {
+app.post('/api/studentwithoutmentor', async(req, res) => {
     try {
         console.log('API student withou mentor requested');
         const { c_id } = req.body; // Extract c_id from request body
@@ -1310,7 +1309,7 @@ app.post('/api/studentwithoutmentor', async (req, res) => {
 
 
 // Route for updating mentor assignment for a student
-app.post('/api/assignmentor', async (req, res) => {
+app.post('/api/assignmentor', async(req, res) => {
     const { s_id, m_id } = req.body;
 
     try {
@@ -1364,7 +1363,7 @@ app.post('/api/assignmentor', async (req, res) => {
 
 
 // Route for retrieving lecture data using POST method
-app.post('/api/getlecture', async (req, res) => {
+app.post('/api/getlecture', async(req, res) => {
     const { c_id } = req.body; // Assuming c_id is passed in the request body
 
     try {
@@ -1393,7 +1392,7 @@ app.post('/api/getlecture', async (req, res) => {
 
 
 // Route for inserting chat messages
-app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', async(req, res) => {
     const { s_id, msg, c_id } = req.body;
 
     try {
@@ -1447,7 +1446,7 @@ app.post('/api/chat', async (req, res) => {
 
 
 // Route for performance, quiz mark
-app.post('/api/performance', async (req, res) => {
+app.post('/api/performance', async(req, res) => {
     const { s_id, q_id, mark } = req.body;
 
     try {
@@ -1473,7 +1472,7 @@ app.post('/api/performance', async (req, res) => {
 
 
 // Route for viewing performance data by student ID and optional quiz ID
-app.post('/api/viewperformance', async (req, res) => {
+app.post('/api/viewperformance', async(req, res) => {
     const { s_id, q_id } = req.body;
 
     try {
@@ -1504,7 +1503,7 @@ app.post('/api/viewperformance', async (req, res) => {
         performanceData.forEach(row => {
             const { q_id, mark } = row;
             const marks = JSON.parse(mark);
-            
+
             // Calculate statistics for each quiz
             const maxMark = Math.max(...marks);
             const minMark = Math.min(...marks);
@@ -1531,7 +1530,7 @@ app.post('/api/viewperformance', async (req, res) => {
 
 
 // Route for viewing chat messages along with user names
-app.post('/api/viewchat', async (req, res) => {
+app.post('/api/viewchat', async(req, res) => {
     const { c_id } = req.body;
 
     try {
@@ -1568,7 +1567,7 @@ app.post('/api/viewchat', async (req, res) => {
 
 
 // Route for creating discussion data using POST method
-app.post('/api/discussion', async (req, res) => {
+app.post('/api/discussion', async(req, res) => {
     const { s_id, c_id, lecture_id, question } = req.body; // Assuming s_id, c_id, lecture_id, and question are passed in the request body
 
     try {
@@ -1595,13 +1594,13 @@ app.post('/api/discussion', async (req, res) => {
 
 
 // Route for viewing discussions
-app.post('/api/viewdiscussion', async (req, res) => {
+app.post('/api/viewdiscussion', async(req, res) => {
     const { c_id } = req.body;
     try {
         console.log('API view discussion requested');
 
         // Extract c_id from request body
-     
+
 
         // Check if c_id is provided
         if (!c_id) {
@@ -1611,8 +1610,7 @@ app.post('/api/viewdiscussion', async (req, res) => {
 
         // Retrieve discussion data from the database based on the provided c_id
         const [discussionData] = await pool.execute(
-            'SELECT * FROM discussion WHERE c_id = ?',
-            [c_id]
+            'SELECT * FROM discussion WHERE c_id = ?', [c_id]
         );
 
         // Check if discussions were found
@@ -1621,7 +1619,7 @@ app.post('/api/viewdiscussion', async (req, res) => {
             return res.status(404).json({ error: 'No discussions found for the provided c_id' });
         }
 
-    
+
         return res.status(200).json({ discussions: discussionData });
     } catch (error) {
         console.error('Error fetching discussions:', error);
@@ -1633,7 +1631,7 @@ app.post('/api/viewdiscussion', async (req, res) => {
 
 
 // Route for fetching discussions based on mentor ID
-app.post('/api/showdiscussion', async (req, res) => {
+app.post('/api/showdiscussion', async(req, res) => {
     const { m_id } = req.body;
 
     try {
@@ -1646,8 +1644,7 @@ app.post('/api/showdiscussion', async (req, res) => {
 
         // Retrieve the course ID associated with the mentor
         const [mentorResult] = await pool.execute(
-            'SELECT c_id FROM mentors WHERE m_id = ?',
-            [m_id]
+            'SELECT c_id FROM mentors WHERE m_id = ?', [m_id]
         );
 
         // Check if mentor exists
@@ -1659,8 +1656,7 @@ app.post('/api/showdiscussion', async (req, res) => {
 
         // Retrieve discussions based on the course ID
         const [discussionResult] = await pool.execute(
-            'SELECT * FROM discussion WHERE c_id = ?',
-            [c_id]
+            'SELECT * FROM discussion WHERE c_id = ?', [c_id]
         );
 
         // Return the retrieved discussions
@@ -1674,7 +1670,7 @@ app.post('/api/showdiscussion', async (req, res) => {
 
 
 // Route for updating discussion likes
-app.post('/api/discussionlike', async (req, res) => {
+app.post('/api/discussionlike', async(req, res) => {
     const { s_id, discussion_id } = req.body;
 
     try {
@@ -1690,8 +1686,7 @@ app.post('/api/discussionlike', async (req, res) => {
 
         // Check if the user has already liked the discussion
         const [likedByResult] = await connection.execute(
-            'SELECT liked_by FROM discussion WHERE discussion_id = ?',
-            [discussion_id]
+            'SELECT liked_by FROM discussion WHERE discussion_id = ?', [discussion_id]
         );
 
         const likedBy = likedByResult[0].liked_by;
@@ -1734,7 +1729,7 @@ app.post('/api/discussionlike', async (req, res) => {
 
 
 // Route for creating answer data using POST method
-app.post('/api/answer', async (req, res) => {
+app.post('/api/answer', async(req, res) => {
     const { discussion_id, m_id, answer } = req.body; // Assuming discussion_id, m_id, and answer are passed in the request body
 
     try {
@@ -1762,7 +1757,7 @@ app.post('/api/answer', async (req, res) => {
 
 
 // Route for updating answer likes
-app.post('/api/answerlike', async (req, res) => {
+app.post('/api/answerlike', async(req, res) => {
     const { s_id, answer_id } = req.body;
 
     try {
@@ -1778,8 +1773,7 @@ app.post('/api/answerlike', async (req, res) => {
 
         // Check if the user has already liked the answer
         const [likedByResult] = await connection.execute(
-            'SELECT liked_by FROM answer WHERE answer_id = ?',
-            [answer_id]
+            'SELECT liked_by FROM answer WHERE answer_id = ?', [answer_id]
         );
 
         const likedBy = likedByResult[0].liked_by;
@@ -1821,7 +1815,7 @@ app.post('/api/answerlike', async (req, res) => {
 
 
 
-app.post('/api/viewsubdiscussion', async (req, res) => {
+app.post('/api/viewsubdiscussion', async(req, res) => {
     const { discussion_id } = req.body;
 
     try {
@@ -1837,8 +1831,7 @@ app.post('/api/viewsubdiscussion', async (req, res) => {
             `SELECT sd.*, u.name AS user_name, u.role AS user_role
             FROM subdiscussion sd 
             JOIN users u ON sd.user_id = u.user_id
-            WHERE sd.discussion_id = ?`,
-            [discussion_id]
+            WHERE sd.discussion_id = ?`, [discussion_id]
         );
 
         // Check if subdiscussions were found
@@ -1856,7 +1849,7 @@ app.post('/api/viewsubdiscussion', async (req, res) => {
 
 
 //route to insert the subdiscussion
-app.post('/api/subdiscussion', async (req, res) => {
+app.post('/api/subdiscussion', async(req, res) => {
     const { discussion_id, user_id, subdiscussion_text } = req.body;
 
     try {
@@ -1872,8 +1865,7 @@ app.post('/api/subdiscussion', async (req, res) => {
 
         // Insert the subdiscussion into the Subdiscussion table
         const [insertResult] = await connection.execute(
-            'INSERT INTO subdiscussion (discussion_id, user_id, subdiscussion_text) VALUES (?, ?, ?)',
-            [discussion_id, user_id, subdiscussion_text]
+            'INSERT INTO subdiscussion (discussion_id, user_id, subdiscussion_text) VALUES (?, ?, ?)', [discussion_id, user_id, subdiscussion_text]
         );
 
         connection.release();
@@ -1894,7 +1886,7 @@ app.post('/api/subdiscussion', async (req, res) => {
 
 
 // Route for updating subdiscussion likes
-app.post('/api/subdiscussionlike', async (req, res) => {
+app.post('/api/subdiscussionlike', async(req, res) => {
     const { s_id, subdiscussion_id } = req.body;
 
     try {
@@ -1910,8 +1902,7 @@ app.post('/api/subdiscussionlike', async (req, res) => {
 
         // Check if the user has already liked the subdiscussion
         const [likedByResult] = await connection.execute(
-            'SELECT liked_by FROM subdiscussion WHERE subdiscussion_id = ?',
-            [subdiscussion_id]
+            'SELECT liked_by FROM subdiscussion WHERE subdiscussion_id = ?', [subdiscussion_id]
         );
 
         const likedBy = likedByResult[0].liked_by;
@@ -1948,7 +1939,7 @@ app.post('/api/subdiscussionlike', async (req, res) => {
 
 
 // Route for viewing lectures without quizzes
-app.post('/api/viewnoquizlecture', async (req, res) => {
+app.post('/api/viewnoquizlecture', async(req, res) => {
     // Extract c_id from request body
     const { c_id } = req.body;
 
@@ -1962,8 +1953,7 @@ app.post('/api/viewnoquizlecture', async (req, res) => {
             AND lecture_id NOT IN (
                 SELECT DISTINCT lecture_id FROM quiz WHERE c_id = ?
             )
-            `,
-            [c_id, c_id]
+            `, [c_id, c_id]
         );
 
         // Send the data of lectures without quizzes
@@ -1976,10 +1966,10 @@ app.post('/api/viewnoquizlecture', async (req, res) => {
 
 
 
-app.post('/api/uploadquizinfos', upload.single('file'), async (req, res) => {
+app.post('/api/uploadquizinfos', upload.single('file'), async(req, res) => {
     try {
         console.log("API upload quiz requested");
-        
+
         // Print received data
         console.log("Received data:", req.body);
         console.log("Received file:", req.file);
@@ -2016,7 +2006,9 @@ app.post('/api/uploadquizinfos', upload.single('file'), async (req, res) => {
         console.log("Number of questions:", excelData.length);
 
         // Prepare the values array for insertion into quiz table
-        const quizValues = [[c_id, lecture_id, excelData.length,excelData.length]];
+        const quizValues = [
+            [c_id, lecture_id, excelData.length, excelData.length]
+        ];
 
         // Insert data into quiz table
         const quizQuery = `INSERT INTO quiz (c_id, lecture_id, no_of_questions, total_mark) VALUES ?`;
